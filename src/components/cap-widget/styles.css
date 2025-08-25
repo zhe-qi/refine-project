@@ -1,0 +1,64 @@
+/* 容器样式 - 简单的容器，不添加额外边框 */
+.cap-widget-container {
+  width: 100%;
+  display: block;
+}
+
+/* 使用 CSS Parts API 隐藏 Shadow DOM 中的 Cap 标识 */
+.cap-widget-container cap-widget::part(attribution) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* CAP 组件基础样式设置 */
+.cap-widget-container cap-widget {
+  width: 100%;
+  display: block;
+  /* 基础 CAP CSS 变量设置 */
+  --cap-border-radius: 6px;
+  --cap-widget-height: 48px;
+  --cap-widget-width: 100%;
+  --cap-widget-padding: 12px 16px;
+  --cap-gap: 12px;
+  --cap-credits-font-size: 12px;
+  --cap-opacity-hover: 0.7;
+}
+
+/* 美化验证码容器的阴影效果 */
+.cap-widget-container cap-widget .captcha {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06) !important;
+  transition: all 0.3s ease !important;
+}
+
+.cap-widget-container cap-widget .captcha:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 美化复选框 */
+.cap-widget-container cap-widget .captcha .checkbox {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 4px !important;
+  position: relative !important;
+  transition: all 0.3s ease !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 576px) {
+  .cap-widget-container cap-widget {
+    --cap-widget-height: 44px;
+    --cap-widget-padding: 10px 12px;
+    --cap-gap: 10px;
+  }
+  
+  .cap-widget-container cap-widget .captcha .checkbox {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  
+  .cap-widget-container cap-widget .captcha p {
+    font-size: 13px !important;
+  }
+}
