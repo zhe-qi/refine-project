@@ -5,32 +5,27 @@ import {
   authPermissionsUsingGet,
   authUserinfoUsingGet,
 } from '@/api/admin'
-import { clearToken, getToken, isTokenExpired, setToken } from '@/utils/authUtils'
+import { clearToken, getToken, setToken } from '@/utils/authUtils'
 
 // 缓存变量和防并发处理
 let cachedIdentity: any = null
 let cachedPermissions: any = null
-let cachedAuthCheck: { authenticated: boolean, timestamp: number } | null = null
 let identityCacheTime = 0
 let permissionsCacheTime = 0
 const CACHE_DURATION = 5 * 60 * 1000 // 5分钟缓存
-const AUTH_CHECK_CACHE_DURATION = 30 * 1000 // 30秒认证状态缓存
 
 // 防止并发请求
 let permissionsPromise: Promise<any> | null = null
 let identityPromise: Promise<any> | null = null
-let authCheckPromise: Promise<any> | null = null
 
 // 缓存管理工具函数
 function clearAllCache() {
   cachedIdentity = null
   cachedPermissions = null
-  cachedAuthCheck = null
   identityCacheTime = 0
   permissionsCacheTime = 0
   permissionsPromise = null
   identityPromise = null
-  authCheckPromise = null
 }
 
 function isCacheValid(cacheTime: number, duration: number = CACHE_DURATION): boolean {
@@ -98,49 +93,8 @@ export const authProvider: AuthProvider = {
       return { authenticated: false, redirectTo: '/login' }
     }
 
-    // 首先检查token是否格式正确且未过期
-    if (isTokenExpired(token)) {
-      clearToken()
-      cachedAuthCheck = null
-      return { authenticated: false, redirectTo: '/login' }
-    }
-
-    // 检查缓存的认证状态
-    const now = Date.now()
-    if (cachedAuthCheck && (now - cachedAuthCheck.timestamp) < AUTH_CHECK_CACHE_DURATION) {
-      return { authenticated: cachedAuthCheck.authenticated }
-    }
-
-    // 防止并发的认证检查请求
-    if (authCheckPromise) {
-      return authCheckPromise
-    }
-
-    authCheckPromise = (async () => {
-      try {
-        // 可选：如果需要服务器端验证，可以调用一个轻量级的验证接口
-        // 这里我们主要依赖客户端JWT验证以提高性能
-        const result = { authenticated: true }
-
-        // 缓存认证结果
-        cachedAuthCheck = {
-          authenticated: result.authenticated,
-          timestamp: Date.now(),
-        }
-
-        authCheckPromise = null
-        return result
-      }
-      catch {
-        // 如果服务器验证失败，清除令牌
-        clearToken()
-        cachedAuthCheck = { authenticated: false, timestamp: Date.now() }
-        authCheckPromise = null
-        return { authenticated: false, redirectTo: '/login' }
-      }
-    })()
-
-    return authCheckPromise
+    // 有有效token就认为已认证
+    return { authenticated: true }
   },
 
   getIdentity: async () => {

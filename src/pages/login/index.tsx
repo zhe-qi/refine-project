@@ -25,6 +25,17 @@ export function Login() {
       username: values.username,
       password: values.password,
       captchaToken,
+    }, {
+      onSuccess: () => {
+        // 登录成功后重置验证码状态
+        capWidgetRef.current?.reset()
+        setCaptchaToken('')
+      },
+      onError: () => {
+        // 登录失败后重置验证码状态
+        capWidgetRef.current?.reset()
+        setCaptchaToken('')
+      }
     })
   }
 

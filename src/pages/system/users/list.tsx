@@ -8,8 +8,8 @@ import {
 } from '@refinedev/antd'
 import { Space, Table, Tag } from 'antd'
 import { useState } from 'react'
-import { RoleManageButton } from '../../components/RoleManageButton'
-import { UserRoleManager } from '../../components/UserRoleManager'
+import { RoleManageButton } from '@/components/RoleManageButton'
+import { UserRoleManager } from '@/components/UserRoleManager'
 
 interface IUser {
   id: string

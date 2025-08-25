@@ -62,13 +62,13 @@ export interface PathMapping {
     clone?: string | PathConfig
   }
   /** 后端API路径 - 用于数据请求 */
-  api: {
+  api?: {
     base: string | PathConfig
     /** 可选的批量操作路径 */
     bulk?: string | PathConfig
   }
   /** 权限校验路径 - 用于访问控制 */
-  permission: {
+  permission?: {
     base: string | PathConfig
     /** 自定义HTTP方法映射 */
     methods?: HttpMethodMap
@@ -83,8 +83,8 @@ export interface ExtendedResourceItem extends Omit<IResourceItem, 'list' | 'crea
   /** 资源名称 */
   name: string
 
-  /** 统一的路径映射配置 */
-  paths: PathMapping
+  /** 统一的路径映射配置（对于父级菜单资源，此项为可选） */
+  paths?: PathMapping
 
   /** 权限配置 */
   permissions?: PermissionConfig
@@ -100,6 +100,8 @@ export interface ExtendedResourceItem extends Omit<IResourceItem, 'list' | 'crea
   meta?: IResourceItem['meta'] & {
     /** 标签名称 */
     label?: string
+    /** 父级资源名称（用于多级菜单） */
+    parent?: string
     /** 是否可删除 */
     canDelete?: boolean
     /** 图标 */

@@ -27,24 +27,24 @@ const DEFAULT_HTTP_METHODS: Record<ResourceAction, string> = {
 export interface ResourceConfig {
   /** 资源名称 */
   name: string
-  /** 路径配置 */
-  paths: {
+  /** 路径配置（对于父级菜单资源，此项为可选） */
+  paths?: {
     /** 前端路由路径 */
     route: {
-      list?: string
-      create?: string
-      edit?: string
-      show?: string
-      clone?: string
+      list?: string | PathConfig
+      create?: string | PathConfig
+      edit?: string | PathConfig
+      show?: string | PathConfig
+      clone?: string | PathConfig
     }
     /** 后端API路径 */
     api?: {
-      base?: string
-      bulk?: string
+      base?: string | PathConfig
+      bulk?: string | PathConfig
     }
     /** 权限校验路径 */
     permission?: {
-      base?: string
+      base?: string | PathConfig
       methods?: Record<string, string>
     }
   }
@@ -178,6 +178,15 @@ export function defineConfig(config: GlobalConfig): ResourceConfigs {
   const refineResources: ExtendedResourceItem[] = mergedResources.map((resource) => {
     const { name, paths, permissions, meta = {} } = resource
 
+    // 对于父级菜单资源（没有 paths），直接返回
+    if (!paths) {
+      return {
+        name,
+        permissions,
+        meta,
+      } as ExtendedResourceItem
+    }
+
     // 自动推导缺失的路径配置
     let finalPaths = { ...paths }
     
@@ -236,71 +245,80 @@ export function defineConfig(config: GlobalConfig): ResourceConfigs {
   })
 
   // 生成 API 资源映射
-  const apiResources = refineResources.map(resource => ({
-    name: resource.name,
-    apiBase: typeof resource.paths.api.base === 'string'
-      ? resource.paths.api.base
-      : resource.paths.api.base.base,
-    ...(resource.paths.api.bulk && {
-      apiBulk: typeof resource.paths.api.bulk === 'string'
-        ? resource.paths.api.bulk
-        : resource.paths.api.bulk.base,
-    }),
-  }))
+  const apiResources = refineResources
+    .filter(resource => resource.paths) // 过滤掉没有 paths 的父级菜单资源
+    .map(resource => ({
+      name: resource.name,
+      apiBase: typeof resource.paths!.api!.base === 'string'
+        ? resource.paths!.api!.base
+        : resource.paths!.api!.base.base,
+      ...(resource.paths!.api!.bulk && {
+        apiBulk: typeof resource.paths!.api!.bulk === 'string'
+          ? resource.paths!.api!.bulk
+          : resource.paths!.api!.bulk.base,
+      }),
+    }))
 
   // 生成权限资源映射
-  const permissionResources = refineResources.map(resource => ({
-    name: resource.name,
-    permissionBase: typeof resource.paths.permission.base === 'string'
-      ? resource.paths.permission.base
-      : resource.paths.permission.base.base,
-    ...(resource.paths.permission.methods && {
-      methods: Object.fromEntries(
-        Object.entries(resource.paths.permission.methods).filter(([, value]) => value !== undefined),
-      ) as Record<string, string>,
-    }),
-  }))
+  const permissionResources = refineResources
+    .filter(resource => resource.paths) // 过滤掉没有 paths 的父级菜单资源
+    .map(resource => ({
+      name: resource.name,
+      permissionBase: typeof resource.paths!.permission!.base === 'string'
+        ? resource.paths!.permission!.base
+        : resource.paths!.permission!.base.base,
+      ...(resource.paths!.permission!.methods && {
+        methods: Object.fromEntries(
+          Object.entries(resource.paths!.permission!.methods).filter(([, value]) => value !== undefined),
+        ) as Record<string, string>,
+      }),
+    }))
 
   // 生成路由资源映射
-  const routeResources = refineResources.map(resource => ({
-    name: resource.name,
-    routes: {
-      list: typeof resource.paths.route.list === 'string'
-        ? resource.paths.route.list
-        : resource.paths.route.list?.base,
-      create: typeof resource.paths.route.create === 'string'
-        ? resource.paths.route.create
-        : resource.paths.route.create?.base,
-      edit: typeof resource.paths.route.edit === 'string'
-        ? resource.paths.route.edit
-        : resource.paths.route.edit?.base,
-      show: typeof resource.paths.route.show === 'string'
-        ? resource.paths.route.show
-        : resource.paths.route.show?.base,
-      clone: typeof resource.paths.route.clone === 'string'
-        ? resource.paths.route.clone
-        : resource.paths.route.clone?.base,
-    },
-  }))
+  const routeResources = refineResources
+    .filter(resource => resource.paths) // 过滤掉没有 paths 的父级菜单资源
+    .map(resource => ({
+      name: resource.name,
+      routes: {
+        list: typeof resource.paths!.route.list === 'string'
+          ? resource.paths!.route.list
+          : resource.paths!.route.list?.base,
+        create: typeof resource.paths!.route.create === 'string'
+          ? resource.paths!.route.create
+          : resource.paths!.route.create?.base,
+        edit: typeof resource.paths!.route.edit === 'string'
+          ? resource.paths!.route.edit
+          : resource.paths!.route.edit?.base,
+        show: typeof resource.paths!.route.show === 'string'
+          ? resource.paths!.route.show
+          : resource.paths!.route.show?.base,
+        clone: typeof resource.paths!.route.clone === 'string'
+          ? resource.paths!.route.clone
+          : resource.paths!.route.clone?.base,
+      },
+    }))
 
   // 生成 Refine 兼容格式的资源
   const refineCompatibleResources = refineResources.map(resource => ({
     name: resource.name,
-    list: typeof resource.paths.route.list === 'string' 
-      ? resource.paths.route.list 
-      : resource.paths.route.list?.base,
-    create: typeof resource.paths.route.create === 'string' 
-      ? resource.paths.route.create 
-      : resource.paths.route.create?.base,
-    edit: typeof resource.paths.route.edit === 'string' 
-      ? resource.paths.route.edit 
-      : resource.paths.route.edit?.base,
-    show: typeof resource.paths.route.show === 'string' 
-      ? resource.paths.route.show 
-      : resource.paths.route.show?.base,
-    clone: typeof resource.paths.route.clone === 'string' 
-      ? resource.paths.route.clone 
-      : resource.paths.route.clone?.base,
+    // 只有具有 paths 的资源才添加路由属性
+    ...(resource.paths && {
+      list: typeof resource.paths.route.list === 'string' 
+        ? resource.paths.route.list 
+        : resource.paths.route.list?.base,
+      create: typeof resource.paths.route.create === 'string' 
+        ? resource.paths.route.create 
+        : resource.paths.route.create?.base,
+      edit: typeof resource.paths.route.edit === 'string' 
+        ? resource.paths.route.edit 
+        : resource.paths.route.edit?.base,
+      show: typeof resource.paths.route.show === 'string' 
+        ? resource.paths.route.show 
+        : resource.paths.route.show?.base,
+      clone: typeof resource.paths.route.clone === 'string' 
+        ? resource.paths.route.clone 
+        : resource.paths.route.clone?.base,
+    }),
     meta: resource.meta,
   }))
 

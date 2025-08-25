@@ -29,13 +29,11 @@ import {
   RoleEdit,
   RoleList,
   RoleShow,
-} from './pages/roles'
-import {
   UserCreate,
   UserEdit,
   UserList,
   UserShow,
-} from './pages/users'
+} from './pages/system'
 import { accessControlProvider } from './providers/accessControl'
 import { authProvider } from './providers/authProvider'
 import { dataProvider } from './providers/dataProvider'

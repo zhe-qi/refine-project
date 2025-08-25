@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 import axios from 'axios'
+import { clearToken, getToken, setToken } from '@/utils/authUtils'
 import { handleError } from '@/utils/errorHandler'
-import { getToken, setToken, clearToken, isTokenExpired } from '@/utils/authUtils'
 
 const { VITE_APP_BASEURL } = import.meta.env
 
@@ -20,6 +20,26 @@ class HttpClient {
     this.setupInterceptors()
   }
 
+  // 清除所有认证信息并跳转登录
+  private clearAuthAndRedirect() {
+    // 清除access token
+    clearToken()
+
+    // 清除所有cookie（包括refresh token）
+    document.cookie.split(';').forEach((cookie) => {
+      const eqPos = cookie.indexOf('=')
+      const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim()
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`
+    })
+
+    // 清除localStorage
+    localStorage.clear()
+
+    // 跳转到登录页
+    window.location.href = '/login'
+  }
+
   // 设置拦截器
   private setupInterceptors() {
     // 请求拦截器：附加 Access Token
@@ -32,13 +52,9 @@ class HttpClient {
 
       const token = getToken()
       if (token && token !== 'null' && token !== 'undefined') {
-        // 检查token是否即将过期（提前检查避免请求中途过期）
-        if (isTokenExpired(token)) {
-          // 如果token已过期，清除它避免发送无效token
-          clearToken()
-        } else {
-          config.headers.Authorization = `Bearer ${token}`
-        }
+        // 检查token是否即将过期，但不在请求拦截器中清除token
+        // 让响应拦截器处理token刷新逻辑
+        config.headers.Authorization = `Bearer ${token}`
       }
       return config
     })
@@ -98,12 +114,12 @@ class HttpClient {
       originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
       return this.axiosInstance(originalRequest)
     }
-    catch (err) {
-      // 刷新失败，清除token并跳转登录
+    catch (error) {
+      // 刷新token失败，说明refresh token也过期了，清除所有认证信息并跳转登录
+      this.failedQueue.forEach(({ resolve }) => resolve(''))
       this.failedQueue = []
-      clearToken()
-      window.location.href = '/login'
-      return handleError(err)
+      this.clearAuthAndRedirect()
+      return handleError(error)
     }
     finally {
       this.isRefreshing = false

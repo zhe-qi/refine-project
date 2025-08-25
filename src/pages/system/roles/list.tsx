@@ -8,8 +8,8 @@ import {
 } from '@refinedev/antd'
 import { Space, Table, Tag } from 'antd'
 import { useState } from 'react'
-import { PermissionManageButton } from '../../components/PermissionManageButton'
-import { RolePermissionManager } from '../../components/RolePermissionManager'
+import { PermissionManageButton } from '@/components/PermissionManageButton'
+import { RolePermissionManager } from '@/components/RolePermissionManager'
 
 interface IRole {
   id: string

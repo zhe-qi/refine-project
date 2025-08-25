@@ -3,6 +3,8 @@ import type {
   CreateManyResponse,
   CreateParams,
   CreateResponse,
+  CustomParams,
+  CustomResponse,
   DataProvider,
   DeleteManyParams,
   DeleteManyResponse,
@@ -24,7 +26,6 @@ import httpClient from '@/api/request'
 import { apiResources } from '@/config/resources'
 import { handleError } from '@/utils/errorHandler'
 import { getBulkApiPath, getSimpleApiPath } from '@/utils/resourcePath'
-
 
 export function dataProvider(apiUrl: string): DataProvider {
   return {
@@ -232,6 +233,58 @@ export function dataProvider(apiUrl: string): DataProvider {
         const data = Array.isArray(responseData) ? responseData : (responseData?.data || [])
 
         return { data }
+      }
+      catch (error) {
+        return handleError(error)
+      }
+    },
+
+    custom: async <TData = any, TQuery = unknown, TPayload = unknown>(
+      params: CustomParams<TQuery, TPayload>,
+    ): Promise<CustomResponse<TData>> => {
+      try {
+        const { url, method = 'get', payload, query, headers: headersFromParams, meta } = params
+        const { headers: headersFromMeta } = meta ?? {}
+
+        // 合并 headers
+        const headers = {
+          ...headersFromMeta,
+          ...headersFromParams,
+        }
+
+        // 构建完整的 URL
+        const fullUrl = url.startsWith('http') ? url : `${apiUrl}${url}`
+
+        let response: any
+
+        switch (method.toLowerCase()) {
+          case 'get':
+          { const queryParams = query ? new URLSearchParams(query as Record<string, string>) : undefined
+            const getUrl = queryParams ? `${fullUrl}?${queryParams.toString()}` : fullUrl
+            response = await httpClient.get(getUrl, { headers })
+            break }
+
+          case 'post':
+            response = await httpClient.post(fullUrl, payload, { headers })
+            break
+
+          case 'put':
+            response = await httpClient.put(fullUrl, payload, { headers })
+            break
+
+          case 'patch':
+            response = await httpClient.patch(fullUrl, payload, { headers })
+            break
+
+          case 'delete':
+            response = await httpClient.delete(fullUrl, { headers, data: payload })
+            break
+
+          default:
+            throw new Error(`Unsupported method: ${method}`)
+        }
+
+        return { data: (response as any).data }
       }
       catch (error) {
         return handleError(error)

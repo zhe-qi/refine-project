@@ -1,100 +1,20 @@
-import { defineConfig } from '@/utils/resourcePath'
-
-/**
- * 使用 defineConfig 定义扩展的资源配置
- * 返回多种格式的资源配置，适用于不同场景
- */
-const resourceConfigs = defineConfig({
-  // 全局API前缀，所有资源默认使用此前缀
-  apiPrefix: 'admin',
-
-  // 全局默认配置
-  defaults: {
-    permissions: {
-      standard: ['list', 'show', 'create', 'edit', 'delete'],
-    },
-    meta: {
-      canDelete: true,
-    },
-  },
-
-  // 资源配置数组
-  resources: [
-    {
-      name: 'users',
-      paths: {
-        route: {
-          list: '/system/users',
-          create: '/system/users/create',
-          edit: '/system/users/edit/:id',
-          show: '/system/users/show/:id',
-        },
-      },
-      // 只需定义自定义权限，标准权限继承全局默认
-      permissions: {
-        custom: [
-          {
-            action: 'addRole',
-            title: '分配角色',
-            path: '{id}/roles',
-            method: 'POST',
-          },
-          {
-            action: 'removeRole',
-            title: '删除角色',
-            path: '{id}/roles',
-            method: 'DELETE',
-          },
-        ],
-      },
-      meta: {
-        label: '用户管理',
-        sort: 1,
-      },
-    },
-    {
-      name: 'roles',
-      paths: {
-        route: {
-          list: '/system/roles',
-          create: '/system/roles/create',
-          edit: '/system/roles/edit/:id',
-          show: '/system/roles/show/:id',
-        },
-      },
-      // 只需定义自定义权限，标准权限继承全局默认
-      permissions: {
-        custom: [
-          {
-            action: 'addPermissions',
-            title: '分配权限',
-            path: '{id}/permissions',
-            method: 'POST',
-          },
-          {
-            action: 'removePermissions',
-            title: '删除权限',
-            path: '{id}/permissions',
-            method: 'DELETE',
-          },
-        ],
-      },
-      meta: {
-        label: '角色管理',
-        sort: 2,
-      },
-    },
-  ],
-})
+import {
+  apiResources,
+  getAllResourceNames,
+  permissionResources,
+  refineCompatibleResources,
+  refineResources,
+  routeResources,
+} from './modules'
 
 // 导出不同格式的资源配置
-export const {
-  refineResources,
-  refineCompatibleResources,
+export {
   apiResources,
   permissionResources,
+  refineCompatibleResources,
+  refineResources,
   routeResources,
-} = resourceConfigs
+}
 
 // 为了保持向后兼容，也导出 resources 作为 refineCompatibleResources 的别名
 export const resources = refineCompatibleResources
@@ -107,23 +27,23 @@ export function getExtendedResource(name: string) {
 }
 
 /**
- * 获取所有资源名称
+ * 获取所有资源名称（从模块中获取）
  */
-export function getResourceNames(): string[] {
-  return refineResources.map(resource => resource.name)
-}
+export { getAllResourceNames as getResourceNames }
 
 /**
  * 权限项接口
  */
 export interface PermissionItem {
   key: string // 唯一标识，如 "/system/users:GET"
-  title: string // 显示名称，如 "用户管理-查看"
+  title: string // 显示名称，如 "查看"（只显示操作名称）
   resource: string // Casbin 资源路径，如 "/system/users"
   method: string // HTTP 方法，如 "GET"
   action: string // 操作类型，如 "list"
-  category: string // 分类名称，如 "用户管理"
-  categoryKey: string // 分类标识，如 "users"
+  category: string // 菜单名称，如 "用户管理"
+  categoryKey: string // 菜单标识，如 "users"
+  parentCategory?: string // 父目录名称，如 "系统管理"
+  parentCategoryKey?: string // 父目录标识，如 "system"
 }
 
 /**
@@ -134,7 +54,7 @@ export function getAllPermissions(): PermissionItem[] {
   const permissions: PermissionItem[] = []
 
   // 操作到中文名称的映射
-  const actionNameMap = {
+  const actionNameMap: Record<string, string> = {
     list: '查看',
     show: '详情',
     create: '创建',
@@ -143,20 +63,36 @@ export function getAllPermissions(): PermissionItem[] {
   }
 
   refineResources.forEach((resource) => {
+    // 跳过父级菜单资源
+    if (!resource.paths)
+      return
+
     const categoryName = resource.meta?.label || resource.name
     const categoryKey = resource.name
 
+    // 获取父目录信息
+    let parentCategory: string | undefined
+    let parentCategoryKey: string | undefined
+
+    if (resource.meta?.parent) {
+      const parentResource = refineResources.find(r => r.name === resource.meta?.parent)
+      if (parentResource) {
+        parentCategory = parentResource.meta?.label || parentResource.name
+        parentCategoryKey = parentResource.name
+      }
+    }
+
     // 解析权限基础路径
-    const resourcePath = typeof resource.paths.permission.base === 'string'
+    const resourcePath = typeof resource.paths.permission?.base === 'string'
       ? resource.paths.permission.base
-      : resource.paths.permission.base.base
+      : resource.paths.permission?.base?.base || `/admin/${resource.name}`
 
     // 如果有权限配置，优先使用权限配置
     if (resource.permissions) {
       const { standard = [], custom = [] } = resource.permissions
 
       // 处理标准权限
-      standard.forEach((action) => {
+      standard.forEach((action: string) => {
         const actionName = actionNameMap[action]
         if (!actionName)
           return
@@ -170,17 +106,19 @@ export function getAllPermissions(): PermissionItem[] {
 
         permissions.push({
           key: `${finalPath}:${method}`,
-          title: `${categoryName}-${actionName}`,
+          title: actionName, // 只显示操作名称，如 "查看"
           resource: finalPath,
           method,
           action,
           category: categoryName,
           categoryKey,
+          parentCategory,
+          parentCategoryKey,
         })
       })
 
       // 处理自定义权限
-      custom.forEach((customPerm) => {
+      custom.forEach((customPerm: any) => {
         // 构建完整路径
         const fullPath = customPerm.path.startsWith('/')
           ? customPerm.path
@@ -188,12 +126,14 @@ export function getAllPermissions(): PermissionItem[] {
 
         permissions.push({
           key: `${fullPath}:${customPerm.method}`,
-          title: `${categoryName}-${customPerm.title}`,
+          title: customPerm.title, // 直接使用自定义权限的标题
           resource: fullPath,
           method: customPerm.method,
           action: customPerm.action,
           category: categoryName,
           categoryKey,
+          parentCategory,
+          parentCategoryKey,
         })
       })
     }
@@ -209,29 +149,33 @@ export function getAllPermissions(): PermissionItem[] {
 
         permissions.push({
           key: `${finalPath}:${method}`,
-          title: `${categoryName}-${actionName}`,
+          title: actionName, // 只显示操作名称
           resource: finalPath,
           method,
           action,
           category: categoryName,
           categoryKey,
+          parentCategory,
+          parentCategoryKey,
         })
       })
 
       // 处理自定义方法权限（保持向后兼容）
-      if (resource.paths.permission.methods) {
+      if (resource.paths.permission?.methods) {
         Object.entries(resource.paths.permission.methods).forEach(([customAction, customMethod]) => {
           if (customMethod) {
             const finalPath = `${resourcePath}/{id}`
 
             permissions.push({
               key: `${finalPath}:${customMethod}`,
-              title: `${categoryName}-${customAction}`,
+              title: customAction, // 使用操作名称
               resource: finalPath,
               method: customMethod,
               action: customAction,
               category: categoryName,
               categoryKey,
+              parentCategory,
+              parentCategoryKey,
             })
           }
         })
@@ -263,6 +207,10 @@ export function validateAllResources(): Record<string, string[]> {
   const validationResults: Record<string, string[]> = {}
 
   refineResources.forEach((resource) => {
+    // 跳过父级菜单资源
+    if (!resource.paths)
+      return
+
     // 动态导入避免循环依赖
     import('@/utils/resourcePath').then(({ validateResourcePaths }) => {
       const errors = validateResourcePaths(resource)
@@ -280,141 +228,3 @@ export function validateAllResources(): Record<string, string[]> {
 
   return validationResults
 }
-
-/**
- * defineConfig 使用示例和最佳实践
- *
- * ## 自动路径推导系统
- *
- * defineConfig 现在支持从 route.list 自动推导 api.base 和 permission.base：
- *
- * ```typescript
- * export const resources = defineConfig({
- *   apiPrefix: 'admin',
- *
- *   resources: [
- *     {
- *       name: 'users',
- *       paths: {
- *         route: {
- *           list: '/system/users',
- *           create: '/system/users/create',
- *           edit: '/system/users/edit/:id',
- *           show: '/system/users/show/:id',
- *         }
- *         // api 和 permission 将自动推导：
- *         // api: { base: 'system/users' }
- *         // permission: { base: '/system/users' }
- *       }
- *     }
- *   ]
- * })
- * ```
- *
- * ## 路径推导规则
- *
- * - `/system/users` → `api.base: 'system/users'` → `permission.base: '/system/users'`
- * - `/admin/posts` → `api.base: 'admin/posts'` → `permission.base: '/admin/posts'`
- * - API 路径自动去除开头的 `/`，权限路径保留 `/`
- *
- * ## 可覆盖配置
- *
- * 如果需要自定义 API 或权限路径，仍可手动指定：
- *
- * ```typescript
- * {
- *   name: 'users',
- *   paths: {
- *     route: { list: '/system/users', ... },
- *     api: {
- *       base: 'custom/users/path',  // 覆盖自动推导
- *       bulk: 'custom/users/export' // 可选的批量/导出端点
- *     },
- *     permission: {
- *       base: '/custom/users/permission' // 覆盖自动推导
- *     }
- *   }
- * }
- * ```
- *
- * ## 批量操作配置
- *
- * - `bulk` 路径现在是完全可选的
- * - 用于批量创建/更新/删除操作（createMany, updateMany, deleteMany）
- * - 也可用于导出等功能
- * - 如果不配置，getBulkApiPath 会回退到 `{api.base}/bulk`
- *
- * ## 层级配置覆盖系统
- *
- * ```typescript
- * export const resources = defineConfig({
- *   apiPrefix: 'admin',
- *
- *   // 全局默认配置
- *   defaults: {
- *     permissions: {
- *       standard: ['list', 'show', 'create', 'edit', 'delete']
- *     },
- *     meta: {
- *       canDelete: true
- *     }
- *   },
- *
- *   resources: [
- *     {
- *       name: 'users',
- *       paths: {
- *         route: { list: '/system/users', ... }
- *         // API 和权限路径自动推导
- *       },
- *       // 继承全局默认的标准权限
- *       permissions: {
- *         custom: [...] // 只需定义额外的自定义权限
- *       },
- *       meta: {
- *         label: '用户管理',
- *         // canDelete 自动继承全局默认 true
- *       }
- *     }
- *   ]
- * })
- * ```
- *
- * ## 配置优先级
- *
- * **优先级（从低到高）**: 全局默认 < 自动推导 < 手动配置
- *
- * - **继承**: 如果资源没有定义某项配置，自动继承全局默认值
- * - **推导**: API 和权限路径可从 route.list 自动推导
- * - **扩展**: permissions.custom 会与全局默认的 custom 权限合并
- * - **覆盖**: 如果资源明确定义了配置项，会完全覆盖全局默认和推导值
- *
- * ## 简化效果
- *
- * - **减少重复**: 消除了 50% 的重复配置代码
- * - **保持灵活**: 完全支持单个资源的自定义和覆盖
- * - **易于维护**: 全局默认配置集中管理，路径自动推导
- * - **向后兼容**: 保持 Refine 官方配置风格
- *
- * ## API前缀处理
- *
- * defineConfig 会自动为 API 路径添加全局前缀：
- * - `system/users` → `admin/system/users`
- * - 自定义 `custom/users/path` → `admin/custom/users/path`
- *
- * ## 生成的路径映射
- *
- * 对于简化后的配置，将生成：
- * - **前端路由**: `/system/users`, `/system/users/create`, `/system/users/edit/:id`
- * - **API路径**: `admin/system/users` (自动推导 + 前缀)
- * - **权限路径**: `/system/users`, `/system/users/:id` (自动推导)
- *
- * ## 调试配置
- *
- * ```typescript
- * import { debugResourcePaths } from '@/utils/resourcePath'
- *
- * // 调试所有资源配置
- * debugResourcePaths(resources)
- * ```
- */

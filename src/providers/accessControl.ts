@@ -51,6 +51,16 @@ m = g(r.sub, p.sub) && keyMatch3(r.obj, p.obj) && regexMatch(r.act, p.act)
  */
 function buildRequestObject(resource: string, action: string, params?: any): { path: string, method: string } {
   try {
+    // 特殊处理父级菜单资源
+    const resourceConfig = refineResources.find(r => r.name === resource)
+    if (resourceConfig && !resourceConfig.paths) {
+      // 父级菜单资源没有实际权限控制，直接允许访问
+      return {
+        path: `/${resource}`,
+        method: 'GET',
+      }
+    }
+
     // 特殊处理角色相关的动作
     if (resource === 'users' && (action === 'addRole' || action === 'removeRole')) {
       const method = action === 'addRole' ? 'POST' : 'DELETE'
@@ -110,6 +120,16 @@ export const accessControlProvider: AccessControlProvider = {
     // 开始新的权限检查
     const checkPromise = (async (): Promise<CanReturnType> => {
       try {
+        // 特殊处理父级菜单资源
+        const resourceConfig = refineResources.find(r => r.name === resource)
+        if (resourceConfig && !resourceConfig.paths) {
+          // 父级菜单资源（如 'system'）通常只需要用户已登录即可访问
+          // 这里可以根据具体需求调整权限逻辑
+          const result = { can: true }
+          permissionCache.set(cacheKey, { result, timestamp: now })
+          return result
+        }
+
         // 获取用户权限
         const permissions = await authProvider.getPermissions?.()
 
