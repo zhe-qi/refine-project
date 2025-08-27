@@ -1,9 +1,10 @@
+import type { TreeDataNode, TreeProps } from 'antd'
+import type { PermissionItem } from '@/config/resources'
 import { useCan, useCustomMutation, useInvalidate } from '@refinedev/core'
-import { Button, message, Modal, Tree, Space, Divider } from 'antd'
-import type { TreeProps, TreeDataNode } from 'antd'
-import { useEffect, useState, useMemo, useCallback } from 'react'
-import { getAllPermissions, type PermissionItem } from '@/config/resources'
-import { systemRolesIdPermissionsUsingGet, systemRolesIdPermissionsUsingPost } from '@/api/admin/rolesxitongjiaose'
+import { Button, Divider, message, Modal, Space, Tree } from 'antd'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { systemRolesIdPermissionsUsingGet } from '@/api/admin/rolesxitongjiaose'
+import { getAllPermissions } from '@/config/resources'
 
 interface RolePermissionManagerProps {
   visible: boolean
@@ -37,6 +38,69 @@ export function RolePermissionManager({
 
   const invalidate = useInvalidate()
 
+  // 计算树状态（选中、半选中、展开）
+  const calculateTreeState = useCallback((treeData: PermissionTreeNode[], selectedLeafKeys: string[]) => {
+    const checked = new Set<string>()
+    const halfChecked = new Set<string>()
+    const expanded = new Set<string>()
+
+    // 添加叶子节点
+    selectedLeafKeys.forEach((key: string) => {
+      checked.add(key)
+    })
+
+    // 递归计算父节点状态
+    const calculateNodeState = (node: PermissionTreeNode): 'none' | 'partial' | 'all' => {
+      if (!node.children || node.children.length === 0) {
+        // 叶子节点
+        return checked.has(node.key) ? 'all' : 'none'
+      }
+
+      // 父节点 - 计算子节点状态
+      let allSelected = true
+      let noneSelected = true
+
+      node.children.forEach((child: PermissionTreeNode) => {
+        const childState = calculateNodeState(child)
+
+        if (childState === 'all') {
+          noneSelected = false
+        }
+        else if (childState === 'partial') {
+          allSelected = false
+          noneSelected = false
+        }
+        else {
+          allSelected = false
+        }
+      })
+
+      if (allSelected) {
+        checked.add(node.key)
+        if (node.children.some(c => c.children && c.children.length > 0)) {
+          expanded.add(node.key) // 展开有子节点的节点
+        }
+        return 'all'
+      }
+      else if (!noneSelected) {
+        halfChecked.add(node.key)
+        expanded.add(node.key) // 展开半选中的节点
+        return 'partial'
+      }
+      else {
+        return 'none'
+      }
+    }
+
+    treeData.forEach(node => calculateNodeState(node))
+
+    return {
+      checked: Array.from(checked),
+      halfChecked: Array.from(halfChecked),
+      expanded: Array.from(expanded),
+    }
+  }, [])
+
   // 权限检查：需要三个权限才能管理角色权限
   // 1. GET /system/roles/{id}/permissions - 获取角色权限
   const { data: canGetPermissions } = useCan({
@@ -47,15 +111,15 @@ export function RolePermissionManager({
 
   // 2. POST /system/roles/{id}/permissions - 分配权限
   const { data: canAddPermissions } = useCan({
-    resource: 'roles', 
+    resource: 'roles',
     action: 'edit',
     params: { id: roleId },
   })
 
-  // 3. DELETE /system/roles/{id}/permissions - 删除权限  
+  // 3. DELETE /system/roles/{id}/permissions - 删除权限
   const { data: canDeletePermissions } = useCan({
     resource: 'roles',
-    action: 'delete', 
+    action: 'delete',
     params: { id: roleId },
   })
 
@@ -65,47 +129,32 @@ export function RolePermissionManager({
   // 权限更新 mutation
   const { mutate: updatePermissions, isPending: isUpdating } = useCustomMutation()
 
-  // 获取操作显示名称
-  const getActionDisplayName = (action: string): string => {
-    const actionNameMap: Record<string, string> = {
-      list: '查看',
-      show: '详情',
-      create: '创建',
-      edit: '编辑',
-      delete: '删除',
-      addRole: '分配角色',
-      removeRole: '删除角色',
-      addPermissions: '分配权限',
-      removePermissions: '删除权限',
-    }
-    return actionNameMap[action] || action
-  }
 
   // 生成权限树结构（目录->菜单->操作的三级结构）
   const permissionTree = useMemo((): PermissionTreeNode[] => {
     const allPermissions = getAllPermissions()
-    
+
     // 构建三级树结构：父目录 -> 菜单 -> 操作
     const tree: PermissionTreeNode[] = []
     const directoryMap = new Map<string, Map<string, PermissionItem[]>>()
-    
+
     // 按父目录和菜单分组权限
     allPermissions.forEach((permission) => {
       // 如果有父目录，使用父目录；否则直接使用菜单名称作为顶级
       const parentDirectory = permission.parentCategory || permission.category
       const menuName = permission.parentCategory ? permission.category : null
-      
+
       if (!directoryMap.has(parentDirectory)) {
         directoryMap.set(parentDirectory, new Map())
       }
-      
+
       const menuMap = directoryMap.get(parentDirectory)!
       const menuKey = menuName || 'direct' // 直接挂在目录下的权限
-      
+
       if (!menuMap.has(menuKey)) {
         menuMap.set(menuKey, [])
       }
-      
+
       menuMap.get(menuKey)!.push(permission)
     })
 
@@ -132,10 +181,11 @@ export function RolePermissionManager({
               method: permission.method,
               isParent: false,
             }
-            
+
             directoryNode.children!.push(actionNode)
           })
-        } else {
+        }
+        else {
           // 创建菜单节点（二级）
           const menuNode: PermissionTreeNode = {
             key: `menu-${permissions[0].categoryKey}`,
@@ -155,14 +205,14 @@ export function RolePermissionManager({
               method: permission.method,
               isParent: false,
             }
-            
+
             menuNode.children!.push(actionNode)
           })
-          
+
           directoryNode.children!.push(menuNode)
         }
       })
-      
+
       tree.push(directoryNode)
     })
 
@@ -171,104 +221,73 @@ export function RolePermissionManager({
 
   // 获取角色当前权限
   const fetchRolePermissions = useCallback(async () => {
-    if (!roleId) return
+    if (!roleId)
+      return
 
     setLoading(true)
     try {
       const response = await systemRolesIdPermissionsUsingGet({
         params: { id: roleId },
       })
-      
+
       if (response.data) {
         setCurrentPermissions(response.data)
-        
+
         // 转换为选中的键
         // 后端返回格式: [subject, resource, method, ...]
         // 我们需要的格式: resource:method
-        const selectedKeys = response.data.map(permission => {
-          const [subject, resource, method] = permission
+        const selectedKeys = response.data.map((permission) => {
+          const [, resource, method] = permission
           return `${resource}:${method}`
         })
-        
+
         // 计算哪些父节点应该被选中或半选中
-        const { checked, halfChecked, expanded } = calculateTreeState(permissionTree, selectedKeys)
-        
-        setCheckedKeys(checked)
-        setHalfCheckedKeys(halfChecked)
-        setExpandedKeys(expanded)
+        if (permissionTree && permissionTree.length > 0) {
+          const { checked, halfChecked, expanded } = calculateTreeState(permissionTree, selectedKeys)
+
+          setCheckedKeys(checked)
+          setHalfCheckedKeys(halfChecked)
+          setExpandedKeys(expanded)
+        }
+        else {
+          // 如果树还没有构建完成，只设置叶子节点
+          setCheckedKeys(selectedKeys)
+          setHalfCheckedKeys([])
+          setExpandedKeys([])
+        }
       }
-    } catch (error) {
+    }
+    catch (error) {
       message.error('获取角色权限失败')
       console.error('获取角色权限失败:', error)
-    } finally {
+    }
+    finally {
       setLoading(false)
     }
-  }, [roleId, permissionTree])
+  }, [roleId, calculateTreeState, permissionTree])
 
-  // 计算树状态（选中、半选中、展开）
-  const calculateTreeState = (treeData: PermissionTreeNode[], selectedLeafKeys: string[]) => {
-    const checked = new Set<string>()
-    const halfChecked = new Set<string>()
-    const expanded = new Set<string>()
-
-    // 添加叶子节点
-    (selectedLeafKeys || []).forEach(key => {
-      checked.add(key)
-    })
-
-    // 递归计算父节点状态
-    const calculateNodeState = (node: PermissionTreeNode): 'none' | 'partial' | 'all' => {
-      if (!node.children || node.children.length === 0) {
-        // 叶子节点
-        return checked.has(node.key) ? 'all' : 'none'
-      }
-
-      // 父节点 - 计算子节点状态
-      let allSelected = true
-      let noneSelected = true
-      
-      (node.children || []).forEach(child => {
-        const childState = calculateNodeState(child)
-        
-        if (childState === 'all') {
-          noneSelected = false
-        } else if (childState === 'partial') {
-          allSelected = false
-          noneSelected = false
-        } else {
-          allSelected = false
-        }
+  // 当 permissionTree 构建完成后重新计算树状态
+  useEffect(() => {
+    if (permissionTree && permissionTree.length > 0 && currentPermissions.length > 0) {
+      // 转换当前权限为选中的键
+      const selectedKeys = currentPermissions.map((permission) => {
+        const [, resource, method] = permission
+        return `${resource}:${method}`
       })
 
-      if (allSelected) {
-        checked.add(node.key)
-        if ((node.children || []).some(c => c.children && c.children.length > 0)) {
-          expanded.add(node.key) // 展开有子节点的节点
-        }
-        return 'all'
-      } else if (!noneSelected) {
-        halfChecked.add(node.key)
-        expanded.add(node.key) // 展开半选中的节点
-        return 'partial'
-      } else {
-        return 'none'
-      }
+      const { checked, halfChecked, expanded } = calculateTreeState(permissionTree, selectedKeys)
+      setCheckedKeys(checked)
+      setHalfCheckedKeys(halfChecked)
+      setExpandedKeys(expanded)
     }
-
-    ;(treeData || []).forEach(node => calculateNodeState(node))
-
-    return {
-      checked: Array.from(checked),
-      halfChecked: Array.from(halfChecked),
-      expanded: Array.from(expanded),
-    }
-  }
+  }, [permissionTree, currentPermissions, calculateTreeState])
 
   // 重置状态
   useEffect(() => {
     if (visible && roleId) {
       fetchRolePermissions()
-    } else if (!visible) {
+    }
+    else if (!visible) {
       setCheckedKeys([])
       setHalfCheckedKeys([])
       setCurrentPermissions([])
@@ -279,27 +298,28 @@ export function RolePermissionManager({
   // 树选择变化处理 - 支持父子级联动
   const onCheck: TreeProps['onCheck'] = (checkedInfo) => {
     const { checked, halfChecked } = checkedInfo as { checked: string[], halfChecked: string[] }
-    
+
     // 使用 Ant Design 内置的父子级联动逻辑
     setCheckedKeys(checked)
     setHalfCheckedKeys(halfChecked)
   }
 
   // 树展开变化
-  const onExpand = (keys: string[]) => {
-    setExpandedKeys(keys)
+  const onExpand = (keys: React.Key[]) => {
+    setExpandedKeys(keys.map(key => String(key)))
   }
 
   // 获取所有叶子节点的键（用于全选/全不选）
   const getAllLeafKeys = () => {
     const keys: string[] = []
     const traverse = (nodes: PermissionTreeNode[]) => {
-      (nodes || []).forEach(node => {
+      (nodes || []).forEach((node) => {
         if (!node.children || node.children.length === 0) {
           if (node.checkable && !node.isParent) {
             keys.push(node.key)
           }
-        } else {
+        }
+        else {
           traverse(node.children)
         }
       })
@@ -332,8 +352,8 @@ export function RolePermissionManager({
 
     // 只保存叶子节点的权限
     const leafPermissions: string[][] = []
-    
-    (checkedKeys || []).forEach(key => {
+
+    checkedKeys.forEach((key: string) => {
       if (key.includes(':')) { // 只有叶子节点包含 ':'
         const [resource, method] = key.split(':')
         // 构造完整的 6 元组格式，subject 用角色ID，其余为空字符串
@@ -399,7 +419,7 @@ export function RolePermissionManager({
               全不选
             </Button>
             <span style={{ color: '#666', marginLeft: 16 }}>
-              已选择: {(checkedKeys || []).filter(key => key.includes(':')).length} 项权限
+              已选择: {checkedKeys.filter(key => key.includes(':')).length} 项权限
             </span>
           </Space>
         </div>
@@ -408,28 +428,31 @@ export function RolePermissionManager({
 
         {/* 权限树 */}
         <div style={{ maxHeight: 450, overflowY: 'auto' }}>
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: 40 }}>
-              加载权限列表...
-            </div>
-          ) : (
-            <Tree
-              checkable
-              checkStrictly={false} // 启用父子级联动
-              checkedKeys={{ 
-                checked: checkedKeys || [], 
-                halfChecked: halfCheckedKeys || [] 
-              }}
-              expandedKeys={expandedKeys || []}
-              onCheck={onCheck}
-              onExpand={onExpand}
-              treeData={permissionTree}
-              disabled={isPending}
-              height={400}
-              showLine={true} // 显示连接线
-              defaultExpandAll={false}
-            />
-          )}
+          {loading
+            ? (
+                <div style={{ textAlign: 'center', padding: 40 }}>
+                  加载权限列表...
+                </div>
+              )
+            : (
+                <Tree
+                  checkable
+                  checkStrictly={false} // 启用父子级联动
+                  checkedKeys={{
+                    checked: checkedKeys || [],
+                    halfChecked: halfCheckedKeys || [],
+                  }}
+                  expandedKeys={expandedKeys || []}
+                  onCheck={onCheck}
+                  onExpand={onExpand}
+                  treeData={permissionTree}
+                  disabled={isPending}
+                  height={400}
+                  showLine={true} // 显示连接线
+                  defaultExpandAll={false}
+                />
+              )
+          }
         </div>
 
         {/* 权限提示 */}
