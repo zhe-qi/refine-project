@@ -1,20 +1,43 @@
 import { Edit, useForm } from '@refinedev/antd'
 import { Card, Form, Input, Select } from 'antd'
+import { R2ImageUpload } from '@/components/R2Upload'
 
 interface IUserEditForm {
   username: string
   password?: string
   nickName: string
+  avatar?: string
   status: number
 }
 
 export function UserEdit() {
-  const { formProps, saveButtonProps } = useForm<IUserEditForm>()
+  const { formProps, saveButtonProps, form } = useForm<IUserEditForm>()
+
+  const handleAvatarUpload = (url: string) => {
+    form?.setFieldsValue({ avatar: url })
+  }
 
   return (
     <Edit saveButtonProps={saveButtonProps}>
       <Form {...formProps} layout="vertical">
         <Card title="基本信息">
+          <Form.Item
+            label="头像"
+            name="avatar"
+          >
+            <R2ImageUpload
+              maxCount={1}
+              onSuccess={(result) => {
+                handleAvatarUpload(result.url)
+              }}
+              listType="picture-card"
+              showFileList={true}
+              uploadType="dragger"
+              dragText="点击或拖拽上传头像"
+              dragHint="支持 JPG, PNG, GIF, WebP 格式，最大 10MB"
+              style={{ width: 200 }}
+            />
+          </Form.Item>
           <Form.Item
             label="用户名"
             name="username"

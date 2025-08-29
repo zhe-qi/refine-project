@@ -1,4 +1,5 @@
 import type { ColumnsType } from 'antd/es/table'
+import { UserOutlined } from '@ant-design/icons'
 import {
   DeleteButton,
   EditButton,
@@ -6,7 +7,7 @@ import {
   ShowButton,
   useTable,
 } from '@refinedev/antd'
-import { Space, Table, Tag } from 'antd'
+import { Avatar, Space, Table, Tag } from 'antd'
 import { useState } from 'react'
 import { RoleManageButton } from '@/components/RoleManageButton'
 import { UserRoleManager } from '@/components/UserRoleManager'
@@ -44,6 +45,19 @@ export function UserList() {
       dataIndex: 'id',
       key: 'id',
       width: 100,
+    },
+    {
+      title: '头像',
+      dataIndex: 'avatar',
+      key: 'avatar',
+      width: 80,
+      render: (avatar: string) => (
+        <Avatar
+          size={40}
+          src={avatar}
+          icon={<UserOutlined />}
+        />
+      ),
     },
     {
       title: '用户名',
