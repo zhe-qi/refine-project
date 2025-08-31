@@ -1,6 +1,6 @@
 import { Edit, useForm } from '@refinedev/antd'
 import { Card, Form, Input, Select } from 'antd'
-import { R2ImageUpload } from '@/components/R2Upload'
+import { R2AvatarUpload } from '@/components/R2Upload'
 
 interface IUserEditForm {
   username: string
@@ -25,16 +25,10 @@ export function UserEdit() {
             label="头像"
             name="avatar"
           >
-            <R2ImageUpload
-              maxCount={1}
+            <R2AvatarUpload
               onSuccess={(result) => {
                 handleAvatarUpload(result.url)
               }}
-              listType="picture-card"
-              showFileList={true}
-              uploadType="dragger"
-              dragText="点击或拖拽上传头像"
-              dragHint="支持 JPG, PNG, GIF, WebP 格式，最大 10MB"
               style={{ width: 200 }}
             />
           </Form.Item>

@@ -18,6 +18,8 @@ export interface UseR2UploadOptions extends Omit<R2UploadOptions, 'file' | 'onPr
   multiple?: boolean;
   /** 文件类型预设 */
   preset?: keyof typeof FILE_TYPE_PRESETS;
+  /** 文件用途类型：用于区分不同用途的上传 */
+  fileUsage?: 'avatar' | 'document' | 'image' | 'file' | 'general';
   /** 上传成功回调 */
   onSuccess?: (result: R2UploadResult, file: File) => void;
   /** 上传失败回调 */
@@ -71,6 +73,7 @@ export const useR2Upload = (options: UseR2UploadOptions = {}): UseR2UploadReturn
     maxCount = DEFAULT_UPLOAD_CONFIG.maxCount,
     multiple = DEFAULT_UPLOAD_CONFIG.multiple,
     preset = 'all',
+    fileUsage = 'general',
     onSuccess,
     onError,
     showNotification = true,

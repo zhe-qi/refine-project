@@ -11,6 +11,8 @@ import {
   DownloadOutlined,
   EyeOutlined,
   InboxOutlined,
+  LoadingOutlined,
+  PlusOutlined,
   UploadOutlined,
 } from '@ant-design/icons'
 import { Alert, Button, Progress, Space, Typography, Upload } from 'antd'
@@ -133,7 +135,7 @@ export const R2Upload: React.FC<R2UploadProps> = ({
   dragText = '点击或拖拽文件到此区域上传',
   dragHint = '支持单个或批量上传，严格遵循文件类型和大小限制',
   disabled = false,
-  listType = 'text',
+  listType,
   showError = true,
   children,
   ...uploadOptions
@@ -147,6 +149,25 @@ export const R2Upload: React.FC<R2UploadProps> = ({
     removeFile,
     clearFiles,
   } = useR2Upload(uploadOptions)
+
+  // 根据 fileUsage 动态设置 listType
+  const getListType = (): 'text' | 'picture' | 'picture-card' | 'picture-circle' => {
+    if (listType) return listType; // 如果明确指定了 listType，使用指定的
+    
+    switch (uploadOptions.fileUsage) {
+      case 'avatar':
+        return 'picture-card';
+      case 'image':
+        return 'picture';
+      case 'document':
+      case 'file':
+      case 'general':
+      default:
+        return 'text';
+    }
+  };
+
+  const finalListType = getListType();
 
   // 文件预览处理
   const handlePreview = (file: UploadFile) => {
@@ -170,6 +191,7 @@ export const R2Upload: React.FC<R2UploadProps> = ({
       ...uploadProps,
       disabled: disabled || uploading,
       onPreview: handlePreview,
+      listType: finalListType,
     }
 
     if (children) {
@@ -239,7 +261,7 @@ export const R2Upload: React.FC<R2UploadProps> = ({
       )}
 
       {/* 自定义文件列表 */}
-      {showFileList && fileList.length > 0 && listType === 'text' && (
+      {showFileList && fileList.length > 0 && finalListType === 'text' && (
         <div style={{ marginTop: 16 }}>
           <div style={{
             display: 'flex',
@@ -292,16 +314,59 @@ export const R2ImageUpload: React.FC<Omit<R2UploadProps, 'preset'>> = props => (
   <R2Upload
     {...props}
     preset="imageOnly"
-    listType="picture-card"
+    fileUsage="image"
     dragText="点击或拖拽图片到此区域上传"
     dragHint="支持 JPG, PNG, GIF, WebP, SVG 格式，最大 10MB"
   />
 )
 
+export const R2AvatarUpload: React.FC<Omit<R2UploadProps, 'preset'> & { limit?: number }> = ({ limit = 1, ...props }) => {
+  const {
+    uploading,
+    fileList,
+    uploadProps,
+  } = useR2Upload({
+    ...props,
+    preset: 'avatar' as const,
+    fileUsage: 'avatar' as const,
+    maxCount: limit,
+  })
+
+  // 当文件数量达到限制时，不显示上传按钮
+  const showUploadButton = fileList.length < limit
+
+  return (
+    <Upload 
+      {...uploadProps}
+      listType="picture-card"
+    >
+      {showUploadButton && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+        }}>
+          {uploading ? (
+            <LoadingOutlined style={{ fontSize: '20px', color: '#666' }} />
+          ) : (
+            <PlusOutlined style={{ fontSize: '20px', color: '#666' }} />
+          )}
+          <div style={{ marginTop: '8px', fontSize: '14px', color: '#666' }}>
+            {uploading ? '上传中...' : '上传头像'}
+          </div>
+        </div>
+      )}
+    </Upload>
+  )
+}
+
 export const R2DocumentUpload: React.FC<Omit<R2UploadProps, 'preset'>> = props => (
   <R2Upload
     {...props}
     preset="documentOnly"
+    fileUsage="document"
     dragText="点击或拖拽文档到此区域上传"
     dragHint="支持 PDF, Word, Excel, PPT, 文本文件，最大 50MB"
   />

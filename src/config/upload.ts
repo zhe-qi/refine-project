@@ -94,6 +94,14 @@ export const FILE_TYPE_PRESETS = {
     description: SUPPORTED_FILE_TYPES.images.description
   },
   
+  // 头像专用 - 更严格的限制
+  avatar: {
+    accept: ['image/jpeg', 'image/png', 'image/webp'].join(','),
+    extensions: ['.jpg', '.jpeg', '.png', '.webp'],
+    maxSize: 5 * 1024 * 1024, // 5MB
+    description: '支持 JPG, PNG, WebP 格式，最大 5MB，推荐 1:1 比例'
+  },
+  
   // 仅文档
   documentOnly: {
     accept: SUPPORTED_FILE_TYPES.documents.mimeTypes.join(','),
