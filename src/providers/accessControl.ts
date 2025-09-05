@@ -61,15 +61,8 @@ function buildRequestObject(resource: string, action: string, params?: any): { p
       }
     }
 
-    // 特殊处理角色相关的动作
-    if (resource === 'users' && (action === 'addRole' || action === 'removeRole')) {
-      const method = action === 'addRole' ? 'POST' : 'DELETE'
-      const path = params?.id ? `/system/users/${params.id}/roles` : '/system/users/roles'
-      return { path, method }
-    }
-
     // 使用新的路径工具获取权限路径
-    const resolved = getPermissionPath(refineResources, resource, action as any, {
+    const resolved = getPermissionPath(refineResources, resource, action, {
       params: params?.id ? { id: params.id } : undefined,
     })
 

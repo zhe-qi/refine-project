@@ -416,7 +416,7 @@ export function getResourceConfig(
 export function resolveResourcePath(
   resource: ExtendedResourceItem,
   pathType: PathType,
-  action: ResourceAction,
+  action: ResourceAction | string,
   options: PathResolveOptions = {},
 ): ResolvedPath {
   const { params = {}, query = {} } = options
@@ -461,21 +461,35 @@ export function resolveResourcePath(
       if (!resource.paths.permission) {
         throw new Error(`Resource "${resource.name}" has no permission paths configuration`)
       }
-      // 🔧 修复：为需要ID的操作添加ID路径
-      if (action === 'list' || action === 'create') {
-        pathConfig = resource.paths.permission.base
-      }
-      else {
-        // 对于 show/edit/delete，需要添加ID部分
+      
+      // 首先检查是否是自定义权限
+      const customPermission = resource.permissions?.custom?.find(p => p.action === action)
+      if (customPermission) {
+        // 处理自定义权限
         const baseConfig = parsePathConfig(resource.paths.permission.base)
         pathConfig = {
-          base: `${baseConfig.base}/:id`,
+          base: `${baseConfig.base}/${customPermission.path}`,
           params: baseConfig.params,
         }
+        httpMethod = customPermission.method
       }
-      // 使用自定义HTTP方法映射（如果有）
-      if (resource.paths.permission.methods?.[action]) {
-        httpMethod = resource.paths.permission.methods[action]
+      else {
+        // 处理标准权限
+        if (action === 'list' || action === 'create') {
+          pathConfig = resource.paths.permission.base
+        }
+        else {
+          // 对于 show/edit/delete，需要添加ID部分
+          const baseConfig = parsePathConfig(resource.paths.permission.base)
+          pathConfig = {
+            base: `${baseConfig.base}/:id`,
+            params: baseConfig.params,
+          }
+        }
+        // 使用自定义HTTP方法映射（如果有）
+        if (resource.paths.permission.methods?.[action as ResourceAction]) {
+          httpMethod = resource.paths.permission.methods[action as ResourceAction]
+        }
       }
       break
   }
@@ -562,7 +576,7 @@ export function getBulkApiPath(
 export function getPermissionPath(
   resources: ExtendedResourceItem[],
   resourceName: string,
-  action: ResourceAction,
+  action: ResourceAction | string,
   options: PathResolveOptions = {},
 ): ResolvedPath {
   const resource = getResourceConfig(resources, resourceName)
@@ -584,7 +598,7 @@ export function getPermissionPath(
 export function getRoutePath(
   resources: ExtendedResourceItem[],
   resourceName: string,
-  action: ResourceAction,
+  action: ResourceAction | string,
   options: PathResolveOptions = {},
 ): string {
   const resource = getResourceConfig(resources, resourceName)
