@@ -1,5 +1,5 @@
-export { Header } from './header'
 export { CapWidget } from './cap-widget'
 export type { CapWidgetRef } from './cap-widget'
-export { R2Upload, R2ImageUpload, R2DocumentUpload, R2ButtonUpload } from './R2Upload'
+export { Header } from './header'
+export { R2ButtonUpload, R2DocumentUpload, R2ImageUpload, R2Upload } from './R2Upload'
 export type { R2UploadProps } from './R2Upload'

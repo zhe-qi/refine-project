@@ -10,7 +10,7 @@ import type { UploadFile, UploadProps } from 'antd'
 export type R2UploadStatus = 'pending' | 'uploading' | 'success' | 'error'
 
 /** 文件类型预设枚举 */
-export type R2FileTypePreset = 'imageOnly' | 'documentOnly' | 'imageAndDocument' | 'all'
+export type R2FileTypePreset = 'imageOnly' | 'avatar' | 'documentOnly' | 'imageAndDocument' | 'all'
 
 /** 上传类型 */
 export type R2UploadType = 'button' | 'dragger'

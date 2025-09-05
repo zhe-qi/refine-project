@@ -4,7 +4,7 @@
  */
 
 import type { UploadFile, UploadProps } from 'antd'
-import type { R2UploadOptions, R2UploadResult } from '@/types/r2-upload'
+import type { R2UploadError as R2UploadErrorType, R2UploadOptions, R2UploadResult } from '@/types/r2-upload'
 import { useNotification } from '@refinedev/core'
 import { useCallback, useMemo, useState } from 'react'
 import { DEFAULT_UPLOAD_CONFIG, FILE_TYPE_PRESETS, formatFileSize } from '@/config/upload'
@@ -23,7 +23,7 @@ export interface UseR2UploadOptions extends Omit<R2UploadOptions, 'file' | 'onPr
   /** 上传成功回调 */
   onSuccess?: (result: R2UploadResult, file: File) => void
   /** 上传失败回调 */
-  onError?: (error: R2UploadError, file: File) => void
+  onError?: (error: R2UploadErrorType, file: File) => void
   /** 是否显示通知 */
   showNotification?: boolean
   /** 自定义Accept属性 */
@@ -43,7 +43,7 @@ export interface UploadState {
   /** 上传结果列表 */
   results: R2UploadResult[]
   /** 错误信息 */
-  error: R2UploadError | null
+  error: R2UploadErrorType | null
 }
 
 // Hook 返回值
@@ -75,7 +75,7 @@ export function useR2Upload(options: UseR2UploadOptions = {}): UseR2UploadReturn
     maxCount = DEFAULT_UPLOAD_CONFIG.maxCount,
     multiple = DEFAULT_UPLOAD_CONFIG.multiple,
     preset = 'all',
-    fileUsage = 'general',
+    fileUsage: _fileUsage = 'general',
     onSuccess,
     onError,
     showNotification = true,
@@ -122,7 +122,7 @@ export function useR2Upload(options: UseR2UploadOptions = {}): UseR2UploadReturn
       status,
       url: result?.url,
       response: result,
-      originFileObj: file,
+      originFileObj: file as any,
     }
   }, [])
 
@@ -143,12 +143,13 @@ export function useR2Upload(options: UseR2UploadOptions = {}): UseR2UploadReturn
 
       // 更新文件列表和结果
       const uploadFile = fileToUploadFile(file, result, 'done')
-      updateState({
+      setState(prev => ({
+        ...prev,
         uploading: false,
         progress: 100,
-        fileList: prev => [...prev, uploadFile],
-        results: prev => [...prev, result],
-      })
+        fileList: [...prev.fileList, uploadFile],
+        results: [...prev.results, result],
+      }))
 
       // 执行回调和通知
       onSuccess?.(result, file)
@@ -161,12 +162,13 @@ export function useR2Upload(options: UseR2UploadOptions = {}): UseR2UploadReturn
 
       // 更新错误状态
       const uploadFile = fileToUploadFile(file, undefined, 'error')
-      updateState({
+      setState(prev => ({
+        ...prev,
         uploading: false,
         progress: 0,
         error: uploadError,
-        fileList: prev => [...prev, uploadFile],
-      })
+        fileList: [...prev.fileList, uploadFile],
+      }))
 
       // 执行回调和通知
       onError?.(uploadError, file)
@@ -203,12 +205,13 @@ export function useR2Upload(options: UseR2UploadOptions = {}): UseR2UploadReturn
         fileToUploadFile(file, results[index], 'done'),
       )
 
-      updateState({
+      setState(prev => ({
+        ...prev,
         uploading: false,
         progress: 100,
-        fileList: prev => [...prev, ...uploadFiles],
-        results: prev => [...prev, ...results],
-      })
+        fileList: [...prev.fileList, ...uploadFiles],
+        results: [...prev.results, ...results],
+      }))
 
       // 显示成功通知
       showNotificationMessage('success', '批量上传完成', `成功上传 ${results.length} 个文件`)
@@ -246,11 +249,12 @@ export function useR2Upload(options: UseR2UploadOptions = {}): UseR2UploadReturn
 
   // 移除指定文件
   const removeFile = useCallback((uid: string) => {
-    updateState({
-      fileList: prev => prev.filter(file => file.uid !== uid),
-      results: prev => prev.filter((_, index) => state.fileList[index]?.uid !== uid),
-    })
-  }, [updateState, state.fileList])
+    setState(prev => ({
+      ...prev,
+      fileList: prev.fileList.filter((file: UploadFile) => file.uid !== uid),
+      results: prev.results.filter((_: R2UploadResult, index: number) => prev.fileList[index]?.uid !== uid),
+    }))
+  }, [])
 
   // 重置状态
   const reset = useCallback(() => {
@@ -292,12 +296,13 @@ export function useR2Upload(options: UseR2UploadOptions = {}): UseR2UploadReturn
           const uploadFile = fileToUploadFile(file, result, 'done')
 
           // 更新状态
-          updateState({
+          setState(prev => ({
+            ...prev,
             uploading: false,
             progress: 100,
-            fileList: prev => [...prev.filter(f => f.uid !== uploadFile.uid), uploadFile],
-            results: prev => [...prev, result],
-          })
+            fileList: [...prev.fileList.filter((f: UploadFile) => f.uid !== uploadFile.uid), uploadFile],
+            results: [...prev.results, result],
+          }))
 
           // 执行回调
           onSuccess?.(result, file)
@@ -311,12 +316,13 @@ export function useR2Upload(options: UseR2UploadOptions = {}): UseR2UploadReturn
         // 创建失败的 UploadFile 对象
         const uploadFile = fileToUploadFile(file as File, undefined, 'error')
 
-        updateState({
+        setState(prev => ({
+          ...prev,
           uploading: false,
           progress: 0,
           error: uploadError,
-          fileList: prev => [...prev.filter(f => f.uid !== uploadFile.uid), uploadFile],
-        })
+          fileList: [...prev.fileList.filter((f: UploadFile) => f.uid !== uploadFile.uid), uploadFile],
+        }))
 
         onError?.(uploadError, file as File)
         onAntdError?.(uploadError)
@@ -354,7 +360,7 @@ export function useR2Upload(options: UseR2UploadOptions = {}): UseR2UploadReturn
 
         return true // 允许上传，触发 customRequest
       }
-      catch (error) {
+      catch {
         showNotificationMessage('error', '文件验证失败', '请检查文件是否有效')
         return false
       }
@@ -363,12 +369,17 @@ export function useR2Upload(options: UseR2UploadOptions = {}): UseR2UploadReturn
     multiple,
     maxCount,
     accept,
-    presetConfig,
+    presetConfig.accept,
+    presetConfig.extensions,
+    presetConfig.maxSize,
     state.fileList,
     uploadOptions,
     updateState,
     removeFile,
     showNotificationMessage,
+    fileToUploadFile,
+    onError,
+    onSuccess,
   ])
 
   return {

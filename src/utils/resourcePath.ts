@@ -426,7 +426,7 @@ export function resolveResourcePath(
   }
 
   let pathConfig: string | PathConfig | undefined
-  let httpMethod = DEFAULT_HTTP_METHODS[action]
+  let httpMethod = DEFAULT_HTTP_METHODS[action as ResourceAction] || 'GET'
 
   // 获取路径配置
   switch (pathType) {
@@ -457,11 +457,11 @@ export function resolveResourcePath(
         }
       }
       break
-    case 'permission':
+    case 'permission': {
       if (!resource.paths.permission) {
         throw new Error(`Resource "${resource.name}" has no permission paths configuration`)
       }
-      
+
       // 首先检查是否是自定义权限
       const customPermission = resource.permissions?.custom?.find(p => p.action === action)
       if (customPermission) {
@@ -488,10 +488,11 @@ export function resolveResourcePath(
         }
         // 使用自定义HTTP方法映射（如果有）
         if (resource.paths.permission.methods?.[action as ResourceAction]) {
-          httpMethod = resource.paths.permission.methods[action as ResourceAction]
+          httpMethod = resource.paths.permission.methods[action as ResourceAction] || httpMethod
         }
       }
       break
+    }
   }
 
   if (!pathConfig) {
@@ -501,7 +502,7 @@ export function resolveResourcePath(
   }
 
   // 解析路径配置
-  const config = parsePathConfig(pathConfig)
+  const config = parsePathConfig(pathConfig!)
   let resolvedPath = config.base
 
   // 合并参数
@@ -517,7 +518,7 @@ export function resolveResourcePath(
   const result = {
     path: resolvedPath,
     method: httpMethod,
-    config: pathConfig,
+    config: pathConfig!,
   }
 
   return result

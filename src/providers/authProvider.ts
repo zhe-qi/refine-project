@@ -61,6 +61,7 @@ export const authProvider: AuthProvider = {
         success: false,
         error: {
           message: error?.response?.data?.message || 'Invalid credentials',
+          statusCode: error?.response?.status || 401,
         },
       }
     }
@@ -192,6 +193,7 @@ export const authProvider: AuthProvider = {
         redirectTo: '/login',
         error: {
           message: '认证已过期，请重新登录',
+          statusCode: error?.response?.status || error?.status || 401,
         },
       }
     }

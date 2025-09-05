@@ -152,22 +152,23 @@ export const R2Upload: React.FC<R2UploadProps> = ({
 
   // 根据 fileUsage 动态设置 listType
   const getListType = (): 'text' | 'picture' | 'picture-card' | 'picture-circle' => {
-    if (listType) return listType; // 如果明确指定了 listType，使用指定的
-    
+    if (listType)
+      return listType // 如果明确指定了 listType，使用指定的
+
     switch (uploadOptions.fileUsage) {
       case 'avatar':
-        return 'picture-card';
+        return 'picture-card'
       case 'image':
-        return 'picture';
+        return 'picture'
       case 'document':
       case 'file':
       case 'general':
       default:
-        return 'text';
+        return 'text'
     }
-  };
+  }
 
-  const finalListType = getListType();
+  const finalListType = getListType()
 
   // 文件预览处理
   const handlePreview = (file: UploadFile) => {
@@ -336,7 +337,7 @@ export const R2AvatarUpload: React.FC<Omit<R2UploadProps, 'preset'> & { limit?: 
   const showUploadButton = fileList.length < limit
 
   return (
-    <Upload 
+    <Upload
       {...uploadProps}
       listType="picture-card"
     >
@@ -347,12 +348,15 @@ export const R2AvatarUpload: React.FC<Omit<R2UploadProps, 'preset'> & { limit?: 
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-        }}>
-          {uploading ? (
-            <LoadingOutlined style={{ fontSize: '20px', color: '#666' }} />
-          ) : (
-            <PlusOutlined style={{ fontSize: '20px', color: '#666' }} />
-          )}
+        }}
+        >
+          {uploading
+            ? (
+                <LoadingOutlined style={{ fontSize: '20px', color: '#666' }} />
+              )
+            : (
+                <PlusOutlined style={{ fontSize: '20px', color: '#666' }} />
+              )}
           <div style={{ marginTop: '8px', fontSize: '14px', color: '#666' }}>
             {uploading ? '上传中...' : '上传头像'}
           </div>
