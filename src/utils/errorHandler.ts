@@ -26,7 +26,7 @@ interface BackendErrorResponse {
 type ErrorTransformer = (error: any) => HttpError
 
 /**
- * Zod 错误转换器 - 将 Zod v4 格式转换为 Refine 需要的格式
+ * Zod 错误转换器 - 统一返回 { message: "xxxx" } 格式
  */
 const zodErrorTransformer: ErrorTransformer = (error: any): HttpError => {
   const response = error.response?.data as any
@@ -43,16 +43,6 @@ const zodErrorTransformer: ErrorTransformer = (error: any): HttpError => {
         return {
           message: combinedMessage,
           statusCode: error.response?.status || 500,
-          errors: issues.reduce((acc: Record<string, string[]>, issue: any) => {
-            const field = Array.isArray(issue.path) ? issue.path.join('.') : 'general'
-            if (!acc[field]) {
-              acc[field] = []
-            }
-            if (issue.message) {
-              acc[field].push(issue.message)
-            }
-            return acc
-          }, {}),
         }
       }
     } catch {
@@ -73,14 +63,6 @@ const zodErrorTransformer: ErrorTransformer = (error: any): HttpError => {
     return {
       message: combinedMessage,
       statusCode: error.response?.status || 500,
-      errors: response.error.issues.reduce((acc: Record<string, string[]>, issue: any) => {
-        const field = issue.path.join('.')
-        if (!acc[field]) {
-          acc[field] = []
-        }
-        acc[field].push(issue.message)
-        return acc
-      }, {}),
     }
   }
 
@@ -92,13 +74,22 @@ const zodErrorTransformer: ErrorTransformer = (error: any): HttpError => {
 }
 
 /**
- * 简单消息错误转换器 - 只提取 message 字段
+ * 简单消息错误转换器 - 统一返回 { message: "xxxx" } 格式
  */
 const simpleMessageTransformer: ErrorTransformer = (error: any): HttpError => {
   const response = error.response?.data
+  
+  // 统一提取消息
+  let message = 'An error occurred'
+  
+  if (response?.message) {
+    message = response.message
+  } else if (error.message) {
+    message = error.message
+  }
 
   return {
-    message: response?.message || error.message || 'An error occurred',
+    message,
     statusCode: error.response?.status || 500,
   }
 }

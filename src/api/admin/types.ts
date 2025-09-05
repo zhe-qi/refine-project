@@ -2,12 +2,14 @@
 // @ts-ignore
 
 export type AuthChallengeUsingPostResponse = {
-  /** 验证码挑战数据 */
-  challenge?: unknown;
-  /** 挑战token */
-  token?: string;
-  /** 过期时间戳 */
-  expires: number;
+  data: {
+    /** 验证码挑战数据 */
+    challenge: unknown;
+    /** 挑战token */
+    token: string;
+    /** 过期时间戳 */
+    expires: number;
+  };
 };
 
 export type AuthLoginUsingPostBody = {
@@ -31,7 +33,10 @@ export type AuthLogoutUsingPostResponse = {
 };
 
 export type AuthPermissionsUsingGetResponse = {
-  data: string[];
+  data: {
+    /** 权限列表 */
+    permissions: string[];
+  };
 };
 
 export type AuthRedeemUsingPostBody = {
@@ -42,12 +47,14 @@ export type AuthRedeemUsingPostBody = {
 };
 
 export type AuthRedeemUsingPostResponse = {
-  /** 验证结果 */
-  success: boolean;
-  /** 验证token */
-  token?: string;
-  /** 过期时间戳 */
-  expires?: number;
+  data: {
+    /** 验证结果 */
+    success: boolean;
+    /** 验证token */
+    token: string;
+    /** 过期时间戳 */
+    expires: number;
+  };
 };
 
 export type AuthRefreshUsingPostResponse = {

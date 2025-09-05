@@ -60,7 +60,6 @@ export const authProvider: AuthProvider = {
       return {
         success: false,
         error: {
-          name: 'LoginError',
           message: error?.response?.data?.message || 'Invalid credentials',
         },
       }
@@ -161,7 +160,7 @@ export const authProvider: AuthProvider = {
     permissionsPromise = (async () => {
       try {
         const response = await authPermissionsUsingGet({})
-        const permissions = response.data
+        const permissions = response.data.permissions
 
         // 缓存结果
         cachedPermissions = permissions
@@ -191,7 +190,9 @@ export const authProvider: AuthProvider = {
       return {
         logout: true,
         redirectTo: '/login',
-        error: new Error('认证已过期，请重新登录'),
+        error: {
+          message: '认证已过期，请重新登录',
+        },
       }
     }
 

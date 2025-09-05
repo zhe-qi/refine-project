@@ -7,7 +7,7 @@
 // import { errorHandlerConfig, simpleMessageTransformer, zodErrorTransformer } from '@/utils/errorHandler'
 import { errorHandlerConfig } from '@/utils/errorHandler'
 
-// 默认使用 Zod v4 错误格式
+// 默认使用 Zod v4 错误格式，现已统一返回 { message: "xxxx" } 格式
 // errorHandlerConfig 已经默认设置为 zodErrorTransformer
 
 // 如果你想切换到简单的 message 格式，可以这样做：

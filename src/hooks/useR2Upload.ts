@@ -28,6 +28,8 @@ export interface UseR2UploadOptions extends Omit<R2UploadOptions, 'file' | 'onPr
   showNotification?: boolean;
   /** 自定义Accept属性 */
   accept?: string;
+  /** 默认文件列表 */
+  defaultFileList?: UploadFile[];
 }
 
 // 上传状态
@@ -78,6 +80,7 @@ export const useR2Upload = (options: UseR2UploadOptions = {}): UseR2UploadReturn
     onError,
     showNotification = true,
     accept,
+    defaultFileList = [],
     ...uploadOptions
   } = options;
 
@@ -88,7 +91,7 @@ export const useR2Upload = (options: UseR2UploadOptions = {}): UseR2UploadReturn
   const [state, setState] = useState<UploadState>({
     uploading: false,
     progress: 0,
-    fileList: [],
+    fileList: defaultFileList,
     results: [],
     error: null,
   });

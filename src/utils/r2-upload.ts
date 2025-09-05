@@ -208,9 +208,11 @@ function uploadFileToR2(
  * @param _fileName 文件名
  */
 function buildFinalUrl(presignedUrl: string, _fileName: string): string {
-  // 从预签名URL中提取基础URL（去除查询参数）
+  // 从预签名URL中提取路径部分
   const url = new URL(presignedUrl)
-  return `${url.origin}${url.pathname}`
+  // 使用环境变量中的OSS URL或默认值作为域名前缀
+  const ossUrl = import.meta.env.VITE_OSS_URL || 'https://r2.promptez.com'
+  return `${ossUrl}${url.pathname}`
 }
 
 /**

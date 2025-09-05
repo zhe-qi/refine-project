@@ -1,6 +1,8 @@
 import { Edit, useForm } from '@refinedev/antd'
 import { Card, Form, Input, Select } from 'antd'
 import { R2AvatarUpload } from '@/components/R2Upload'
+import { useMemo } from 'react'
+import type { UploadFile } from 'antd'
 
 interface IUserEditForm {
   username: string
@@ -11,11 +13,24 @@ interface IUserEditForm {
 }
 
 export function UserEdit() {
-  const { formProps, saveButtonProps, form } = useForm<IUserEditForm>()
-
+  const { formProps, saveButtonProps, form, query } = useForm<IUserEditForm>()
+  
   const handleAvatarUpload = (url: string) => {
     form?.setFieldsValue({ avatar: url })
   }
+
+  // 根据当前头像值创建默认文件列表
+  const defaultFileList = useMemo((): UploadFile[] => {
+    const avatarUrl = form?.getFieldValue('avatar') || query?.data?.data?.avatar
+    if (!avatarUrl) return []
+    
+    return [{
+      uid: '-1',
+      name: 'avatar.jpg',
+      status: 'done' as const,
+      url: avatarUrl,
+    }]
+  }, [form, query?.data?.data?.avatar])
 
   return (
     <Edit saveButtonProps={saveButtonProps}>
@@ -26,6 +41,7 @@ export function UserEdit() {
             name="avatar"
           >
             <R2AvatarUpload
+              defaultFileList={defaultFileList}
               onSuccess={(result) => {
                 handleAvatarUpload(result.url)
               }}

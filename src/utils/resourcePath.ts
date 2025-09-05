@@ -1,12 +1,12 @@
 import type {
   ExtendedResourceItem,
   PathConfig,
+  PathMapping,
   PathResolveOptions,
   PathType,
+  PermissionConfig,
   ResolvedPath,
   ResourceAction,
-  PermissionConfig,
-  CustomPermission,
 } from '@/types/resource'
 
 /**
@@ -118,10 +118,10 @@ function derivePathsFromRoute(routeList: string): {
 } {
   // 移除开头的斜杠，作为 API 路径
   const apiBase = routeList.replace(/^\/+/, '')
-  
+
   // 权限路径保持斜杠开头
   const permissionBase = routeList.startsWith('/') ? routeList : `/${routeList}`
-  
+
   return { apiBase, permissionBase }
 }
 
@@ -129,8 +129,8 @@ function derivePathsFromRoute(routeList: string): {
  * 合并资源配置与全局默认配置
  */
 function mergeResourceWithDefaults(
-  resource: ResourceConfig, 
-  globalDefaults?: GlobalDefaults
+  resource: ResourceConfig,
+  globalDefaults?: GlobalDefaults,
 ): ResourceConfig {
   if (!globalDefaults) {
     return resource
@@ -145,14 +145,14 @@ function mergeResourceWithDefaults(
       // 合并自定义权限（资源的自定义权限优先）
       custom: [
         ...(globalDefaults.permissions?.custom || []),
-        ...(resource.permissions?.custom || [])
-      ]
+        ...(resource.permissions?.custom || []),
+      ],
     },
     // 合并元数据配置（资源配置覆盖全局默认）
     meta: {
       ...globalDefaults.meta,
-      ...resource.meta
-    }
+      ...resource.meta,
+    },
   }
 
   // 如果合并后的权限配置是空的，移除它
@@ -171,8 +171,8 @@ export function defineConfig(config: GlobalConfig): ResourceConfigs {
   const { apiPrefix = 'admin', defaults, resources } = config
 
   // 将全局默认配置与每个资源配置合并
-  const mergedResources = resources.map(resource => 
-    mergeResourceWithDefaults(resource, defaults)
+  const mergedResources = resources.map(resource =>
+    mergeResourceWithDefaults(resource, defaults),
   )
 
   const refineResources: ExtendedResourceItem[] = mergedResources.map((resource) => {
@@ -188,25 +188,26 @@ export function defineConfig(config: GlobalConfig): ResourceConfigs {
     }
 
     // 自动推导缺失的路径配置
-    let finalPaths = { ...paths }
-    
+    const finalPaths = { ...paths }
+
     // 如果没有配置 API 或权限路径，但有 route.list，则自动推导
     if (paths.route?.list && (!paths.api?.base || !paths.permission?.base)) {
-      const derived = derivePathsFromRoute(paths.route.list)
-      
+      const routeListPath = typeof paths.route.list === 'string' ? paths.route.list : paths.route.list.base
+      const derived = derivePathsFromRoute(routeListPath)
+
       // 如果没有配置 API 路径，使用推导的路径
       if (!paths.api?.base) {
         finalPaths.api = {
           ...paths.api,
-          base: derived.apiBase
+          base: derived.apiBase,
         }
       }
-      
+
       // 如果没有配置权限路径，使用推导的路径
       if (!paths.permission?.base) {
         finalPaths.permission = {
           ...paths.permission,
-          base: derived.permissionBase
+          base: derived.permissionBase,
         }
       }
     }
@@ -215,33 +216,45 @@ export function defineConfig(config: GlobalConfig): ResourceConfigs {
     if (!finalPaths.api?.base) {
       throw new Error(`Resource "${name}" missing api.base and cannot derive from route.list`)
     }
-    
+
     if (!finalPaths.permission?.base) {
       throw new Error(`Resource "${name}" missing permission.base and cannot derive from route.list`)
     }
 
     // 只处理 API 路径的前缀
+    const processApiPath = (path: string | PathConfig): string | PathConfig => {
+      if (typeof path === 'string') {
+        return path.startsWith(apiPrefix)
+          ? path
+          : `${apiPrefix}/${path.replace(/^\/+/, '')}`
+      }
+      else {
+        return {
+          ...path,
+          base: path.base.startsWith(apiPrefix)
+            ? path.base
+            : `${apiPrefix}/${path.base.replace(/^\/+/, '')}`,
+        }
+      }
+    }
+
     const processedPaths = {
       ...finalPaths,
       api: {
         ...finalPaths.api,
-        base: finalPaths.api.base.startsWith(apiPrefix)
-          ? finalPaths.api.base
-          : `${apiPrefix}/${finalPaths.api.base.replace(/^\/+/, '')}`,
-        ...(finalPaths.api.bulk && {
-          bulk: finalPaths.api.bulk.startsWith(apiPrefix)
-            ? finalPaths.api.bulk
-            : `${apiPrefix}/${finalPaths.api.bulk.replace(/^\/+/, '')}`,
+        base: processApiPath(finalPaths.api!.base),
+        ...(finalPaths.api!.bulk && {
+          bulk: processApiPath(finalPaths.api!.bulk),
         }),
       },
     }
 
     return {
       name,
-      paths: processedPaths,
+      paths: processedPaths as PathMapping,
       permissions,
       meta,
-    }
+    } as ExtendedResourceItem
   })
 
   // 生成 API 资源映射
@@ -303,20 +316,20 @@ export function defineConfig(config: GlobalConfig): ResourceConfigs {
     name: resource.name,
     // 只有具有 paths 的资源才添加路由属性
     ...(resource.paths && {
-      list: typeof resource.paths.route.list === 'string' 
-        ? resource.paths.route.list 
+      list: typeof resource.paths.route.list === 'string'
+        ? resource.paths.route.list
         : resource.paths.route.list?.base,
-      create: typeof resource.paths.route.create === 'string' 
-        ? resource.paths.route.create 
+      create: typeof resource.paths.route.create === 'string'
+        ? resource.paths.route.create
         : resource.paths.route.create?.base,
-      edit: typeof resource.paths.route.edit === 'string' 
-        ? resource.paths.route.edit 
+      edit: typeof resource.paths.route.edit === 'string'
+        ? resource.paths.route.edit
         : resource.paths.route.edit?.base,
-      show: typeof resource.paths.route.show === 'string' 
-        ? resource.paths.route.show 
+      show: typeof resource.paths.route.show === 'string'
+        ? resource.paths.route.show
         : resource.paths.route.show?.base,
-      clone: typeof resource.paths.route.clone === 'string' 
-        ? resource.paths.route.clone 
+      clone: typeof resource.paths.route.clone === 'string'
+        ? resource.paths.route.clone
         : resource.paths.route.clone?.base,
     }),
     meta: resource.meta,
@@ -408,6 +421,10 @@ export function resolveResourcePath(
 ): ResolvedPath {
   const { params = {}, query = {} } = options
 
+  if (!resource.paths) {
+    throw new Error(`Resource "${resource.name}" has no paths configuration`)
+  }
+
   let pathConfig: string | PathConfig | undefined
   let httpMethod = DEFAULT_HTTP_METHODS[action]
 
@@ -425,6 +442,9 @@ export function resolveResourcePath(
       }
       break
     case 'api':
+      if (!resource.paths.api) {
+        throw new Error(`Resource "${resource.name}" has no api paths configuration`)
+      }
       if (action === 'list' || action === 'create') {
         pathConfig = resource.paths.api.base
       }
@@ -438,6 +458,9 @@ export function resolveResourcePath(
       }
       break
     case 'permission':
+      if (!resource.paths.permission) {
+        throw new Error(`Resource "${resource.name}" has no permission paths configuration`)
+      }
       // 🔧 修复：为需要ID的操作添加ID路径
       if (action === 'list' || action === 'create') {
         pathConfig = resource.paths.permission.base
@@ -579,6 +602,11 @@ export function getRoutePath(
 export function validateResourcePaths(resource: ExtendedResourceItem): string[] {
   const errors: string[] = []
 
+  if (!resource.paths) {
+    errors.push(`Resource "${resource.name}" missing paths configuration`)
+    return errors
+  }
+
   // 检查必需的配置
   if (!resource.paths.api?.base) {
     errors.push(`Resource "${resource.name}" missing api.base configuration`)
@@ -590,7 +618,7 @@ export function validateResourcePaths(resource: ExtendedResourceItem): string[] 
 
   // 检查路由配置
   const routeActions = ['list', 'create', 'edit', 'show'] as const
-  const hasAnyRoute = routeActions.some(action => resource.paths.route[action])
+  const hasAnyRoute = routeActions.some(action => resource.paths!.route[action])
 
   if (!hasAnyRoute) {
     errors.push(`Resource "${resource.name}" missing route configuration`)
@@ -661,7 +689,7 @@ export function debugResourcePaths(
         // eslint-disable-next-line no-console
         console.log(`  Permission: ${permissionPath.method} ${permissionPath.path}`)
 
-        if (action === 'delete' || (resource.paths.route as Record<string, any>)[action]) {
+        if (action === 'delete' || (resource.paths && (resource.paths.route as Record<string, any>)[action])) {
           const routePath = resolveResourcePath(resource, 'route', action)
           // eslint-disable-next-line no-console
           console.log(`  Route: ${routePath.path}`)

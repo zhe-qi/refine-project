@@ -4,7 +4,7 @@ import { request } from '@/api/request';
 
 import * as API from './types';
 
-/** 生成验证码挑战 POST /api/admin/auth/challenge */
+/** 管理端生成验证码挑战 POST /api/admin/auth/challenge */
 export async function authChallengeUsingPost({
   options,
 }: {
@@ -49,7 +49,7 @@ export async function authLogoutUsingPost({
   });
 }
 
-/** 获取当前用户权限 GET /api/admin/auth/permissions */
+/** 管理端获取当前用户权限 GET /api/admin/auth/permissions */
 export async function authPermissionsUsingGet({
   options,
 }: {
@@ -64,7 +64,7 @@ export async function authPermissionsUsingGet({
   );
 }
 
-/** 验证用户解答 POST /api/admin/auth/redeem */
+/** 管理端验证用户解答 POST /api/admin/auth/redeem */
 export async function authRedeemUsingPost({
   body,
   options,

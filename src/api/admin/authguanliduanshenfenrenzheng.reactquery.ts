@@ -7,7 +7,7 @@ import { request } from '@/api/request';
 import * as apis from './authguanliduanshenfenrenzheng';
 import * as API from './types';
 
-/** 生成验证码挑战 POST /api/admin/auth/challenge */
+/** 管理端生成验证码挑战 POST /api/admin/auth/challenge */
 export function useAuthChallengeUsingPostMutation(options?: {
   onSuccess?: (value?: API.AuthChallengeUsingPostResponse) => void;
   onError?: (error?: DefaultError) => void;
@@ -67,7 +67,7 @@ export function useAuthLogoutUsingPostMutation(options?: {
   return response;
 }
 
-/** 获取当前用户权限 GET /api/admin/auth/permissions */
+/** 管理端获取当前用户权限 GET /api/admin/auth/permissions */
 export function authPermissionsUsingGetQueryOptions(options: {
   options?: CustomRequestOptions;
 }) {
@@ -79,7 +79,7 @@ export function authPermissionsUsingGetQueryOptions(options: {
   });
 }
 
-/** 验证用户解答 POST /api/admin/auth/redeem */
+/** 管理端验证用户解答 POST /api/admin/auth/redeem */
 export function useAuthRedeemUsingPostMutation(options?: {
   onSuccess?: (value?: API.AuthRedeemUsingPostResponse) => void;
   onError?: (error?: DefaultError) => void;
