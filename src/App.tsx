@@ -21,22 +21,13 @@ import { App as AntdApp } from 'antd'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router'
 import { AppIcon } from './components/app-icon'
 import { Header } from './components/header'
-import { resources } from './config/resources'
+import { resources, staticRoutes } from './config/resources'
 import { ColorModeContextProvider } from './contexts/color-mode'
 import { Login } from './pages/login'
-import {
-  RoleCreate,
-  RoleEdit,
-  RoleList,
-  RoleShow,
-  UserCreate,
-  UserEdit,
-  UserList,
-  UserShow,
-} from './pages/system'
 import { accessControlProvider } from './providers/accessControl'
 import { authProvider } from './providers/authProvider'
 import { dataProvider } from './providers/dataProvider'
+import { generateRoutes } from './utils/routeGenerator'
 
 import '@refinedev/antd/dist/reset.css'
 
@@ -92,18 +83,26 @@ function App() {
                     index
                     element={<NavigateToResource resource="users" />}
                   />
-                  <Route path="/system/users">
-                    <Route index element={<UserList />} />
-                    <Route path="create" element={<UserCreate />} />
-                    <Route path="edit/:id" element={<UserEdit />} />
-                    <Route path="show/:id" element={<UserShow />} />
-                  </Route>
-                  <Route path="/system/roles">
-                    <Route index element={<RoleList />} />
-                    <Route path="create" element={<RoleCreate />} />
-                    <Route path="edit/:id" element={<RoleEdit />} />
-                    <Route path="show/:id" element={<RoleShow />} />
-                  </Route>
+                  {/* 基于 schema 自动生成的路由 */}
+                  {(() => {
+                    try {
+                      return generateRoutes(staticRoutes)
+                    }
+                    catch (error) {
+                      console.error('🔍 Error generating routes:', error)
+                      return (
+                        <Route
+                          path="/error"
+                          element={(
+                            <div>
+                              Route generation failed:
+                              {String(error)}
+                            </div>
+                          )}
+                        />
+                      )
+                    }
+                  })()}
                   <Route path="*" element={<ErrorComponent />} />
                 </Route>
                 <Route

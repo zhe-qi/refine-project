@@ -5,6 +5,7 @@ import {
   refineCompatibleResources,
   refineResources,
   routeResources,
+  staticRoutes,
 } from './modules'
 
 // 导出不同格式的资源配置
@@ -14,6 +15,7 @@ export {
   refineCompatibleResources,
   refineResources,
   routeResources,
+  staticRoutes,
 }
 
 // 为了保持向后兼容，也导出 resources 作为 refineCompatibleResources 的别名

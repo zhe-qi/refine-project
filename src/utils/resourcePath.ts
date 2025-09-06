@@ -8,6 +8,7 @@ import type {
   ResolvedPath,
   ResourceAction,
 } from '@/types/resource'
+import { createComponentsFromRoute } from './componentMapper'
 
 /**
  * 默认HTTP方法映射
@@ -48,6 +49,8 @@ export interface ResourceConfig {
       methods?: Record<string, string>
     }
   }
+  /** 组件配置 */
+  components?: import('@/types/resource').ComponentConfig
   /** 权限配置 */
   permissions?: PermissionConfig
   /** 资源元数据 */
@@ -72,6 +75,8 @@ export interface GlobalConfig {
   apiPrefix?: string
   /** 全局默认配置 */
   defaults?: GlobalDefaults
+  /** 默认跳转资源 */
+  defaultResource?: string
   /** 资源配置数组 */
   resources: ResourceConfig[]
 }
@@ -106,6 +111,19 @@ export interface ResourceConfigs {
       show?: string
       clone?: string
     }
+  }>
+  /** 静态路由资源，用于 React Router 静态路由定义 */
+  staticRoutes: Array<{
+    name: string
+    path: string
+    routes: {
+      list?: string
+      create?: string
+      edit?: string
+      show?: string
+      clone?: string
+    }
+    components?: import('@/types/resource').ComponentConfig
   }>
 }
 
@@ -176,7 +194,7 @@ export function defineConfig(config: GlobalConfig): ResourceConfigs {
   )
 
   const refineResources: ExtendedResourceItem[] = mergedResources.map((resource) => {
-    const { name, paths, permissions, meta = {} } = resource
+    const { name, paths, components, permissions, meta = {} } = resource
 
     // 对于父级菜单资源（没有 paths），直接返回
     if (!paths) {
@@ -249,9 +267,13 @@ export function defineConfig(config: GlobalConfig): ResourceConfigs {
       },
     }
 
+    // 如果没有手动定义组件，从路由路径自动生成组件映射
+    const finalComponents = components || createComponentsFromRoute(finalPaths.route)
+
     return {
       name,
       paths: processedPaths as PathMapping,
+      components: finalComponents,
       permissions,
       meta,
     } as ExtendedResourceItem
@@ -335,12 +357,32 @@ export function defineConfig(config: GlobalConfig): ResourceConfigs {
     meta: resource.meta,
   }))
 
+  // 生成静态路由资源，用于 React Router 静态路由定义
+  const staticRoutes = routeResources.map(resource => {
+    // 从 list 路由中提取基础路径（去掉最后的资源名部分）
+    const listRoute = resource.routes.list
+    if (!listRoute) {
+      throw new Error(`Resource "${resource.name}" missing list route`)
+    }
+    
+    // 提取基础路径，例如 "/system/users" -> "/system/users"
+    const basePath = listRoute
+    
+    return {
+      name: resource.name,
+      path: basePath,
+      routes: resource.routes,
+      components: refineResources.find(r => r.name === resource.name)?.components,
+    }
+  })
+
   return {
     refineResources,
     refineCompatibleResources,
     apiResources,
     permissionResources,
     routeResources,
+    staticRoutes,
   }
 }
 

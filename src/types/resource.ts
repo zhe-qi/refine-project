@@ -76,6 +76,18 @@ export interface PathMapping {
 }
 
 /**
+ * 组件导入函数类型
+ */
+export type ComponentImport = () => Promise<{ default: any }>
+
+/**
+ * 组件配置接口
+ */
+export interface ComponentConfig {
+  [K in ResourceAction]?: ComponentImport
+}
+
+/**
  * 扩展的资源配置接口
  * 在Refine的IResourceItem基础上添加路径映射功能
  */
@@ -85,6 +97,9 @@ export interface ExtendedResourceItem extends Omit<IResourceItem, 'list' | 'crea
 
   /** 统一的路径映射配置（对于父级菜单资源，此项为可选） */
   paths?: PathMapping
+
+  /** 组件配置 */
+  components?: ComponentConfig
 
   /** 权限配置 */
   permissions?: PermissionConfig

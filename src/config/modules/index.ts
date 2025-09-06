@@ -29,6 +29,9 @@ const resourceConfigs = defineConfig({
     },
   },
 
+  // 全局设置默认跳转资源
+  defaultResource: 'users',
+
   // 合并所有模块的资源配置
   resources: allModuleResources as ResourceConfig[],
 })
@@ -42,6 +45,7 @@ export const {
   apiResources,
   permissionResources,
   routeResources,
+  staticRoutes,
 } = resourceConfigs
 
 /**
