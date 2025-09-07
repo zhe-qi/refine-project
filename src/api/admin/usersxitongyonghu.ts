@@ -116,50 +116,23 @@ export async function systemUsersIdUsingPatch({
   );
 }
 
-/** 给用户添加角色 POST /api/admin/system/users/${param0}/roles */
-export async function systemUsersUserIdRolesUsingPost({
+/** 保存用户角色（全量更新） PUT /api/admin/system/users/${param0}/roles */
+export async function systemUsersUserIdRolesUsingPut({
   params,
   body,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemUsersUserIdRolesUsingPostParams;
-  body: API.SystemUsersUserIdRolesUsingPostBody;
+  params: API.SystemUsersUserIdRolesUsingPutParams;
+  body: API.SystemUsersUserIdRolesUsingPutBody;
   options?: CustomRequestOptions;
 }) {
   const { userId: param0, ...queryParams } = params;
 
-  return request<API.SystemUsersUserIdRolesUsingPostResponse>(
+  return request<API.SystemUsersUserIdRolesUsingPutResponse>(
     `/api/admin/system/users/${param0}/roles`,
     {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      params: { ...queryParams },
-      data: body,
-      ...(options || {}),
-    }
-  );
-}
-
-/** 批量删除用户角色 DELETE /api/admin/system/users/${param0}/roles */
-export async function systemUsersUserIdRolesUsingDelete({
-  params,
-  body,
-  options,
-}: {
-  // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemUsersUserIdRolesUsingDeleteParams;
-  body: API.SystemUsersUserIdRolesUsingDeleteBody;
-  options?: CustomRequestOptions;
-}) {
-  const { userId: param0, ...queryParams } = params;
-
-  return request<API.SystemUsersUserIdRolesUsingDeleteResponse>(
-    `/api/admin/system/users/${param0}/roles`,
-    {
-      method: 'DELETE',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },

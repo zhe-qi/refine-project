@@ -31,7 +31,14 @@ import { generateRoutes } from './utils/routeGenerator'
 
 import '@refinedev/antd/dist/reset.css'
 
+// 导入调试工具
+import '@/utils/debugPermissions'
+import { clearPermissionCache } from './providers/accessControl'
+
 const { VITE_APP_BASEURL } = import.meta.env
+
+// 每次App组件加载时清理权限缓存
+clearPermissionCache()
 
 function App() {
   return (

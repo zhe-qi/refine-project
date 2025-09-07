@@ -95,36 +95,16 @@ export function useSystemUsersIdUsingPatchMutation(options?: {
   return response;
 }
 
-/** 给用户添加角色 POST /api/admin/system/users/${param0}/roles */
-export function useSystemUsersUserIdRolesUsingPostMutation(options?: {
-  onSuccess?: (value?: API.SystemUsersUserIdRolesUsingPostResponse) => void;
+/** 保存用户角色（全量更新） PUT /api/admin/system/users/${param0}/roles */
+export function useSystemUsersUserIdRolesUsingPutMutation(options?: {
+  onSuccess?: (value?: API.SystemUsersUserIdRolesUsingPutResponse) => void;
   onError?: (error?: DefaultError) => void;
 }) {
   const { onSuccess, onError } = options || {};
 
   const response = useMutation({
-    mutationFn: apis.systemUsersUserIdRolesUsingPost,
-    onSuccess(data: API.SystemUsersUserIdRolesUsingPostResponse) {
-      onSuccess?.(data);
-    },
-    onError(error) {
-      onError?.(error);
-    },
-  });
-
-  return response;
-}
-
-/** 批量删除用户角色 DELETE /api/admin/system/users/${param0}/roles */
-export function useSystemUsersUserIdRolesUsingDeleteMutation(options?: {
-  onSuccess?: (value?: API.SystemUsersUserIdRolesUsingDeleteResponse) => void;
-  onError?: (error?: DefaultError) => void;
-}) {
-  const { onSuccess, onError } = options || {};
-
-  const response = useMutation({
-    mutationFn: apis.systemUsersUserIdRolesUsingDelete,
-    onSuccess(data: API.SystemUsersUserIdRolesUsingDeleteResponse) {
+    mutationFn: apis.systemUsersUserIdRolesUsingPut,
+    onSuccess(data: API.SystemUsersUserIdRolesUsingPutResponse) {
       onSuccess?.(data);
     },
     onError(error) {

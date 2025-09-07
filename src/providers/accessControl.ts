@@ -1,7 +1,6 @@
 import type { AccessControlProvider, CanParams, CanReturnType } from '@refinedev/core'
 import { newEnforcer, newModel, StringAdapter } from 'casbin'
-import { refineResources } from '@/config/resources'
-import { getPermissionPath } from '@/utils/resourcePath'
+import { getPermissionPath, refineResources } from '@/config/resources'
 import { authProvider } from './authProvider'
 
 // 权限检查结果缓存
@@ -19,6 +18,14 @@ let enforcerPermissionsHash: string = ''
 
 // 防止并发的权限检查
 const ongoingChecks = new Map<string, Promise<CanReturnType>>()
+
+// 清理缓存的函数（用于调试）
+export function clearPermissionCache() {
+  permissionCache.clear()
+  cachedEnforcer = null
+  enforcerPermissionsHash = ''
+  ongoingChecks.clear()
+}
 
 // 生成稳定的缓存键，只使用核心属性
 function generateCacheKey(resource: string, action: string, params?: any): string {
@@ -53,7 +60,7 @@ function buildRequestObject(resource: string, action: string, params?: any): { p
   try {
     // 特殊处理父级菜单资源
     const resourceConfig = refineResources.find(r => r.name === resource)
-    if (resourceConfig && !resourceConfig.paths) {
+    if (resourceConfig && !resourceConfig.list && !resourceConfig.create) {
       // 父级菜单资源没有实际权限控制，直接允许访问
       return {
         path: `/${resource}`,
@@ -62,13 +69,13 @@ function buildRequestObject(resource: string, action: string, params?: any): { p
     }
 
     // 使用新的路径工具获取权限路径
-    const resolved = getPermissionPath(refineResources, resource, action, {
-      params: params?.id ? { id: params.id } : undefined,
+    const resolved = getPermissionPath(resource, action, {
+      id: params?.id,
     })
 
     // 处理字段级权限
     if (action === 'field' && params?.field) {
-      const baseResolved = getPermissionPath(refineResources, resource, 'list', {})
+      const baseResolved = getPermissionPath(resource, 'list', {})
       const fieldResult = {
         path: `${baseResolved.path}/${params.field}`,
         method: baseResolved.method,
@@ -115,7 +122,7 @@ export const accessControlProvider: AccessControlProvider = {
       try {
         // 特殊处理父级菜单资源
         const resourceConfig = refineResources.find(r => r.name === resource)
-        if (resourceConfig && !resourceConfig.paths) {
+        if (resourceConfig && !resourceConfig.list && !resourceConfig.create) {
           // 父级菜单资源（如 'system'）通常只需要用户已登录即可访问
           // 这里可以根据具体需求调整权限逻辑
           const result = { can: true }

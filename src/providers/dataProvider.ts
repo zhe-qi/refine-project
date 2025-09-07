@@ -23,16 +23,15 @@ import type {
 } from '@refinedev/core'
 
 import httpClient from '@/api/request'
-import { apiResources } from '@/config/resources'
+import { getBulkApiPath, getSimpleApiPath } from '@/config/resources'
 import { handleError } from '@/utils/errorHandler'
-import { getBulkApiPath, getSimpleApiPath } from '@/utils/resourcePath'
 
 export function dataProvider(apiUrl: string): DataProvider {
   return {
     getOne: async <TData = any>(params: GetOneParams): Promise<GetOneResponse<TData>> => {
       try {
         const { resource, id, meta } = params
-        const resourcePath = getSimpleApiPath(apiResources, resource, 'show', { id })
+        const resourcePath = getSimpleApiPath(resource, 'show', { id })
         const url = `${apiUrl}/api/${resourcePath}`
         const { headers } = meta ?? {}
 
@@ -47,7 +46,7 @@ export function dataProvider(apiUrl: string): DataProvider {
     update: async <TData = any, TVariables = any>(params: UpdateParams<TVariables>): Promise<UpdateResponse<TData>> => {
       try {
         const { resource, id, variables, meta } = params
-        const resourcePath = getSimpleApiPath(apiResources, resource, 'edit', { id })
+        const resourcePath = getSimpleApiPath(resource, 'edit', { id })
         const url = `${apiUrl}/api/${resourcePath}`
         const { headers, method } = meta ?? {}
 
@@ -69,7 +68,7 @@ export function dataProvider(apiUrl: string): DataProvider {
     create: async <TData = any, TVariables = any>(params: CreateParams<TVariables>): Promise<CreateResponse<TData>> => {
       try {
         const { resource, variables, meta } = params
-        const resourcePath = getSimpleApiPath(apiResources, resource, 'create')
+        const resourcePath = getSimpleApiPath(resource, 'create')
         const url = `${apiUrl}/api/${resourcePath}`
         const { headers } = meta ?? {}
 
@@ -84,7 +83,7 @@ export function dataProvider(apiUrl: string): DataProvider {
     deleteOne: async <TData = any, TVariables = any>(params: DeleteOneParams<TVariables>): Promise<DeleteOneResponse<TData>> => {
       try {
         const { resource, id, meta } = params
-        const resourcePath = getSimpleApiPath(apiResources, resource, 'delete', { id })
+        const resourcePath = getSimpleApiPath(resource, 'delete', { id })
         const url = `${apiUrl}/api/${resourcePath}`
         const { headers } = meta ?? {}
 
@@ -99,7 +98,7 @@ export function dataProvider(apiUrl: string): DataProvider {
     getList: async <TData = any>(params: GetListParams): Promise<GetListResponse<TData>> => {
       try {
         const { resource, pagination, sorters, filters, meta } = params
-        const resourcePath = getSimpleApiPath(apiResources, resource, 'list')
+        const resourcePath = getSimpleApiPath(resource, 'list')
         const url = `${apiUrl}/api/${resourcePath}`
         const { headers: headersFromMeta } = meta ?? {}
 
@@ -151,7 +150,7 @@ export function dataProvider(apiUrl: string): DataProvider {
     getMany: async <TData = any>(params: GetManyParams): Promise<GetManyResponse<TData>> => {
       try {
         const { resource, ids, meta } = params
-        const resourcePath = getSimpleApiPath(apiResources, resource, 'list')
+        const resourcePath = getSimpleApiPath(resource, 'list')
         const url = `${apiUrl}/api/${resourcePath}`
         const { headers } = meta ?? {}
 
@@ -176,7 +175,7 @@ export function dataProvider(apiUrl: string): DataProvider {
     createMany: async <TData = any, TVariables = any>(params: CreateManyParams<TVariables>): Promise<CreateManyResponse<TData>> => {
       try {
         const { resource, variables, meta } = params
-        const bulkPath = getBulkApiPath(apiResources, resource)
+        const bulkPath = getBulkApiPath(resource)
         const url = `${apiUrl}/api/${bulkPath}`
         const { headers } = meta ?? {}
 
@@ -194,7 +193,7 @@ export function dataProvider(apiUrl: string): DataProvider {
     updateMany: async <TData = any, TVariables = any>(params: UpdateManyParams<TVariables>): Promise<UpdateManyResponse<TData>> => {
       try {
         const { resource, ids, variables, meta } = params
-        const bulkPath = getBulkApiPath(apiResources, resource)
+        const bulkPath = getBulkApiPath(resource)
         const url = `${apiUrl}/api/${bulkPath}`
         const { headers } = meta ?? {}
 
@@ -220,7 +219,7 @@ export function dataProvider(apiUrl: string): DataProvider {
     deleteMany: async <TData = any, TVariables = any>(params: DeleteManyParams<TVariables>): Promise<DeleteManyResponse<TData>> => {
       try {
         const { resource, ids, meta } = params
-        const bulkPath = getBulkApiPath(apiResources, resource)
+        const bulkPath = getBulkApiPath(resource)
         const url = `${apiUrl}/api/${bulkPath}`
         const { headers } = meta ?? {}
 

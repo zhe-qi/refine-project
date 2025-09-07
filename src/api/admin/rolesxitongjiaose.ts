@@ -137,50 +137,23 @@ export async function systemRolesIdPermissionsUsingGet({
   );
 }
 
-/** 给角色分配权限 POST /api/admin/system/roles/${param0}/permissions */
-export async function systemRolesIdPermissionsUsingPost({
+/** 保存角色权限（全量更新） PUT /api/admin/system/roles/${param0}/permissions */
+export async function systemRolesIdPermissionsUsingPut({
   params,
   body,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemRolesIdPermissionsUsingPostParams;
-  body: API.SystemRolesIdPermissionsUsingPostBody;
+  params: API.SystemRolesIdPermissionsUsingPutParams;
+  body: API.SystemRolesIdPermissionsUsingPutBody;
   options?: CustomRequestOptions;
 }) {
   const { id: param0, ...queryParams } = params;
 
-  return request<API.SystemRolesIdPermissionsUsingPostResponse>(
+  return request<API.SystemRolesIdPermissionsUsingPutResponse>(
     `/api/admin/system/roles/${param0}/permissions`,
     {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      params: { ...queryParams },
-      data: body,
-      ...(options || {}),
-    }
-  );
-}
-
-/** 删除角色权限 DELETE /api/admin/system/roles/${param0}/permissions */
-export async function systemRolesIdPermissionsUsingDelete({
-  params,
-  body,
-  options,
-}: {
-  // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemRolesIdPermissionsUsingDeleteParams;
-  body: API.SystemRolesIdPermissionsUsingDeleteBody;
-  options?: CustomRequestOptions;
-}) {
-  const { id: param0, ...queryParams } = params;
-
-  return request<API.SystemRolesIdPermissionsUsingDeleteResponse>(
-    `/api/admin/system/roles/${param0}/permissions`,
-    {
-      method: 'DELETE',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },

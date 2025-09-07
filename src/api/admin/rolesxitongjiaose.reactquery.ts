@@ -111,36 +111,16 @@ export function systemRolesIdPermissionsUsingGetQueryOptions(options: {
   });
 }
 
-/** 给角色分配权限 POST /api/admin/system/roles/${param0}/permissions */
-export function useSystemRolesIdPermissionsUsingPostMutation(options?: {
-  onSuccess?: (value?: API.SystemRolesIdPermissionsUsingPostResponse) => void;
+/** 保存角色权限（全量更新） PUT /api/admin/system/roles/${param0}/permissions */
+export function useSystemRolesIdPermissionsUsingPutMutation(options?: {
+  onSuccess?: (value?: API.SystemRolesIdPermissionsUsingPutResponse) => void;
   onError?: (error?: DefaultError) => void;
 }) {
   const { onSuccess, onError } = options || {};
 
   const response = useMutation({
-    mutationFn: apis.systemRolesIdPermissionsUsingPost,
-    onSuccess(data: API.SystemRolesIdPermissionsUsingPostResponse) {
-      onSuccess?.(data);
-    },
-    onError(error) {
-      onError?.(error);
-    },
-  });
-
-  return response;
-}
-
-/** 删除角色权限 DELETE /api/admin/system/roles/${param0}/permissions */
-export function useSystemRolesIdPermissionsUsingDeleteMutation(options?: {
-  onSuccess?: (value?: API.SystemRolesIdPermissionsUsingDeleteResponse) => void;
-  onError?: (error?: DefaultError) => void;
-}) {
-  const { onSuccess, onError } = options || {};
-
-  const response = useMutation({
-    mutationFn: apis.systemRolesIdPermissionsUsingDelete,
-    onSuccess(data: API.SystemRolesIdPermissionsUsingDeleteResponse) {
+    mutationFn: apis.systemRolesIdPermissionsUsingPut,
+    onSuccess(data: API.SystemRolesIdPermissionsUsingPutResponse) {
       onSuccess?.(data);
     },
     onError(error) {

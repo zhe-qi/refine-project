@@ -39,15 +39,9 @@ export function UserRoleManager({
   const availableRoles = rolesData?.data || []
 
   // 权限检查
-  const { data: canAddRoles } = useCan({
+  const { data: canUpdateRoles } = useCan({
     resource: 'users',
-    action: 'addRole',
-    params: { id: userId },
-  })
-
-  const { data: canRemoveRoles } = useCan({
-    resource: 'users',
-    action: 'removeRole',
+    action: 'updateRoles',
     params: { id: userId },
   })
 
@@ -80,12 +74,15 @@ export function UserRoleManager({
       return
     }
 
+    // 合并现有角色和新角色
+    const allRoleIds = [...currentRoleIds, ...rolesToAdd]
+
     addRolesMutate(
       {
         url: `/api/admin/system/users/${userId}/roles`,
-        method: 'post',
+        method: 'put',
         values: {
-          roleIds: rolesToAdd,
+          roleIds: allRoleIds,
         },
       },
       {
@@ -110,12 +107,15 @@ export function UserRoleManager({
       return
     }
 
+    // 从现有角色中移除选中的角色
+    const remainingRoleIds = currentRoleIds.filter(id => !rolesToRemove.includes(id))
+
     removeRolesMutate(
       {
         url: `/api/admin/system/users/${userId}/roles`,
-        method: 'delete',
+        method: 'put',
         values: {
-          roleIds: rolesToRemove,
+          roleIds: remainingRoleIds,
         },
       },
       {
@@ -155,7 +155,7 @@ export function UserRoleManager({
                     <Tag
                       key={role.id}
                       color="blue"
-                      closable={canRemoveRoles?.can && !isPending}
+                      closable={canUpdateRoles?.can && !isPending}
                       onClose={() => {
                         if (rolesToRemove.includes(role.id)) {
                           setRolesToRemove(prev => prev.filter(id => id !== role.id))
@@ -187,7 +187,7 @@ export function UserRoleManager({
         <Divider />
 
         {/* 添加角色 */}
-        {canAddRoles?.can && (
+        {canUpdateRoles?.can && (
           <div style={{ marginBottom: 24 }}>
             <h4 style={{ marginBottom: 12 }}>添加角色：</h4>
             {isLoadingRoles
@@ -232,7 +232,7 @@ export function UserRoleManager({
             取消
           </Button>
 
-          {canRemoveRoles?.can && rolesToRemove.length > 0 && (
+          {canUpdateRoles?.can && rolesToRemove.length > 0 && (
             <Button
               danger
               loading={isRemovingRoles}
@@ -244,7 +244,7 @@ export function UserRoleManager({
             </Button>
           )}
 
-          {canAddRoles?.can && rolesToAdd.length > 0 && (
+          {canUpdateRoles?.can && rolesToAdd.length > 0 && (
             <Button
               type="primary"
               loading={isAddingRoles}
@@ -258,7 +258,7 @@ export function UserRoleManager({
         </Space>
 
         {/* 权限提示 */}
-        {!canAddRoles?.can && !canRemoveRoles?.can && (
+        {!canUpdateRoles?.can && (
           <div style={{
             marginTop: 16,
             padding: 12,

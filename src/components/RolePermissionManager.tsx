@@ -101,30 +101,23 @@ export function RolePermissionManager({
     }
   }, [])
 
-  // 权限检查：需要三个权限才能管理角色权限
+  // 权限检查：需要两个权限才能管理角色权限
   // 1. GET /system/roles/{id}/permissions - 获取角色权限
   const { data: canGetPermissions } = useCan({
     resource: 'roles',
-    action: 'show',
+    action: 'getPermissions',
     params: { id: roleId },
   })
 
-  // 2. POST /system/roles/{id}/permissions - 分配权限
-  const { data: canAddPermissions } = useCan({
+  // 2. PUT /system/roles/{id}/permissions - 更新权限
+  const { data: canUpdatePermissions } = useCan({
     resource: 'roles',
-    action: 'edit',
+    action: 'updatePermissions',
     params: { id: roleId },
   })
 
-  // 3. DELETE /system/roles/{id}/permissions - 删除权限
-  const { data: canDeletePermissions } = useCan({
-    resource: 'roles',
-    action: 'delete',
-    params: { id: roleId },
-  })
-
-  // 只有拥有所有三个权限才能管理权限
-  const hasAllPermissions = canGetPermissions?.can && canAddPermissions?.can && canDeletePermissions?.can
+  // 只有拥有这两个权限才能管理权限
+  const hasAllPermissions = canGetPermissions?.can && canUpdatePermissions?.can
 
   // 权限更新 mutation
   const { mutate: updatePermissions, isPending: isUpdating } = useCustomMutation()
@@ -234,11 +227,19 @@ export function RolePermissionManager({
         setCurrentPermissions(response.data)
 
         // 转换为选中的键
-        // 后端返回格式: [subject, resource, method, ...]
-        // 我们需要的格式: resource:method
+        // 后端返回格式可能是两种：
+        // 1. [resource, method] - 新格式（2个元素）
+        // 2. [subject, resource, method, ...] - 旧格式（6个元素）
         const selectedKeys = response.data.map((permission) => {
-          const [, resource, method] = permission
-          return `${resource}:${method}`
+          if (permission.length === 2) {
+            // 新格式：[resource, method]
+            const [resource, method] = permission
+            return `${resource}:${method}`
+          } else {
+            // 旧格式：[subject, resource, method, ...]
+            const [, resource, method] = permission
+            return `${resource}:${method}`
+          }
         })
 
         // 计算哪些父节点应该被选中或半选中
@@ -297,11 +298,15 @@ export function RolePermissionManager({
 
   // 树选择变化处理 - 支持父子级联动
   const onCheck: TreeProps['onCheck'] = (checkedInfo) => {
-    const { checked, halfChecked } = checkedInfo as { checked: string[], halfChecked: string[] }
-
-    // 使用 Ant Design 内置的父子级联动逻辑
-    setCheckedKeys(checked)
-    setHalfCheckedKeys(halfChecked)
+    // 处理两种可能的类型：数组或对象
+    if (Array.isArray(checkedInfo)) {
+      setCheckedKeys(checkedInfo.map(key => String(key)))
+      setHalfCheckedKeys([])
+    } else {
+      const { checked, halfChecked } = checkedInfo as { checked: React.Key[], halfChecked: React.Key[] }
+      setCheckedKeys(checked.map(key => String(key)))
+      setHalfCheckedKeys(halfChecked.map(key => String(key)))
+    }
   }
 
   // 树展开变化
@@ -356,15 +361,15 @@ export function RolePermissionManager({
     checkedKeys.forEach((key: string) => {
       if (key.includes(':')) { // 只有叶子节点包含 ':'
         const [resource, method] = key.split(':')
-        // 构造完整的 6 元组格式，subject 用角色ID，其余为空字符串
-        leafPermissions.push([roleId, resource, method, '', '', ''])
+        // 后端只需要2个元素：资源路径和操作方法
+        leafPermissions.push([resource, method])
       }
     })
 
     updatePermissions(
       {
         url: `/api/admin/system/roles/${roleId}/permissions`,
-        method: 'post',
+        method: 'put',
         values: {
           permissions: leafPermissions,
         },
@@ -419,7 +424,7 @@ export function RolePermissionManager({
               全不选
             </Button>
             <span style={{ color: '#666', marginLeft: 16 }}>
-              已选择: {checkedKeys.filter(key => key.includes(':')).length} 项权限
+              已选择: {(checkedKeys || []).filter(key => key.includes(':')).length} 项权限
             </span>
           </Space>
         </div>

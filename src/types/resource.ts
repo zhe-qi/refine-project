@@ -102,7 +102,7 @@ export interface ExtendedResourceItem extends Omit<IResourceItem, 'list' | 'crea
   components?: ComponentConfig
 
   /** 权限配置 */
-  permissions?: PermissionConfig
+  permissions?: PermissionConfig | CustomPermission[]
 
   /** 可选的Refine原生路径配置（用于向后兼容） */
   list?: IResourceItem['list']
