@@ -30,9 +30,10 @@ export function createComponentsFromRoute(
       const pathString = typeof routePath === 'string' ? routePath : routePath.base
       
       // 从路径中提取组件路径
-      // 例如 '/system/users' -> 'system/users/list'
+      // 例如 '/system/users/:id/show' -> 'system/users'
       let cleanPath = pathString.replace(/^\/+/, '') // 移除开头斜杠
-      cleanPath = cleanPath.replace(/\/:[^/]+$/, '') // 移除参数如 /:id
+      cleanPath = cleanPath.replace(/\/:[^/]+(\/|$)/g, '/') // 移除所有路由参数 /:id
+      cleanPath = cleanPath.replace(/\/$/, '') // 移除末尾斜杠
       
       // 移除操作路径后缀（如果存在）
       const actionSuffixes = ['create', 'edit', 'show', 'clone']

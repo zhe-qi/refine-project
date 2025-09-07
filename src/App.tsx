@@ -91,25 +91,7 @@ function App() {
                     element={<NavigateToResource resource="users" />}
                   />
                   {/* 基于 schema 自动生成的路由 */}
-                  {(() => {
-                    try {
-                      return generateRoutes(staticRoutes)
-                    }
-                    catch (error) {
-                      console.error('🔍 Error generating routes:', error)
-                      return (
-                        <Route
-                          path="/error"
-                          element={(
-                            <div>
-                              Route generation failed:
-                              {String(error)}
-                            </div>
-                          )}
-                        />
-                      )
-                    }
-                  })()}
+                  {generateRoutes(staticRoutes)}
                   <Route path="*" element={<ErrorComponent />} />
                 </Route>
                 <Route

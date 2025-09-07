@@ -90,15 +90,15 @@ function createRouteComponent(
 function generateResourceRoutes(
   resource: StaticRoute,
   options: RouteGeneratorOptions = {},
-): ReactElement {
+): ReactElement[] {
   const routes: ReactElement[] = []
 
-  // 生成 index 路由 (list)
+  // 生成 list 路由
   if (resource.routes.list) {
     routes.push(
       <Route
-        key={`${resource.name}-index`}
-        index
+        key={`${resource.name}-list`}
+        path={resource.routes.list}
         element={createRouteComponent(resource, 'list', options)}
       />,
     )
@@ -107,32 +107,27 @@ function generateResourceRoutes(
   // 生成其他路由
   const actionRoutes: Array<{
     action: ResourceAction
-    path: string
     routePath?: string
   }> = [
-    { action: 'create', path: 'create', routePath: resource.routes.create },
-    { action: 'edit', path: 'edit/:id', routePath: resource.routes.edit },
-    { action: 'show', path: 'show/:id', routePath: resource.routes.show },
-    { action: 'clone', path: 'clone/:id', routePath: resource.routes.clone },
+    { action: 'create', routePath: resource.routes.create },
+    { action: 'edit', routePath: resource.routes.edit },
+    { action: 'show', routePath: resource.routes.show },
+    { action: 'clone', routePath: resource.routes.clone },
   ]
 
-  actionRoutes.forEach(({ action, path, routePath }) => {
+  actionRoutes.forEach(({ action, routePath }) => {
     if (routePath) {
       routes.push(
         <Route
           key={`${resource.name}-${action}`}
-          path={path}
+          path={routePath}
           element={createRouteComponent(resource, action, options)}
         />,
       )
     }
   })
 
-  return (
-    <Route key={resource.name} path={resource.path}>
-      {routes}
-    </Route>
-  )
+  return routes
 }
 
 /**
@@ -142,7 +137,7 @@ export function generateRoutes(
   staticRoutes: StaticRoute[],
   options: RouteGeneratorOptions = {},
 ): ReactElement[] {
-  return staticRoutes.map(resource =>
+  return staticRoutes.flatMap(resource =>
     generateResourceRoutes(resource, options),
   )
 }
