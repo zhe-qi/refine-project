@@ -7,10 +7,11 @@ import {
   ShowButton,
   useTable,
 } from '@refinedev/antd'
-import { Avatar, Space, Table, Tag } from 'antd'
+import { Avatar, Col, Form, Input, Select, Space, Table, Tag } from 'antd'
 import { useState } from 'react'
 import { RoleManageButton } from '@/components/RoleManageButton'
 import { UserRoleManager } from '@/components/UserRoleManager'
+import SearchForm from '@/components/SearchForm'
 
 interface IUser {
   id: string
@@ -30,8 +31,27 @@ export function UserList() {
   const [roleModalVisible, setRoleModalVisible] = useState(false)
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
 
-  const { tableProps } = useTable<IUser>({
+  const { tableProps, searchFormProps } = useTable<IUser>({
     syncWithLocation: true,
+    onSearch: (values) => {
+      return [
+        {
+          field: 'username',
+          operator: 'contains',
+          value: values?.username,
+        },
+        {
+          field: 'nickName', 
+          operator: 'contains',
+          value: values?.nickName,
+        },
+        {
+          field: 'status',
+          operator: 'eq',
+          value: values?.status,
+        },
+      ].filter(item => item.value !== undefined && item.value !== null && item.value !== '')
+    },
   })
 
   const handleManageRoles = (userId: string) => {
@@ -168,6 +188,27 @@ export function UserList() {
           </>
         )}
       >
+        <SearchForm form={searchFormProps.form} onFinish={searchFormProps.onFinish}>
+          <Col span={6}>
+            <Form.Item name="username" label="用户名">
+              <Input placeholder="请输入用户名" allowClear />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item name="nickName" label="昵称">
+              <Input placeholder="请输入昵称" allowClear />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item name="status" label="状态">
+              <Select placeholder="请选择状态" allowClear>
+                <Select.Option value="1">启用</Select.Option>
+                <Select.Option value="0">禁用</Select.Option>
+                <Select.Option value="-1">封禁</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </SearchForm>
         <Table {...tableProps} columns={columns} rowKey="id" />
       </List>
 

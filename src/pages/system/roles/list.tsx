@@ -6,10 +6,11 @@ import {
   ShowButton,
   useTable,
 } from '@refinedev/antd'
-import { Space, Table, Tag } from 'antd'
+import { Col, Form, Input, Space, Table, Tag } from 'antd'
 import { useState } from 'react'
 import { PermissionManageButton } from '@/components/PermissionManageButton'
 import { RolePermissionManager } from '@/components/RolePermissionManager'
+import SearchForm from '@/components/SearchForm'
 
 interface IRole {
   id: string
@@ -24,8 +25,22 @@ export function RoleList() {
   const [permissionModalVisible, setPermissionModalVisible] = useState(false)
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null)
 
-  const { tableProps } = useTable<IRole>({
+  const { tableProps, searchFormProps } = useTable<IRole>({
     syncWithLocation: true,
+    onSearch: (values) => {
+      return [
+        {
+          field: 'id',
+          operator: 'contains',
+          value: values?.id,
+        },
+        {
+          field: 'name',
+          operator: 'contains', 
+          value: values?.name,
+        },
+      ].filter(item => item.value)
+    },
   })
 
   const handleManagePermissions = (roleId: string) => {
@@ -120,6 +135,18 @@ export function RoleList() {
           </>
         )}
       >
+        <SearchForm form={searchFormProps.form} onFinish={searchFormProps.onFinish}>
+          <Col span={6}>
+            <Form.Item name="id" label="角色标识">
+              <Input placeholder="请输入角色标识" allowClear />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item name="name" label="角色名称">
+              <Input placeholder="请输入角色名称" allowClear />
+            </Form.Item>
+          </Col>
+        </SearchForm>
         <Table {...tableProps} columns={columns} rowKey="id" />
       </List>
 
