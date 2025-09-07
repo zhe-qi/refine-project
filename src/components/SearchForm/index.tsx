@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import { Card, Form, Row, Col, Button, Space } from 'antd'
-import { SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined, ReloadOutlined } from '@ant-design/icons'
 import type { FormInstance } from 'antd'
 
 interface SearchFormProps {
@@ -24,38 +24,44 @@ export function SearchForm({
   const handleReset = () => {
     form?.resetFields()
     onReset?.()
+    onFinish?.({})
   }
 
   return (
     <Card 
       className={className} 
-      style={{ marginBottom: 16, ...style }}
-      bodyStyle={{ paddingTop: 24, paddingBottom: 24 }}
+      style={{ 
+        marginBottom: 16,
+        ...style 
+      }}
+      bodyStyle={{ 
+        paddingBottom: 0 
+      }}
     >
       <Form
         form={form}
         layout="horizontal"
         onFinish={onFinish}
         preserve={false}
-        onReset={handleReset}
       >
-        <Row gutter={16} align="middle">
+        <Row gutter={[16, 0]}>
           {children}
-          <Col>
-            <Form.Item style={{ marginBottom: 0 }}>
-              <Space>
-                <Button 
-                  type="primary" 
-                  htmlType="submit" 
-                  icon={<SearchOutlined />}
-                >
-                  搜索
-                </Button>
-                <Button htmlType="reset">
-                  重置
-                </Button>
-              </Space>
-            </Form.Item>
+          <Col span={6}>
+            <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
+              <Button 
+                type="primary" 
+                htmlType="submit" 
+                icon={<SearchOutlined />}
+              >
+                搜索
+              </Button>
+              <Button 
+                icon={<ReloadOutlined />}
+                onClick={handleReset}
+              >
+                重置
+              </Button>
+            </Space>
           </Col>
         </Row>
       </Form>
