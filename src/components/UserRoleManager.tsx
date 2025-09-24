@@ -32,7 +32,7 @@ export function UserRoleManager({
 
   // 获取角色列表
   const { data: rolesData, isLoading: isLoadingRoles } = useList<Role>({
-    resource: 'roles',
+    resource: 'role',
     pagination: { mode: 'off' }, // 获取所有角色，不分页
   })
 
@@ -40,7 +40,7 @@ export function UserRoleManager({
 
   // 权限检查
   const { data: canUpdateRoles } = useCan({
-    resource: 'users',
+    resource: 'user',
     action: 'updateRoles',
     params: { id: userId },
   })
@@ -79,7 +79,7 @@ export function UserRoleManager({
 
     addRolesMutate(
       {
-        url: `/api/admin/system/users/${userId}/roles`,
+        url: `/api/admin/system/user/${userId}/roles`,
         method: 'put',
         values: {
           roleIds: allRoleIds,
@@ -89,7 +89,7 @@ export function UserRoleManager({
         onSuccess: () => {
           message.success('角色添加成功')
           invalidate({
-            resource: 'users',
+            resource: 'user',
             invalidates: ['list', 'detail'],
           })
           setRolesToAdd([])
@@ -112,7 +112,7 @@ export function UserRoleManager({
 
     removeRolesMutate(
       {
-        url: `/api/admin/system/users/${userId}/roles`,
+        url: `/api/admin/system/user/${userId}/roles`,
         method: 'put',
         values: {
           roleIds: remainingRoleIds,
@@ -122,7 +122,7 @@ export function UserRoleManager({
         onSuccess: () => {
           message.success('角色删除成功')
           invalidate({
-            resource: 'users',
+            resource: 'user',
             invalidates: ['list', 'detail'],
           })
           setRolesToRemove([])

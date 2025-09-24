@@ -1,3 +1,4 @@
+import type { CrudFilters, LogicalFilter } from '@refinedev/core'
 import type { ColumnsType } from 'antd/es/table'
 import {
   DeleteButton,
@@ -27,19 +28,21 @@ export function RoleList() {
 
   const { tableProps, searchFormProps } = useTable<IRole>({
     syncWithLocation: true,
-    onSearch: (values) => {
-      return [
+    onSearch: (values: any): CrudFilters => {
+      const filters: LogicalFilter[] = [
         {
           field: 'id',
-          operator: 'contains',
+          operator: 'contains' as const,
           value: values?.id,
         },
         {
           field: 'name',
-          operator: 'contains', 
+          operator: 'contains' as const,
           value: values?.name,
         },
-      ].filter(item => item.value)
+      ].filter(item => item.value) as LogicalFilter[]
+
+      return filters
     },
   })
 
@@ -147,7 +150,12 @@ export function RoleList() {
             </Form.Item>
           </Col>
         </SearchForm>
-        <Table {...tableProps} columns={columns} rowKey="id" />
+        <Table
+          {...(tableProps as any)}
+          columns={columns}
+          rowKey="id"
+          dataSource={tableProps.dataSource as IRole[]}
+        />
       </List>
 
       {/* 权限管理弹窗 */}

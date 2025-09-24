@@ -1,3 +1,4 @@
+import type { CrudFilters, LogicalFilter } from '@refinedev/core'
 import type { ColumnsType } from 'antd/es/table'
 import { UserOutlined } from '@ant-design/icons'
 import {
@@ -10,8 +11,8 @@ import {
 import { Avatar, Col, Form, Input, Select, Space, Table, Tag } from 'antd'
 import { useState } from 'react'
 import { RoleManageButton } from '@/components/RoleManageButton'
-import { UserRoleManager } from '@/components/UserRoleManager'
 import SearchForm from '@/components/SearchForm'
+import { UserRoleManager } from '@/components/UserRoleManager'
 
 interface IUser {
   id: string
@@ -33,24 +34,26 @@ export function UserList() {
 
   const { tableProps, searchFormProps } = useTable<IUser>({
     syncWithLocation: true,
-    onSearch: (values) => {
-      return [
+    onSearch: (values: any): CrudFilters => {
+      const filters: LogicalFilter[] = [
         {
           field: 'username',
-          operator: 'contains',
+          operator: 'contains' as const,
           value: values?.username,
         },
         {
-          field: 'nickName', 
-          operator: 'contains',
+          field: 'nickName',
+          operator: 'contains' as const,
           value: values?.nickName,
         },
         {
           field: 'status',
-          operator: 'eq',
+          operator: 'eq' as const,
           value: values?.status,
         },
-      ].filter(item => item.value !== undefined && item.value !== null && item.value !== '')
+      ].filter(item => item.value !== undefined && item.value !== null && item.value !== '') as LogicalFilter[]
+
+      return filters
     },
   })
 
@@ -142,7 +145,7 @@ export function UserList() {
             hideText
             size="small"
             recordItemId={record.id}
-            resource="users"
+            resource="user"
             accessControl={{
               enabled: true,
               hideIfUnauthorized: false,
@@ -152,7 +155,7 @@ export function UserList() {
             hideText
             size="small"
             recordItemId={record.id}
-            resource="users"
+            resource="user"
             accessControl={{
               enabled: true,
               hideIfUnauthorized: false,
@@ -166,7 +169,7 @@ export function UserList() {
             hideText
             size="small"
             recordItemId={record.id}
-            resource="users"
+            resource="user"
             accessControl={{
               enabled: true,
               hideIfUnauthorized: false,
@@ -209,7 +212,12 @@ export function UserList() {
             </Form.Item>
           </Col>
         </SearchForm>
-        <Table {...tableProps} columns={columns} rowKey="id" />
+        <Table
+          {...(tableProps as any)}
+          columns={columns}
+          rowKey="id"
+          dataSource={tableProps.dataSource as IUser[]}
+        />
       </List>
 
       {/* 角色管理弹窗 */}

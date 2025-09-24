@@ -1,5 +1,5 @@
 import { Create, useForm } from '@refinedev/antd'
-import { Card, Form, Input, Select, Switch } from 'antd'
+import { Card, Form, Input, Switch } from 'antd'
 
 interface IRoleCreateForm {
   id: string

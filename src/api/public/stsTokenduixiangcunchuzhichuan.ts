@@ -4,7 +4,7 @@ import { request } from '@/api/request';
 
 import * as API from './types';
 
-/** 获取下载预签名 URL，请在请求头携带 X-Request-Source: admin 或 client POST /api/sts-token/download */
+/** 获取下载预签名 URL 请在请求头携带 X-Request-Source: admin 或 client POST /api/sts-token/download */
 export async function downloadUsingPost({
   body,
   options,
@@ -22,7 +22,7 @@ export async function downloadUsingPost({
   });
 }
 
-/** 获取上传预签名 URL，请在请求头携带 X-Request-Source: admin 或 client POST /api/sts-token/upload */
+/** 获取上传预签名 URL 请在请求头携带 X-Request-Source: admin 或 client POST /api/sts-token/upload */
 export async function uploadUsingPost({
   body,
   options,

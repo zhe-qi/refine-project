@@ -14,42 +14,42 @@ export const systemResources: ResourceDefinition[] = [
   },
   // 用户管理
   {
-    name: 'users',
+    name: 'user',
     permissions: [
       {
         action: 'list',
         title: '用户列表',
-        path: '/system/users',
+        path: '/system/user',
         method: 'GET',
       },
       {
         action: 'create',
         title: '创建用户',
-        path: '/system/users',
+        path: '/system/user',
         method: 'POST',
       },
       {
         action: 'edit',
         title: '编辑用户',
-        path: '/system/users/{id}',
+        path: '/system/user/{id}',
         method: 'PATCH',
       },
       {
         action: 'show',
         title: '查看用户',
-        path: '/system/users/{id}',
+        path: '/system/user/{id}',
         method: 'GET',
       },
       {
         action: 'delete',
         title: '删除用户',
-        path: '/system/users/{id}',
+        path: '/system/user/{id}',
         method: 'DELETE',
       },
       {
         action: 'updateRoles',
         title: '更新角色',
-        path: '/system/users/{id}/roles',
+        path: '/system/user/{id}/roles',
         method: 'PUT',
       },
     ],
@@ -62,48 +62,48 @@ export const systemResources: ResourceDefinition[] = [
   },
   // 角色管理
   {
-    name: 'roles',
+    name: 'role',
     permissions: [
       {
         action: 'list',
         title: '角色列表',
-        path: '/system/roles',
+        path: '/system/role',
         method: 'GET',
       },
       {
         action: 'create',
         title: '创建角色',
-        path: '/system/roles',
+        path: '/system/role',
         method: 'POST',
       },
       {
         action: 'edit',
         title: '编辑角色',
-        path: '/system/roles/{id}',
+        path: '/system/role/{id}',
         method: 'PATCH',
       },
       {
         action: 'show',
         title: '查看角色',
-        path: '/system/roles/{id}',
+        path: '/system/role/{id}',
         method: 'GET',
       },
       {
         action: 'delete',
         title: '删除角色',
-        path: '/system/roles/{id}',
+        path: '/system/role/{id}',
         method: 'DELETE',
       },
       {
         action: 'getPermissions',
         title: '获取权限',
-        path: '/system/roles/{id}/permissions',
+        path: '/system/role/{id}/permissions',
         method: 'GET',
       },
       {
         action: 'updatePermissions',
         title: '更新权限',
-        path: '/system/roles/{id}/permissions',
+        path: '/system/role/{id}/permissions',
         method: 'PUT',
       },
     ],

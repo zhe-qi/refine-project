@@ -366,7 +366,7 @@ export const CapWidget = React.forwardRef<CapWidgetRef, CapWidgetProps>(({ apiEn
   const [verificationText] = useState('点击验证身份') // 固定的验证文字
   const [isTextAnimating, setIsTextAnimating] = useState(false)
   const capInstanceRef = useRef<any>(null)
-  
+
   // 添加状态锁和流程控制
   const isProcessingRef = useRef(false)
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -474,7 +474,7 @@ export const CapWidget = React.forwardRef<CapWidgetRef, CapWidgetProps>(({ apiEn
 
     // 开始文字动画
     setIsTextAnimating(true)
-    
+
     // 立即进入验证状态，让卡比张嘴
     setState('verifying')
 
@@ -489,7 +489,7 @@ export const CapWidget = React.forwardRef<CapWidgetRef, CapWidgetProps>(({ apiEn
       if (capInstanceRef.current) {
         // 使用 Cap.js 隐身模式进行验证
         const solution = await capInstanceRef.current.solve()
-        
+
         // 检查是否已被中止
         if (abortControllerRef.current?.signal.aborted) {
           return
@@ -540,7 +540,7 @@ export const CapWidget = React.forwardRef<CapWidgetRef, CapWidgetProps>(({ apiEn
     }
     catch (error) {
       console.error('Verification failed:', error)
-      
+
       // 错误处理 - 原子性状态更新
       clearAllTimers()
       setState('error')
@@ -565,12 +565,12 @@ export const CapWidget = React.forwardRef<CapWidgetRef, CapWidgetProps>(({ apiEn
     // 中止所有进行中的操作
     abortControllerRef.current?.abort()
     clearAllTimers()
-    
+
     // 重置所有状态
     setState('pending')
     setIsTextAnimating(false)
     isProcessingRef.current = false
-    
+
     // 重置 Cap.js 实例
     if (capInstanceRef.current && typeof capInstanceRef.current.reset === 'function') {
       capInstanceRef.current.reset()
@@ -587,7 +587,7 @@ export const CapWidget = React.forwardRef<CapWidgetRef, CapWidgetProps>(({ apiEn
       }, 1000) // 给动画一些时间完成
       return
     }
-    
+
     performReset()
   }
 

@@ -4,16 +4,16 @@ import { request } from '@/api/request';
 
 import * as API from './types';
 
-/** 获取系统角色列表 GET /api/admin/system/roles */
-export async function systemRolesUsingGet({
+/** 获取系统角色列表 GET /api/admin/system/role */
+export async function systemRoleUsingGet({
   params,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemRolesUsingGetParams;
+  params: API.SystemRoleUsingGetParams;
   options?: CustomRequestOptions;
 }) {
-  return request<API.SystemRolesUsingGetResponse>('/api/admin/system/roles', {
+  return request<API.SystemRoleUsingGetResponse>('/api/admin/system/role', {
     method: 'GET',
     params: {
       // current has a default value: 1
@@ -29,15 +29,15 @@ export async function systemRolesUsingGet({
   });
 }
 
-/** 创建系统角色 POST /api/admin/system/roles */
-export async function systemRolesUsingPost({
+/** 创建系统角色 POST /api/admin/system/role */
+export async function systemRoleUsingPost({
   body,
   options,
 }: {
-  body: API.SystemRolesUsingPostBody;
+  body: API.SystemRoleUsingPostBody;
   options?: CustomRequestOptions;
 }) {
-  return request<API.SystemRolesUsingPostResponse>('/api/admin/system/roles', {
+  return request<API.SystemRoleUsingPostResponse>('/api/admin/system/role', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -47,19 +47,19 @@ export async function systemRolesUsingPost({
   });
 }
 
-/** 获取系统角色详情 GET /api/admin/system/roles/${param0} */
-export async function systemRolesIdUsingGet({
+/** 获取系统角色详情 GET /api/admin/system/role/${param0} */
+export async function systemRoleIdUsingGet({
   params,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemRolesIdUsingGetParams;
+  params: API.SystemRoleIdUsingGetParams;
   options?: CustomRequestOptions;
 }) {
   const { id: param0, ...queryParams } = params;
 
-  return request<API.SystemRolesIdUsingGetResponse>(
-    `/api/admin/system/roles/${param0}`,
+  return request<API.SystemRoleIdUsingGetResponse>(
+    `/api/admin/system/role/${param0}`,
     {
       method: 'GET',
       params: { ...queryParams },
@@ -68,19 +68,19 @@ export async function systemRolesIdUsingGet({
   );
 }
 
-/** 删除系统角色 DELETE /api/admin/system/roles/${param0} */
-export async function systemRolesIdUsingDelete({
+/** 删除系统角色 DELETE /api/admin/system/role/${param0} */
+export async function systemRoleIdUsingDelete({
   params,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemRolesIdUsingDeleteParams;
+  params: API.SystemRoleIdUsingDeleteParams;
   options?: CustomRequestOptions;
 }) {
   const { id: param0, ...queryParams } = params;
 
-  return request<API.SystemRolesIdUsingDeleteResponse>(
-    `/api/admin/system/roles/${param0}`,
+  return request<API.SystemRoleIdUsingDeleteResponse>(
+    `/api/admin/system/role/${param0}`,
     {
       method: 'DELETE',
       params: { ...queryParams },
@@ -89,21 +89,21 @@ export async function systemRolesIdUsingDelete({
   );
 }
 
-/** 更新系统角色 PATCH /api/admin/system/roles/${param0} */
-export async function systemRolesIdUsingPatch({
+/** 更新系统角色 PATCH /api/admin/system/role/${param0} */
+export async function systemRoleIdUsingPatch({
   params,
   body,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemRolesIdUsingPatchParams;
-  body: API.SystemRolesIdUsingPatchBody;
+  params: API.SystemRoleIdUsingPatchParams;
+  body: API.SystemRoleIdUsingPatchBody;
   options?: CustomRequestOptions;
 }) {
   const { id: param0, ...queryParams } = params;
 
-  return request<API.SystemRolesIdUsingPatchResponse>(
-    `/api/admin/system/roles/${param0}`,
+  return request<API.SystemRoleIdUsingPatchResponse>(
+    `/api/admin/system/role/${param0}`,
     {
       method: 'PATCH',
       headers: {
@@ -116,19 +116,19 @@ export async function systemRolesIdUsingPatch({
   );
 }
 
-/** 获取角色权限 GET /api/admin/system/roles/${param0}/permissions */
-export async function systemRolesIdPermissionsUsingGet({
+/** 获取角色权限 GET /api/admin/system/role/${param0}/permissions */
+export async function systemRoleIdPermissionsUsingGet({
   params,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemRolesIdPermissionsUsingGetParams;
+  params: API.SystemRoleIdPermissionsUsingGetParams;
   options?: CustomRequestOptions;
 }) {
   const { id: param0, ...queryParams } = params;
 
-  return request<API.SystemRolesIdPermissionsUsingGetResponse>(
-    `/api/admin/system/roles/${param0}/permissions`,
+  return request<API.SystemRoleIdPermissionsUsingGetResponse>(
+    `/api/admin/system/role/${param0}/permissions`,
     {
       method: 'GET',
       params: { ...queryParams },
@@ -137,21 +137,21 @@ export async function systemRolesIdPermissionsUsingGet({
   );
 }
 
-/** 保存角色权限（全量更新） PUT /api/admin/system/roles/${param0}/permissions */
-export async function systemRolesIdPermissionsUsingPut({
+/** 保存角色权限（全量更新） PUT /api/admin/system/role/${param0}/permissions */
+export async function systemRoleIdPermissionsUsingPut({
   params,
   body,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemRolesIdPermissionsUsingPutParams;
-  body: API.SystemRolesIdPermissionsUsingPutBody;
+  params: API.SystemRoleIdPermissionsUsingPutParams;
+  body: API.SystemRoleIdPermissionsUsingPutBody;
   options?: CustomRequestOptions;
 }) {
   const { id: param0, ...queryParams } = params;
 
-  return request<API.SystemRolesIdPermissionsUsingPutResponse>(
-    `/api/admin/system/roles/${param0}/permissions`,
+  return request<API.SystemRoleIdPermissionsUsingPutResponse>(
+    `/api/admin/system/role/${param0}/permissions`,
     {
       method: 'PUT',
       headers: {

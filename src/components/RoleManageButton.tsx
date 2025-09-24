@@ -8,19 +8,19 @@ interface RoleManageButtonProps {
 
 export function RoleManageButton({ userId, onManageRoles }: RoleManageButtonProps) {
   const { data: canAddRoles } = useCan({
-    resource: 'users',
+    resource: 'user',
     action: 'addRole',
     params: { id: userId },
   })
 
   const { data: canRemoveRoles } = useCan({
-    resource: 'users',
+    resource: 'user',
     action: 'removeRole',
     params: { id: userId },
   })
 
   const { data: canListRoles } = useCan({
-    resource: 'roles',
+    resource: 'role',
     action: 'list',
   })
 

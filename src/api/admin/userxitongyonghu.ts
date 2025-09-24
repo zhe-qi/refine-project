@@ -4,16 +4,16 @@ import { request } from '@/api/request';
 
 import * as API from './types';
 
-/** 获取系统用户列表 GET /api/admin/system/users */
-export async function systemUsersUsingGet({
+/** 获取系统用户列表 GET /api/admin/system/user */
+export async function systemUserUsingGet({
   params,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemUsersUsingGetParams;
+  params: API.SystemUserUsingGetParams;
   options?: CustomRequestOptions;
 }) {
-  return request<API.SystemUsersUsingGetResponse>('/api/admin/system/users', {
+  return request<API.SystemUserUsingGetResponse>('/api/admin/system/user', {
     method: 'GET',
     params: {
       // current has a default value: 1
@@ -29,15 +29,15 @@ export async function systemUsersUsingGet({
   });
 }
 
-/** 创建系统用户 POST /api/admin/system/users */
-export async function systemUsersUsingPost({
+/** 创建系统用户 POST /api/admin/system/user */
+export async function systemUserUsingPost({
   body,
   options,
 }: {
-  body: API.SystemUsersUsingPostBody;
+  body: API.SystemUserUsingPostBody;
   options?: CustomRequestOptions;
 }) {
-  return request<API.SystemUsersUsingPostResponse>('/api/admin/system/users', {
+  return request<API.SystemUserUsingPostResponse>('/api/admin/system/user', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -47,19 +47,19 @@ export async function systemUsersUsingPost({
   });
 }
 
-/** 获取系统用户详情 GET /api/admin/system/users/${param0} */
-export async function systemUsersIdUsingGet({
+/** 获取系统用户详情 GET /api/admin/system/user/${param0} */
+export async function systemUserIdUsingGet({
   params,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemUsersIdUsingGetParams;
+  params: API.SystemUserIdUsingGetParams;
   options?: CustomRequestOptions;
 }) {
   const { id: param0, ...queryParams } = params;
 
-  return request<API.SystemUsersIdUsingGetResponse>(
-    `/api/admin/system/users/${param0}`,
+  return request<API.SystemUserIdUsingGetResponse>(
+    `/api/admin/system/user/${param0}`,
     {
       method: 'GET',
       params: { ...queryParams },
@@ -68,19 +68,19 @@ export async function systemUsersIdUsingGet({
   );
 }
 
-/** 删除系统用户 DELETE /api/admin/system/users/${param0} */
-export async function systemUsersIdUsingDelete({
+/** 删除系统用户 DELETE /api/admin/system/user/${param0} */
+export async function systemUserIdUsingDelete({
   params,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemUsersIdUsingDeleteParams;
+  params: API.SystemUserIdUsingDeleteParams;
   options?: CustomRequestOptions;
 }) {
   const { id: param0, ...queryParams } = params;
 
-  return request<API.SystemUsersIdUsingDeleteResponse>(
-    `/api/admin/system/users/${param0}`,
+  return request<API.SystemUserIdUsingDeleteResponse>(
+    `/api/admin/system/user/${param0}`,
     {
       method: 'DELETE',
       params: { ...queryParams },
@@ -89,21 +89,21 @@ export async function systemUsersIdUsingDelete({
   );
 }
 
-/** 更新系统用户 PATCH /api/admin/system/users/${param0} */
-export async function systemUsersIdUsingPatch({
+/** 更新系统用户 PATCH /api/admin/system/user/${param0} */
+export async function systemUserIdUsingPatch({
   params,
   body,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemUsersIdUsingPatchParams;
-  body: API.SystemUsersIdUsingPatchBody;
+  params: API.SystemUserIdUsingPatchParams;
+  body: API.SystemUserIdUsingPatchBody;
   options?: CustomRequestOptions;
 }) {
   const { id: param0, ...queryParams } = params;
 
-  return request<API.SystemUsersIdUsingPatchResponse>(
-    `/api/admin/system/users/${param0}`,
+  return request<API.SystemUserIdUsingPatchResponse>(
+    `/api/admin/system/user/${param0}`,
     {
       method: 'PATCH',
       headers: {
@@ -116,21 +116,21 @@ export async function systemUsersIdUsingPatch({
   );
 }
 
-/** 保存用户角色（全量更新） PUT /api/admin/system/users/${param0}/roles */
-export async function systemUsersUserIdRolesUsingPut({
+/** 保存用户角色（全量更新） PUT /api/admin/system/user/${param0}/roles */
+export async function systemUserUserIdRolesUsingPut({
   params,
   body,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
-  params: API.SystemUsersUserIdRolesUsingPutParams;
-  body: API.SystemUsersUserIdRolesUsingPutBody;
+  params: API.SystemUserUserIdRolesUsingPutParams;
+  body: API.SystemUserUserIdRolesUsingPutBody;
   options?: CustomRequestOptions;
 }) {
   const { userId: param0, ...queryParams } = params;
 
-  return request<API.SystemUsersUserIdRolesUsingPutResponse>(
-    `/api/admin/system/users/${param0}/roles`,
+  return request<API.SystemUserUserIdRolesUsingPutResponse>(
+    `/api/admin/system/user/${param0}/roles`,
     {
       method: 'PUT',
       headers: {

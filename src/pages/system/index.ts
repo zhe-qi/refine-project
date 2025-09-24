@@ -4,7 +4,7 @@ export {
   RoleEdit,
   RoleList,
   RoleShow,
-} from './roles'
+} from './role'
 
 // 用户管理页面
 export {
@@ -12,4 +12,4 @@ export {
   UserEdit,
   UserList,
   UserShow,
-} from './users'
+} from './user'

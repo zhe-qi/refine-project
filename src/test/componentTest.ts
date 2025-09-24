@@ -2,7 +2,7 @@
 async function testImport() {
   try {
     console.log('Testing component import...')
-    const module = await import('../pages/system/users/list')
+    const module = await import('../pages/system/user/list')
     console.log('Module exports:', Object.keys(module))
     console.log('UserList export:', typeof module.UserList)
     

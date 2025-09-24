@@ -7,7 +7,7 @@ import { request } from '@/api/request';
 import * as apis from './stsTokenduixiangcunchuzhichuan';
 import * as API from './types';
 
-/** 获取下载预签名 URL，请在请求头携带 X-Request-Source: admin 或 client POST /api/sts-token/download */
+/** 获取下载预签名 URL 请在请求头携带 X-Request-Source: admin 或 client POST /api/sts-token/download */
 export function useDownloadUsingPostMutation(options?: {
   onSuccess?: (value?: API.DownloadUsingPostResponse) => void;
   onError?: (error?: DefaultError) => void;
@@ -27,7 +27,7 @@ export function useDownloadUsingPostMutation(options?: {
   return response;
 }
 
-/** 获取上传预签名 URL，请在请求头携带 X-Request-Source: admin 或 client POST /api/sts-token/upload */
+/** 获取上传预签名 URL 请在请求头携带 X-Request-Source: admin 或 client POST /api/sts-token/upload */
 export function useUploadUsingPostMutation(options?: {
   onSuccess?: (value?: API.UploadUsingPostResponse) => void;
   onError?: (error?: DefaultError) => void;

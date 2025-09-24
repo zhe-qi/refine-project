@@ -28,7 +28,7 @@ const allResources: ResourceDefinition[] = [
 // 全局配置
 const globalConfig: GlobalConfig = {
   apiPrefix: 'admin',
-  defaultResource: 'users',
+  defaultResource: 'user',
   defaults: {
     meta: {
       canDelete: true,

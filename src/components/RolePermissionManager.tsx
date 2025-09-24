@@ -3,7 +3,7 @@ import type { PermissionItem } from '@/config/resources'
 import { useCan, useCustomMutation, useInvalidate } from '@refinedev/core'
 import { Button, Divider, message, Modal, Space, Tree } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { systemRolesIdPermissionsUsingGet } from '@/api/admin/rolesxitongjiaose'
+import { systemRoleIdPermissionsUsingGet } from '@/api/admin/rolexitongjiaose'
 import { getAllPermissions } from '@/config/resources'
 
 interface RolePermissionManagerProps {
@@ -219,7 +219,7 @@ export function RolePermissionManager({
 
     setLoading(true)
     try {
-      const response = await systemRolesIdPermissionsUsingGet({
+      const response = await systemRoleIdPermissionsUsingGet({
         params: { id: roleId },
       })
 
