@@ -24,7 +24,8 @@ export function SearchForm({
   const handleReset = () => {
     form?.resetFields()
     onReset?.()
-    onFinish?.({})
+    // 重置后自动提交表单，触发重新搜索
+    form?.submit()
   }
 
   return (

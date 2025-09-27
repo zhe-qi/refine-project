@@ -35,23 +35,27 @@ export function UserList() {
   const { tableProps, searchFormProps } = useTable<IUser>({
     syncWithLocation: true,
     onSearch: (values: any): CrudFilters => {
-      const filters: LogicalFilter[] = [
+      const filters: LogicalFilter[] = []
+
+      // 始终添加所有字段的过滤器，包括 undefined 值
+      // 这样可以确保清除 URL 中的参数
+      filters.push(
         {
           field: 'username',
           operator: 'contains' as const,
-          value: values?.username,
+          value: values?.username || undefined,
         },
         {
           field: 'nickName',
           operator: 'contains' as const,
-          value: values?.nickName,
+          value: values?.nickName || undefined,
         },
         {
           field: 'status',
           operator: 'eq' as const,
-          value: values?.status,
-        },
-      ].filter(item => item.value !== undefined && item.value !== null && item.value !== '') as LogicalFilter[]
+          value: values?.status || undefined,
+        }
+      )
 
       return filters
     },

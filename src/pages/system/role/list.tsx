@@ -29,18 +29,22 @@ export function RoleList() {
   const { tableProps, searchFormProps } = useTable<IRole>({
     syncWithLocation: true,
     onSearch: (values: any): CrudFilters => {
-      const filters: LogicalFilter[] = [
+      const filters: LogicalFilter[] = []
+
+      // 始终添加所有字段的过滤器，包括 undefined 值
+      // 这样可以确保清除 URL 中的参数
+      filters.push(
         {
           field: 'id',
           operator: 'contains' as const,
-          value: values?.id,
+          value: values?.id || undefined,
         },
         {
           field: 'name',
           operator: 'contains' as const,
-          value: values?.name,
-        },
-      ].filter(item => item.value) as LogicalFilter[]
+          value: values?.name || undefined,
+        }
+      )
 
       return filters
     },
