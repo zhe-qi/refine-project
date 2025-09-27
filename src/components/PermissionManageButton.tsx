@@ -14,22 +14,22 @@ export function PermissionManageButton({
   // 权限检查：需要三个权限才能管理角色权限
   // 1. GET /system/roles/{id}/permissions - 获取角色权限
   const { data: canGetPermissions } = useCan({
-    resource: 'roles',
+    resource: 'role',
     action: 'show',
     params: { id: roleId },
   })
 
   // 2. POST /system/roles/{id}/permissions - 分配权限
   const { data: canAddPermissions } = useCan({
-    resource: 'roles', 
+    resource: 'role',
     action: 'edit',
     params: { id: roleId },
   })
 
-  // 3. DELETE /system/roles/{id}/permissions - 删除权限  
+  // 3. DELETE /system/roles/{id}/permissions - 删除权限
   const { data: canDeletePermissions } = useCan({
-    resource: 'roles',
-    action: 'delete', 
+    resource: 'role',
+    action: 'delete',
     params: { id: roleId },
   })
 

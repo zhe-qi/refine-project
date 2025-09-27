@@ -84,7 +84,7 @@ export type ComponentImport = () => Promise<{ default: any }>
  * 组件配置接口
  */
 export interface ComponentConfig {
-  [K in ResourceAction]?: ComponentImport
+  string?: ComponentImport
 }
 
 /**

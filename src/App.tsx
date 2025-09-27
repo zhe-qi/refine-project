@@ -24,16 +24,14 @@ import { Header } from './components/header'
 import { resources, staticRoutes } from './config/resources'
 import { ColorModeContextProvider } from './contexts/color-mode'
 import { Login } from './pages/login'
-import { accessControlProvider } from './providers/accessControl'
+import { accessControlProvider, clearPermissionCache } from './providers/accessControl'
+// 导入调试工具
 import { authProvider } from './providers/authProvider'
 import { dataProvider } from './providers/dataProvider'
+
 import { generateRoutes } from './utils/routeGenerator'
 
 import '@refinedev/antd/dist/reset.css'
-
-// 导入调试工具
-import '@/utils/debugPermissions'
-import { clearPermissionCache } from './providers/accessControl'
 
 const { VITE_APP_BASEURL } = import.meta.env
 
@@ -88,7 +86,7 @@ function App() {
                 >
                   <Route
                     index
-                    element={<NavigateToResource resource="users" />}
+                    element={<NavigateToResource resource="user" />}
                   />
                   {/* 基于 schema 自动生成的路由 */}
                   {generateRoutes(staticRoutes)}

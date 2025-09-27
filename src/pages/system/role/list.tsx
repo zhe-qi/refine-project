@@ -104,13 +104,13 @@ export function RoleList() {
             hideText
             size="small"
             recordItemId={record.id}
-            resource="roles"
+            resource="role"
           />
           <EditButton
             hideText
             size="small"
             recordItemId={record.id}
-            resource="roles"
+            resource="role"
           />
           <PermissionManageButton
             roleId={record.id}
@@ -120,7 +120,7 @@ export function RoleList() {
             hideText
             size="small"
             recordItemId={record.id}
-            resource="roles"
+            resource="role"
           />
         </Space>
       ),

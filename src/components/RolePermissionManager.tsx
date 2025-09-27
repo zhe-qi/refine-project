@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
 import type { TreeDataNode, TreeProps } from 'antd'
 import type { PermissionItem } from '@/config/resources'
 import { useCan, useCustomMutation, useInvalidate } from '@refinedev/core'
@@ -102,16 +103,16 @@ export function RolePermissionManager({
   }, [])
 
   // 权限检查：需要两个权限才能管理角色权限
-  // 1. GET /system/roles/{id}/permissions - 获取角色权限
+  // 1. GET /system/role/{id}/permissions - 获取角色权限
   const { data: canGetPermissions } = useCan({
-    resource: 'roles',
+    resource: 'role',
     action: 'getPermissions',
     params: { id: roleId },
   })
 
-  // 2. PUT /system/roles/{id}/permissions - 更新权限
+  // 2. PUT /system/role/{id}/permissions - 更新权限
   const { data: canUpdatePermissions } = useCan({
-    resource: 'roles',
+    resource: 'role',
     action: 'updatePermissions',
     params: { id: roleId },
   })
@@ -121,7 +122,6 @@ export function RolePermissionManager({
 
   // 权限更新 mutation
   const { mutate: updatePermissions, isPending: isUpdating } = useCustomMutation()
-
 
   // 生成权限树结构（目录->菜单->操作的三级结构）
   const permissionTree = useMemo((): PermissionTreeNode[] => {
@@ -235,7 +235,8 @@ export function RolePermissionManager({
             // 新格式：[resource, method]
             const [resource, method] = permission
             return `${resource}:${method}`
-          } else {
+          }
+          else {
             // 旧格式：[subject, resource, method, ...]
             const [, resource, method] = permission
             return `${resource}:${method}`
@@ -302,7 +303,8 @@ export function RolePermissionManager({
     if (Array.isArray(checkedInfo)) {
       setCheckedKeys(checkedInfo.map(key => String(key)))
       setHalfCheckedKeys([])
-    } else {
+    }
+    else {
       const { checked, halfChecked } = checkedInfo as { checked: React.Key[], halfChecked: React.Key[] }
       setCheckedKeys(checked.map(key => String(key)))
       setHalfCheckedKeys(halfChecked.map(key => String(key)))
@@ -368,7 +370,7 @@ export function RolePermissionManager({
 
     updatePermissions(
       {
-        url: `/api/admin/system/roles/${roleId}/permissions`,
+        url: `/api/admin/system/role/${roleId}/permissions`,
         method: 'put',
         values: {
           permissions: leafPermissions,
@@ -378,7 +380,7 @@ export function RolePermissionManager({
         onSuccess: () => {
           message.success('权限分配成功')
           invalidate({
-            resource: 'roles',
+            resource: 'role',
             invalidates: ['list', 'detail'],
           })
           onClose()
@@ -424,7 +426,11 @@ export function RolePermissionManager({
               全不选
             </Button>
             <span style={{ color: '#666', marginLeft: 16 }}>
-              已选择: {(checkedKeys || []).filter(key => key.includes(':')).length} 项权限
+              已选择:
+              {' '}
+              {(checkedKeys || []).filter(key => key.includes(':')).length}
+              {' '}
+              项权限
             </span>
           </Space>
         </div>
@@ -456,8 +462,7 @@ export function RolePermissionManager({
                   showLine={true} // 显示连接线
                   defaultExpandAll={false}
                 />
-              )
-          }
+              )}
         </div>
 
         {/* 权限提示 */}
