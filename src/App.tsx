@@ -28,8 +28,9 @@ import { accessControlProvider, clearPermissionCache } from './providers/accessC
 // 导入调试工具
 import { authProvider } from './providers/authProvider'
 import { dataProvider } from './providers/dataProvider'
-
+import { useI18nProvider } from './providers/i18nProvider'
 import { generateRoutes } from './utils/routeGenerator'
+import './i18n'
 
 import '@refinedev/antd/dist/reset.css'
 
@@ -39,6 +40,8 @@ const { VITE_APP_BASEURL } = import.meta.env
 clearPermissionCache()
 
 function App() {
+  const i18nProvider = useI18nProvider()
+
   return (
     <BrowserRouter>
       <RefineKbarProvider>
@@ -50,6 +53,7 @@ function App() {
               authProvider={authProvider}
               accessControlProvider={accessControlProvider}
               routerProvider={routerBindings}
+              i18nProvider={i18nProvider}
               resources={resources}
               options={{
                 syncWithLocation: true,

@@ -12,7 +12,10 @@ export function RoleEdit() {
   const { formProps, saveButtonProps } = useForm<IRoleEditForm>()
 
   return (
-    <Edit saveButtonProps={saveButtonProps}>
+    <Edit
+      saveButtonProps={saveButtonProps}
+      title="编辑角色"
+    >
       <Form {...formProps} layout="vertical">
         <Card title="基本信息">
           <Form.Item

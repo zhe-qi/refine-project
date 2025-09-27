@@ -32,7 +32,7 @@ export function RoleShow() {
   }
 
   return (
-    <Show isLoading={isLoading}>
+    <Show isLoading={isLoading} title="查看角色">
       <Card title="角色信息" style={{ marginBottom: 16 }}>
         <Descriptions column={2} bordered>
           <Descriptions.Item label="ID" span={1}>

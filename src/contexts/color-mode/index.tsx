@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from 'react'
 import { RefineThemes } from '@refinedev/antd'
 import { ConfigProvider, theme } from 'antd'
+import zhCN from 'antd/locale/zh_CN'
 import {
   createContext,
 
@@ -59,6 +60,7 @@ export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
           ...RefineThemes.Blue,
           algorithm: mode === 'light' ? defaultAlgorithm : darkAlgorithm,
         }}
+        locale={zhCN}
       >
         {children}
       </ConfigProvider>

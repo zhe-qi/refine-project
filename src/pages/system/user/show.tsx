@@ -36,7 +36,7 @@ export function UserShow() {
   }
 
   return (
-    <Show isLoading={isLoading}>
+    <Show isLoading={isLoading} title="查看用户">
       {record && (
         <Card>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: 24 }}>

@@ -34,7 +34,10 @@ export function UserEdit() {
   }, [form, query?.data?.data?.avatar])
 
   return (
-    <Edit saveButtonProps={saveButtonProps}>
+    <Edit
+      saveButtonProps={saveButtonProps}
+      title="编辑用户"
+    >
       <Form {...formProps} layout="vertical">
         <Card title="基本信息">
           <Form.Item

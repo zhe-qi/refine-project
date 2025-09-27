@@ -18,7 +18,10 @@ export function UserCreate() {
   }
 
   return (
-    <Create saveButtonProps={saveButtonProps}>
+    <Create
+      saveButtonProps={saveButtonProps}
+      title="创建用户"
+    >
       <Form {...formProps} layout="vertical">
         <Card title="基本信息">
           <Form.Item

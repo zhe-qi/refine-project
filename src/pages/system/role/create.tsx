@@ -12,7 +12,10 @@ export function RoleCreate() {
   const { formProps, saveButtonProps } = useForm<IRoleCreateForm>()
 
   return (
-    <Create saveButtonProps={saveButtonProps}>
+    <Create
+      saveButtonProps={saveButtonProps}
+      title="创建角色"
+    >
       <Form {...formProps} layout="vertical">
         <Card title="基本信息">
           <Form.Item
