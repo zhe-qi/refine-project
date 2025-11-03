@@ -1,0 +1,439 @@
+/* 星之卡比验证码容器 */
+.kirby-captcha-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60px;
+}
+
+.kirby-captcha-widget {
+  position: relative;
+  background: linear-gradient(135deg, #fcf2f5 0%, #f9dde3 100%);
+  border: 3px solid #87213c;
+  border-radius: 8px;
+  padding: 6px 12px; /* 进一步减少上下内边距 */
+  width: 400px; /* 增加宽度以容纳新布局 */
+  height: 60px; /* 更紧凑的高度 */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(135, 33, 60, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 改为 space-between，左边文字，右边卡比 */
+  overflow: visible; /* 改为 visible 让文字动画可见 */
+}
+
+.kirby-captcha-widget:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(135, 33, 60, 0.15);
+}
+
+.kirby-captcha-widget.success {
+  background: linear-gradient(135deg, #fcf2f5 0%, #fae798 20%, #f9dde3 100%);
+  border-color: #87213c; /* 保持卡比主题色 */
+  cursor: default;
+}
+
+.kirby-captcha-widget.verifying {
+  cursor: default;
+  animation: pulse 3s infinite;
+}
+
+.kirby-captcha-widget.error {
+  background: linear-gradient(135deg, #fff2f0 0%, #ffccc7 100%);
+  border-color: #ff4d4f;
+  animation: shake 0.5s ease-in-out;
+}
+
+/* 卡比头像容器 */
+.kirby-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  overflow: hidden; /* 确保动画不溢出 */
+  position: relative;
+  z-index: 1; /* 确保卡比头像在伪元素之上 */
+}
+
+/* 星之卡比 SVG */
+.kirby-svg {
+  width: 56px;
+  height: 56px;
+  overflow: visible;
+}
+
+/* 验证码内容区域 */
+.kirby-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* 改为左对齐 */
+  justify-content: center;
+  margin-left: 0; /* 移除左边距 */
+  margin-right: 12px; /* 添加右边距，与卡比保持距离 */
+  min-height: 40px;
+  position: relative; /* 为文字动画做准备 */
+  overflow: visible; /* 确保动画文字可见 */
+  z-index: 1; /* 确保内容在伪元素之上 */
+}
+
+/* 星之卡比样式变量 */
+:root {
+  --black: #87213c;
+  --white: #fff;
+  --primary-color: #f9dde3;
+  --primary-color-tint: #fcf2f5;
+  --secondary-color: #ff2961;
+  --accent-color: #fae798;
+  --mail-color: #326dcc;
+  --star-sparkly-color: #b8d7ff;
+  --success-color: #fae798; /* 使用卡比主题的黄色而非绿色 */
+}
+
+/* 星之卡比基础样式 */
+.kirby-stroke {
+  stroke: var(--black);
+  stroke-width: 2.5px; /* 稍微细一点 */
+  stroke-miterlimit: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.kirby-body {
+  fill: var(--primary-color);
+}
+
+.kirby-mouth-open-inner,
+.kirby-eye {
+  fill: var(--black);
+}
+
+.kirby-foot {
+  fill: var(--secondary-color);
+}
+
+.kirby-mouth-open-tongue {
+  fill: var(--secondary-color);
+}
+
+.kirby-blush {
+  stroke: var(--secondary-color);
+}
+
+.kirby-blush-small {
+  stroke-width: 2px;
+}
+
+.kirby-blush-circle {
+  fill: var(--secondary-color);
+  opacity: 0.6;
+}
+
+.kirby-star {
+  stroke-width: 2px;
+  stroke: currentColor;
+  fill: var(--accent-color);
+}
+
+.kirby-star-spit {
+  color: var(--black);
+}
+
+/* 验证进度条 */
+.kirby-progress {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin-top: 6px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 3px; /* 更细的进度条 */
+  background-color: rgba(135, 33, 60, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff2961 0%, #fae798 100%);
+  border-radius: 2px;
+  width: 0%; /* 从0开始 */
+  transition: width 0.1s ease-out; /* 更短的过渡时间，确保同步 */
+  position: relative;
+}
+
+/* 进度条粒子效果 */
+.progress-particle {
+  position: absolute;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(250, 231, 152, 0.7) 100%);
+  border-radius: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 6px rgba(250, 231, 152, 0.8);
+  z-index: 2;
+}
+
+.progress-glow {
+  position: absolute;
+  top: -1px;
+  width: 8px;
+  height: 5px;
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.8) 0%, rgba(250, 231, 152, 0.4) 100%);
+  border-radius: 50%;
+  filter: blur(1px);
+  z-index: 1;
+}
+
+.progress-text {
+  font-size: 10px; /* 很小的字体 */
+  color: var(--black);
+  font-weight: 500;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+/* 验证文本区域 */
+.kirby-verification-text {
+  text-align: left; /* 改为左对齐 */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* 改为左对齐 */
+  justify-content: center;
+  min-height: 18px;
+  overflow: visible; /* 确保文字动画不被裁切 */
+  position: relative; /* 为绝对定位的动画文字提供相对定位上下文 */
+}
+
+.verification-message {
+  font-size: 14px;
+  color: var(--black);
+  font-weight: 500;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* 验证文字的每个字符样式 */
+.verification-text-char {
+  display: inline-block;
+  transform-origin: center bottom;
+  position: relative;
+  z-index: 10; /* 确保文字在动画过程中显示在前面 */
+}
+
+.success-message {
+  font-size: 14px;
+  color: #87213c; /* 使用卡比主题色而非绿色 */
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  background-color: var(--accent-color); /* 使用黄色背景 */
+  color: var(--black); /* 黑色勾选 */
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: bold;
+  border: 2px solid var(--black);
+}
+
+.error-message {
+  font-size: 14px;
+  color: #ff4d4f;
+  font-weight: 500;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* 动画效果 */
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    border-color: #87213c;
+  }
+  50% {
+    transform: scale(1.005);
+    border-color: #ff2961;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+/* 待机时的轻微动画 */
+.kirby-captcha-widget.pending .kirby-svg {
+  animation: gentle-bob 3s ease-in-out infinite;
+}
+
+@keyframes gentle-bob {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-1px) rotate(1deg);
+  }
+}
+
+/* 成功状态时卡比的特殊动画 */
+.kirby-captcha-widget.success .kirby-avatar {
+  animation: success-glow 1.5s ease-in-out;
+}
+
+@keyframes success-glow {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px rgba(250, 231, 152, 0));
+  }
+  50% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 8px rgba(250, 231, 152, 0.6));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px rgba(250, 231, 152, 0));
+  }
+}
+
+/* 验证中时的边框动画 - 修复圆角问题 */
+.kirby-captcha-widget.verifying {
+  border: 3px solid transparent; /* 设置透明边框为伪元素让路 */
+  border-radius: 8px;
+  position: relative;
+  animation: pulse 3s infinite;
+}
+
+/* 使用伪元素创建圆角渐变边框 */
+.kirby-captcha-widget.verifying::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(45deg, #87213c, #ff2961, #87213c);
+  border-radius: 11px; /* 外层圆角稍大 */
+  z-index: -1;
+  animation: border-flow 2s linear infinite;
+}
+
+.kirby-captcha-widget.verifying::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #fcf2f5 0%, #f9dde3 100%);
+  border-radius: 8px; /* 内层保持原圆角 */
+  z-index: 0; /* 确保在内容下方但在边框上方 */
+}
+
+@keyframes border-flow {
+  0% {
+    border-image-source: linear-gradient(45deg, #87213c, #ff2961, #87213c);
+  }
+  25% {
+    border-image-source: linear-gradient(135deg, #87213c, #ff2961, #87213c);
+  }
+  50% {
+    border-image-source: linear-gradient(225deg, #87213c, #ff2961, #87213c);
+  }
+  75% {
+    border-image-source: linear-gradient(315deg, #87213c, #ff2961, #87213c);
+  }
+  100% {
+    border-image-source: linear-gradient(45deg, #87213c, #ff2961, #87213c);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 576px) {
+  .kirby-captcha-widget {
+    width: 320px;
+    height: 68px;
+    padding: 6px 10px;
+  }
+
+  .kirby-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .kirby-svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  .verification-message,
+  .success-message,
+  .error-message {
+    font-size: 13px;
+  }
+
+  .progress-text {
+    font-size: 9px;
+  }
+
+  .kirby-content-area {
+    margin-left: 10px;
+    min-height: 36px;
+  }
+}
+
+/* 旧的容器样式保持兼容性 */
+.cap-widget-container {
+  width: 100%;
+  display: block;
+}
+
+/* 隐藏原来的 CAP 组件样式 */
+.cap-widget-container cap-widget {
+  display: none !important;
+}
+
+/* 使用 CSS Parts API 隐藏 Shadow DOM 中的 Cap 标识 */
+.cap-widget-container cap-widget::part(attribution) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
