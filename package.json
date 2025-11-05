@@ -8,8 +8,9 @@
     "build": "tsc && refine build",
     "start": "refine start",
     "refine": "refine",
-    "openapi:admin": "npx openapi-typescript http://localhost:9999/api/admin/doc -o ./src/api/admin.d.ts",
-    "openapi:public": "npx openapi-typescript http://localhost:9999/api/doc -o ./src/api/public.d.ts"
+    "openapi:admin": "npx openapi-typescript http://localhost:9999/api/admin/doc -o ./src/api/admin.d.ts --enum --dedupe-enums",
+    "openapi:public": "npx openapi-typescript http://localhost:9999/api/doc -o ./src/api/public.d.ts --enum --dedupe-enums",
+    "openapi": "pnpm run openapi:admin && pnpm run openapi:public"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

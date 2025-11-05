@@ -1,5 +1,6 @@
 import { useShow } from '@refinedev/core'
 
+import { PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus } from '@/api/admin.d'
 import { ShowView } from '@/components/refine-ui/views/show-view'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -14,13 +15,13 @@ import { Separator } from '@/components/ui/separator'
 export function RoleShow() {
   const { result: record } = useShow({})
 
-  const getStatusInfo = (status: number) => {
+  const getStatusInfo = (status: string) => {
     const statusMap = {
-      '1': { label: '启用', variant: 'default' as const },
-      '0': { label: '禁用', variant: 'secondary' as const },
+      [PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.ENABLED]: { label: '启用', variant: 'default' as const },
+      [PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
     }
     return (
-      statusMap[status as unknown as keyof typeof statusMap] || {
+      statusMap[status as keyof typeof statusMap] || {
         label: '未知',
         variant: 'secondary' as const,
       }

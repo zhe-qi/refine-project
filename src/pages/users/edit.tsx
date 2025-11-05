@@ -1,6 +1,7 @@
 import { useForm } from '@refinedev/react-hook-form'
 import { useNavigate } from 'react-router'
 
+import { PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus } from '@/api/admin.d'
 import { EditView } from '@/components/refine-ui/views/edit-view'
 import { Button } from '@/components/ui/button'
 import {
@@ -132,9 +133,8 @@ export function UserEdit() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="1">启用</SelectItem>
-                    <SelectItem value="0">禁用</SelectItem>
-                    <SelectItem value="-1">封禁</SelectItem>
+                    <SelectItem value={PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.ENABLED}>启用</SelectItem>
+                    <SelectItem value={PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.DISABLED}>禁用</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

@@ -2,6 +2,7 @@ import { useTable } from '@refinedev/react-table'
 import { createColumnHelper } from '@tanstack/react-table'
 import React from 'react'
 
+import { PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus } from '@/api/admin.d'
 import { DeleteButton } from '@/components/refine-ui/buttons/delete'
 import { EditButton } from '@/components/refine-ui/buttons/edit'
 import { ShowButton } from '@/components/refine-ui/buttons/show'
@@ -15,7 +16,7 @@ interface User {
   username: string
   nickName: string
   avatar: string | null
-  status: number
+  status: string
   builtIn: boolean | null
   createdAt: string | null
   roles: { id: string, name: string }[]
@@ -53,11 +54,10 @@ export function UserList() {
         cell: ({ getValue }) => {
           const status = getValue()
           const statusMap = {
-            '1': { label: '启用', variant: 'default' as const },
-            '0': { label: '禁用', variant: 'secondary' as const },
-            '-1': { label: '封禁', variant: 'destructive' as const },
+            [PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.ENABLED]: { label: '启用', variant: 'default' as const },
+            [PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
           }
-          const statusInfo = statusMap[status as unknown as keyof typeof statusMap] || {
+          const statusInfo = statusMap[status as keyof typeof statusMap] || {
             label: '未知',
             variant: 'secondary' as const,
           }

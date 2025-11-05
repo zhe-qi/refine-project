@@ -461,7 +461,7 @@ export interface paths {
                     /** @description 每页大小 */
                     pageSize?: number;
                     /** @description 分页模式：server=服务端分页，client=客户端分页，off=不分页 */
-                    mode?: "server" | "client" | "off";
+                    mode?: PathsApiAdminSystemRolesGetParametersQueryMode;
                     /** @description 过滤条件，JSON 字符串格式 */
                     filters?: string;
                     /** @description 排序条件，JSON 字符串格式 */
@@ -491,8 +491,11 @@ export interface paths {
                                 name: string;
                                 /** @description 角色描述 */
                                 description: string | null;
-                                /** @description 状态: 1=启用 0=禁用 */
-                                status: number;
+                                /**
+                                 * @description 状态 (ENABLED=启用, DISABLED=禁用)
+                                 * @enum {string}
+                                 */
+                                status: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
                             }[];
                         };
                     };
@@ -539,7 +542,8 @@ export interface paths {
                         id: string;
                         name: string;
                         description?: string | null;
-                        status?: number;
+                        /** @enum {string} */
+                        status?: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
                     };
                 };
             };
@@ -562,8 +566,11 @@ export interface paths {
                                 name: string;
                                 /** @description 角色描述 */
                                 description: string | null;
-                                /** @description 状态: 1=启用 0=禁用 */
-                                status: number;
+                                /**
+                                 * @description 状态 (ENABLED=启用, DISABLED=禁用)
+                                 * @enum {string}
+                                 */
+                                status: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
                             };
                         };
                     };
@@ -650,8 +657,11 @@ export interface paths {
                                 name: string;
                                 /** @description 角色描述 */
                                 description: string | null;
-                                /** @description 状态: 1=启用 0=禁用 */
-                                status: number;
+                                /**
+                                 * @description 状态 (ENABLED=启用, DISABLED=禁用)
+                                 * @enum {string}
+                                 */
+                                status: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
                             };
                         };
                     };
@@ -757,7 +767,8 @@ export interface paths {
                         id?: string;
                         name?: string;
                         description?: string | null;
-                        status?: number;
+                        /** @enum {string} */
+                        status?: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
                     };
                 };
             };
@@ -780,8 +791,11 @@ export interface paths {
                                 name: string;
                                 /** @description 角色描述 */
                                 description: string | null;
-                                /** @description 状态: 1=启用 0=禁用 */
-                                status: number;
+                                /**
+                                 * @description 状态 (ENABLED=启用, DISABLED=禁用)
+                                 * @enum {string}
+                                 */
+                                status: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
                             };
                         };
                     };
@@ -1002,8 +1016,18 @@ export interface paths {
                                 avatar: string | null;
                                 /** @description 昵称 */
                                 nickName: string;
-                                /** @description 状态: 1=启用 0=禁用 -1=封禁 */
-                                status: number;
+                                /**
+                                 * @description 状态 (ENABLED=启用, DISABLED=禁用)
+                                 * @enum {string}
+                                 */
+                                status: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
+                                /** @description 用户角色 */
+                                roles: {
+                                    /** @description 角色ID */
+                                    id: string;
+                                    /** @description 角色名称 */
+                                    name: string;
+                                }[];
                             };
                         };
                     };
@@ -1126,7 +1150,8 @@ export interface paths {
                         avatar?: string | null;
                         /** @description 昵称 */
                         nickName?: string;
-                        status?: number;
+                        /** @enum {string} */
+                        status?: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
                     };
                 };
             };
@@ -1156,8 +1181,11 @@ export interface paths {
                                 avatar: string | null;
                                 /** @description 昵称 */
                                 nickName: string;
-                                /** @description 状态: 1=启用 0=禁用 -1=封禁 */
-                                status: number;
+                                /**
+                                 * @description 状态 (ENABLED=启用, DISABLED=禁用)
+                                 * @enum {string}
+                                 */
+                                status: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
                             };
                         };
                     };
@@ -1218,7 +1246,7 @@ export interface paths {
                     /** @description 每页大小 */
                     pageSize?: number;
                     /** @description 分页模式：server=服务端分页，client=客户端分页，off=不分页 */
-                    mode?: "server" | "client" | "off";
+                    mode?: PathsApiAdminSystemRolesGetParametersQueryMode;
                     /** @description 过滤条件，JSON 字符串格式 */
                     filters?: string;
                     /** @description 排序条件，JSON 字符串格式 */
@@ -1255,8 +1283,11 @@ export interface paths {
                                 avatar: string | null;
                                 /** @description 昵称 */
                                 nickName: string;
-                                /** @description 状态: 1=启用 0=禁用 -1=封禁 */
-                                status: number;
+                                /**
+                                 * @description 状态 (ENABLED=启用, DISABLED=禁用)
+                                 * @enum {string}
+                                 */
+                                status: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
                                 /** @description 用户角色 */
                                 roles: {
                                     /** @description 角色ID */
@@ -1314,7 +1345,8 @@ export interface paths {
                         avatar?: string | null;
                         /** @description 昵称 */
                         nickName: string;
-                        status?: number;
+                        /** @enum {string} */
+                        status?: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
                     };
                 };
             };
@@ -1344,8 +1376,11 @@ export interface paths {
                                 avatar: string | null;
                                 /** @description 昵称 */
                                 nickName: string;
-                                /** @description 状态: 1=启用 0=禁用 -1=封禁 */
-                                status: number;
+                                /**
+                                 * @description 状态 (ENABLED=启用, DISABLED=禁用)
+                                 * @enum {string}
+                                 */
+                                status: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
                             };
                         };
                     };
@@ -1485,4 +1520,13 @@ export interface components {
     pathItems: never;
 }
 export type $defs = Record<string, never>;
+export enum PathsApiAdminSystemRolesGetParametersQueryMode {
+    server = "server",
+    client = "client",
+    off = "off"
+}
+export enum PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus {
+    ENABLED = "ENABLED",
+    DISABLED = "DISABLED"
+}
 export type operations = Record<string, never>;
