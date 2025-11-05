@@ -7,6 +7,7 @@ import { DeleteButton } from '@/components/refine-ui/buttons/delete'
 import { EditButton } from '@/components/refine-ui/buttons/edit'
 import { ShowButton } from '@/components/refine-ui/buttons/show'
 import { DataTable } from '@/components/refine-ui/data-table/data-table'
+import { DataTableFilterDropdownText, DataTableFilterCombobox } from '@/components/refine-ui/data-table/data-table-filter'
 import { ListView, ListViewHeader } from '@/components/refine-ui/views/list-view'
 import { Badge } from '@/components/ui/badge'
 import { AssignPermissionsButton } from './components/assign-permissions-button'
@@ -34,11 +35,22 @@ export function RoleList() {
           </div>
         ),
       }),
-      columnHelper.accessor('name', {
+      {
         id: 'name',
-        header: '角色名称',
+        accessorKey: 'name',
+        header: ({ table }: { table: any }) => (
+          <div className="flex items-center gap-1">
+            角色名称
+            <DataTableFilterDropdownText
+              column={table.getColumn('name')!}
+              table={table}
+              defaultOperator="contains"
+              placeholder="搜索角色名称..."
+            />
+          </div>
+        ),
         enableSorting: true,
-      }),
+      },
       columnHelper.accessor('description', {
         id: 'description',
         header: '描述',
@@ -50,11 +62,26 @@ export function RoleList() {
           return <div className="max-w-xs truncate">{desc}</div>
         },
       }),
-      columnHelper.accessor('status', {
+      {
         id: 'status',
-        header: '状态',
+        accessorKey: 'status',
+        header: ({ table }: { table: any }) => (
+          <div className="flex items-center gap-1">
+            状态
+            <DataTableFilterCombobox
+              column={table.getColumn('status')!}
+              table={table}
+              defaultOperator="eq"
+              options={[
+                { label: '启用', value: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.ENABLED },
+                { label: '禁用', value: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.DISABLED },
+              ]}
+              placeholder="选择状态..."
+            />
+          </div>
+        ),
         enableSorting: true,
-        cell: ({ getValue }) => {
+        cell: ({ getValue }: { getValue: () => string }) => {
           const status = getValue()
           const statusMap = {
             [PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.ENABLED]: { label: '启用', variant: 'default' as const },
@@ -66,7 +93,7 @@ export function RoleList() {
           }
           return <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
         },
-      }),
+      },
       columnHelper.accessor('createdAt', {
         id: 'createdAt',
         header: '创建时间',
