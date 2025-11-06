@@ -10,7 +10,7 @@ import routerProvider, {
   NavigateToResource,
   UnsavedChangesNotifier,
 } from '@refinedev/react-router'
-import { Settings, ShieldCheck, Users } from 'lucide-react'
+import { Globe, Settings, ShieldCheck, Users } from 'lucide-react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router'
 import { accessControlProvider } from '@/providers/access-control'
 import { authProvider } from '@/providers/auth-provider'
@@ -100,6 +100,30 @@ function App() {
                       '分配权限': {
                         path: '/system/roles/{id}/permissions',
                         method: 'PUT',
+                      },
+                    },
+                  },
+                },
+                {
+                  name: 'common',
+                  meta: {
+                    label: '通用资源',
+                    icon: <Globe size={16} />,
+                  },
+                },
+                {
+                  name: 'common/public-api',
+                  meta: {
+                    label: '公共接口',
+                    parent: 'common',
+                    customActions: {
+                      '对象存储上传': {
+                        path: '/resources/object-storage/upload',
+                        method: 'POST',
+                      },
+                      '对象存储下载': {
+                        path: '/resources/object-storage/{id}',
+                        method: 'GET',
                       },
                     },
                   },

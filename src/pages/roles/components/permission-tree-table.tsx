@@ -102,44 +102,44 @@ export function PermissionTreeTable({
       // 例如: /system/users -> /system/users
       const basePath = resource.list ? (resource.list as string).replace(/:(\w+)/g, '{$1}') : null
 
-      if (!basePath)
-        return
-
       // 用于去重的 Set（同一个路径+方法组合只添加一次）
       const addedPermissions = new Set<string>()
 
-      // 添加标准 CRUD 权限（基于 API 路径，不是前端路由）
-      const crudPermissions: Array<{ path: string, method: string, label: string }> = [
-        { path: basePath, method: 'GET', label: '查看权限' },
-        { path: basePath, method: 'POST', label: '新增权限' },
-        { path: `${basePath}/{id}`, method: 'GET', label: '查看详情权限' },
-        { path: `${basePath}/{id}`, method: 'PATCH', label: '编辑权限' },
-      ]
+      // 只有存在 basePath 时才添加标准 CRUD 权限
+      if (basePath) {
+        // 添加标准 CRUD 权限（基于 API 路径，不是前端路由）
+        const crudPermissions: Array<{ path: string, method: string, label: string }> = [
+          { path: basePath, method: 'GET', label: '查看权限' },
+          { path: basePath, method: 'POST', label: '新增权限' },
+          { path: `${basePath}/{id}`, method: 'GET', label: '查看详情权限' },
+          { path: `${basePath}/{id}`, method: 'PATCH', label: '编辑权限' },
+        ]
 
-      // 添加删除权限
-      if (resource.meta?.canDelete) {
-        crudPermissions.push({
-          path: `${basePath}/{id}`,
-          method: 'DELETE',
-          label: '删除权限',
-        })
-      }
-
-      crudPermissions.forEach(({ path, method, label }) => {
-        const permKey = `${path}:${method}`
-
-        if (!addedPermissions.has(permKey)) {
-          addedPermissions.add(permKey)
-          resourceNode.children!.push({
-            id: `${resource.name}-${path}-${method}`,
-            type: 'permission',
-            label,
-            resourcePath: path,
-            action: method,
-            method,
+        // 添加删除权限
+        if (resource.meta?.canDelete) {
+          crudPermissions.push({
+            path: `${basePath}/{id}`,
+            method: 'DELETE',
+            label: '删除权限',
           })
         }
-      })
+
+        crudPermissions.forEach(({ path, method, label }) => {
+          const permKey = `${path}:${method}`
+
+          if (!addedPermissions.has(permKey)) {
+            addedPermissions.add(permKey)
+            resourceNode.children!.push({
+              id: `${resource.name}-${path}-${method}`,
+              type: 'permission',
+              label,
+              resourcePath: path,
+              action: method,
+              method,
+            })
+          }
+        })
+      }
 
       // 添加自定义 actions
       if (resource.meta?.customActions) {

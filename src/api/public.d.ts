@@ -4,196 +4,46 @@
  */
 
 export interface paths {
-    "/api/sts-token/upload": {
+    "/api/health": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
         /**
-         * 获取上传预签名 URL
-         * @description 请在请求头携带 X-Request-Source: admin 或 client
+         * 健康检查
+         * @description 返回服务健康状态
          */
-        post: {
+        get: {
             parameters: {
                 query?: never;
                 header?: never;
                 path?: never;
                 cookie?: never;
             };
-            /** @description 上传令牌请求 */
-            requestBody: {
-                content: {
-                    "application/json": {
-                        /** @description 文件名 */
-                        fileName: string;
-                        /** @description 文件类型 */
-                        fileType?: string;
-                    };
-                };
-            };
+            requestBody?: never;
             responses: {
-                /** @description 获取成功 */
+                /** @description 服务正常 */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            /** @description 预签名 URL */
-                            url: string;
-                            /** @description 过期时间 */
-                            expiresAt: string;
-                        };
-                    };
-                };
-                /** @description 请求参数错误 */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                        };
-                    };
-                };
-                /** @description 参数验证失败 */
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @example false */
-                            success: boolean;
-                            /**
-                             * @example {
-                             *       "name": "ZodError",
-                             *       "issues": [
-                             *         {
-                             *           "code": "invalid_type",
-                             *           "path": [
-                             *             "fileName"
-                             *           ],
-                             *           "message": "Invalid input: expected string, received undefined"
-                             *         }
-                             *       ]
-                             *     }
-                             */
-                            error: {
-                                issues: {
-                                    code: string;
-                                    path: (string | number)[];
-                                    message?: string;
-                                }[];
-                                name: string;
+                            data: {
+                                /** @description 健康状态 */
+                                status: string;
+                                /** @description 时间戳 */
+                                timestamp: string;
                             };
                         };
                     };
                 };
             };
         };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/sts-token/download": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
         put?: never;
-        /**
-         * 获取下载预签名 URL
-         * @description 请在请求头携带 X-Request-Source: admin 或 client
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            /** @description 下载令牌请求 */
-            requestBody: {
-                content: {
-                    "application/json": {
-                        /** @description 文件名 */
-                        fileName: string;
-                    };
-                };
-            };
-            responses: {
-                /** @description 获取成功 */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description 预签名 URL */
-                            url: string;
-                            /** @description 过期时间 */
-                            expiresAt: string;
-                        };
-                    };
-                };
-                /** @description 请求参数错误 */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                        };
-                    };
-                };
-                /** @description 参数验证失败 */
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @example false */
-                            success: boolean;
-                            /**
-                             * @example {
-                             *       "name": "ZodError",
-                             *       "issues": [
-                             *         {
-                             *           "code": "invalid_type",
-                             *           "path": [
-                             *             "fileName"
-                             *           ],
-                             *           "message": "Invalid input: expected string, received undefined"
-                             *         }
-                             *       ]
-                             *     }
-                             */
-                            error: {
-                                issues: {
-                                    code: string;
-                                    path: (string | number)[];
-                                    message?: string;
-                                }[];
-                                name: string;
-                            };
-                        };
-                    };
-                };
-            };
-        };
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;

@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { ImageUpload } from '@/components/upload/image-upload'
 
 export function UserCreate() {
   const navigate = useNavigate()
@@ -102,12 +103,12 @@ export function UserCreate() {
             name="avatar"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>头像URL</FormLabel>
+                <FormLabel>头像</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    value={field.value || ''}
-                    placeholder="输入头像URL（可选）"
+                  <ImageUpload
+                    value={field.value}
+                    onChange={field.onChange}
+                    limit={1}
                   />
                 </FormControl>
                 <FormMessage />

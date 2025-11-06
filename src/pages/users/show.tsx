@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { getImageUrl } from '@/utils/upload'
 
 export function UserShow() {
   const { result: record } = useShow({})
@@ -38,7 +39,7 @@ export function UserShow() {
           <CardHeader>
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16">
-                <AvatarImage src={record?.avatar || ''} alt={record?.nickName} />
+                <AvatarImage src={getImageUrl(record?.avatar || '')} alt={record?.nickName} />
                 <AvatarFallback>
                   {record?.nickName?.charAt(0)?.toUpperCase()}
                 </AvatarFallback>
