@@ -1,5 +1,5 @@
 import { useForm } from '@refinedev/react-hook-form'
-import { useNavigate } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 
 import { PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus } from '@/api/admin.d'
 import { EditView } from '@/components/refine-ui/views/edit-view'
@@ -26,11 +26,17 @@ import { ImageUpload } from '@/components/upload/image-upload'
 export function UserEdit() {
   const navigate = useNavigate()
 
+  const { id } = useParams()
+
   const {
     refineCore: { onFinish },
     ...form
   } = useForm({
-    refineCoreProps: {},
+    refineCoreProps: {
+      resource: 'system/users',
+      action: 'edit',
+      id,
+    },
   })
 
   function onSubmit(values: Record<string, string>) {

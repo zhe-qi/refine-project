@@ -12,6 +12,12 @@ interface Role {
   description: string | null
 }
 
+interface PermissionItem {
+  resource: string
+  action: string
+  inherited: boolean
+}
+
 export function RoleAssignPermissions() {
   const navigate = useNavigate()
   const { id: roleId } = useParams<{ id: string }>()
@@ -37,7 +43,7 @@ export function RoleAssignPermissions() {
   })
 
   // 获取角色当前权限
-  const { query: { data: permissionsData, isLoading: isLoadingPermissions } } = useCustom<string[][]>({
+  const { query: { data: permissionsData, isLoading: isLoadingPermissions } } = useCustom<PermissionItem[]>({
     url: `/api/admin/system/roles/${roleId}/permissions`,
     method: 'get',
     queryOptions: {
@@ -46,13 +52,24 @@ export function RoleAssignPermissions() {
   })
 
   const role = roleData?.data
-  const currentPermissions = React.useMemo(() => {
-    // API 返回的是完整的 Casbin 策略数组: [role, resource, action, ...]
-    // 我们只需要 [resource, action]，即索引 1 和 2
-    const perms = ((permissionsData?.data || []) as string[][])
-      .map(policy => [policy[1], policy[2]] as [string, string])
-      .filter(([resource, action]) => resource && action)
-    return perms
+
+  // 处理权限数据
+  const { currentPermissions, inheritedPermissions } = React.useMemo(() => {
+    const permissions = permissionsData?.data || []
+
+    // 分离直接权限和继承权限
+    const current: [string, string][] = []
+    const inherited = new Set<string>()
+
+    permissions.forEach((perm) => {
+      const key = `${perm.resource}:${perm.action}`
+      current.push([perm.resource, perm.action])
+      if (perm.inherited) {
+        inherited.add(key)
+      }
+    })
+
+    return { currentPermissions: current, inheritedPermissions: inherited }
   }, [permissionsData?.data])
 
   // 初始化选中的权限
@@ -147,6 +164,7 @@ export function RoleAssignPermissions() {
         <CardContent className="space-y-4">
           <PermissionTreeTable
             currentPermissions={currentPermissions}
+            inheritedPermissions={inheritedPermissions}
             onSelectionChange={(perms) => setSelectedPermissions(dedupePermissions(perms))}
             isLoading={isLoading}
           />

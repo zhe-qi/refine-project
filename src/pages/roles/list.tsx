@@ -7,7 +7,7 @@ import { DeleteButton } from '@/components/refine-ui/buttons/delete'
 import { EditButton } from '@/components/refine-ui/buttons/edit'
 import { ShowButton } from '@/components/refine-ui/buttons/show'
 import { DataTable } from '@/components/refine-ui/data-table/data-table'
-import { DataTableFilterDropdownText, DataTableFilterCombobox } from '@/components/refine-ui/data-table/data-table-filter'
+import { DataTableFilterCombobox, DataTableFilterDropdownText } from '@/components/refine-ui/data-table/data-table-filter'
 import { ListView, ListViewHeader } from '@/components/refine-ui/views/list-view'
 import { Badge } from '@/components/ui/badge'
 import { AssignPermissionsButton } from './components/assign-permissions-button'
@@ -16,6 +16,7 @@ interface Role {
   id: string
   name: string
   description: string | null
+  parentRoles?: string[]
   status: string
   createdAt: string | null
 }
@@ -60,6 +61,25 @@ export function RoleList() {
           if (!desc)
             return '-'
           return <div className="max-w-xs truncate">{desc}</div>
+        },
+      }),
+      columnHelper.accessor('parentRoles', {
+        id: 'parentRoles',
+        header: '上级角色',
+        enableSorting: false,
+        cell: ({ getValue }) => {
+          const parentRoles = getValue() || []
+          if (parentRoles.length === 0)
+            return <span className="text-muted-foreground">-</span>
+          return (
+            <div className="flex flex-wrap gap-1">
+              {parentRoles.map(roleId => (
+                <Badge key={roleId} variant="outline">
+                  {roleId}
+                </Badge>
+              ))}
+            </div>
+          )
         },
       }),
       {
@@ -118,7 +138,7 @@ export function RoleList() {
           </div>
         ),
         enableSorting: false,
-        size: 290,
+        size: 400,
       }),
     ]
   }, [])
@@ -138,4 +158,3 @@ export function RoleList() {
     </ListView>
   )
 }
-

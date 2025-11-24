@@ -36,8 +36,11 @@ export function AssignRolesButton({
   }
 
   return (
-    <Button size="sm" variant="outline" onClick={handleClick}>
-      <UserCog className="h-4 w-4" />
+    <Button size="sm" onClick={handleClick}>
+      <div className="flex items-center gap-2 font-semibold">
+        <UserCog className="h-4 w-4" />
+        <span>分配角色</span>
+      </div>
     </Button>
   )
 }

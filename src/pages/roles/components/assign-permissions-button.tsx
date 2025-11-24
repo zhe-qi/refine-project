@@ -36,8 +36,11 @@ export function AssignPermissionsButton({
   }
 
   return (
-    <Button size="sm" variant="outline" onClick={handleClick}>
-      <ShieldCheck className="h-4 w-4" />
+    <Button size="sm" onClick={handleClick}>
+      <div className="flex items-center gap-2 font-semibold">
+        <ShieldCheck className="h-4 w-4" />
+        <span>分配权限</span>
+      </div>
     </Button>
   )
 }

@@ -57,11 +57,29 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
-                /** @description 密码错误 */
+                /** @description 用户名或密码错误 */
                 401: {
                     headers: {
                         [name: string]: unknown;
@@ -69,7 +87,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -81,19 +117,55 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
-                /** @description 用户不存在 */
-                404: {
+                /** @description 登录失败次数过多 */
+                429: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -146,7 +218,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -196,7 +286,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -258,7 +366,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -311,7 +437,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -368,7 +512,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -433,7 +595,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -501,7 +681,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -512,30 +710,26 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /** @example false */
-                            success: boolean;
-                            /**
-                             * @example {
-                             *       "name": "ZodError",
-                             *       "issues": [
-                             *         {
-                             *           "code": "invalid_type",
-                             *           "path": [
-                             *             "fileName"
-                             *           ],
-                             *           "message": "Invalid input: expected string, received undefined"
-                             *         }
-                             *       ]
-                             *     }
-                             */
-                            error: {
-                                issues: {
-                                    code: string;
-                                    path: (string | number)[];
-                                    message?: string;
-                                }[];
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
                                 name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
                             };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -601,7 +795,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -612,30 +824,26 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /** @example false */
-                            success: boolean;
-                            /**
-                             * @example {
-                             *       "name": "ZodError",
-                             *       "issues": [
-                             *         {
-                             *           "code": "invalid_type",
-                             *           "path": [
-                             *             "fileName"
-                             *           ],
-                             *           "message": "Invalid input: expected string, received undefined"
-                             *         }
-                             *       ]
-                             *     }
-                             */
-                            error: {
-                                issues: {
-                                    code: string;
-                                    path: (string | number)[];
-                                    message?: string;
-                                }[];
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
                                 name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
                             };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -698,6 +906,8 @@ export interface paths {
                                  * @enum {string}
                                  */
                                 status: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
+                                /** @description 上级角色列表 */
+                                parentRoles?: string[];
                             }[];
                         };
                     };
@@ -710,7 +920,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -722,7 +950,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -746,6 +992,8 @@ export interface paths {
                         description?: string | null;
                         /** @enum {string} */
                         status?: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
+                        /** @description 上级角色ID列表 */
+                        parentRoleIds?: string[];
                     };
                 };
             };
@@ -773,6 +1021,8 @@ export interface paths {
                                  * @enum {string}
                                  */
                                 status: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
+                                /** @description 上级角色列表 */
+                                parentRoles?: string[];
                             };
                         };
                     };
@@ -785,7 +1035,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -797,7 +1065,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -809,7 +1095,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -864,6 +1168,8 @@ export interface paths {
                                  * @enum {string}
                                  */
                                 status: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
+                                /** @description 上级角色列表 */
+                                parentRoles?: string[];
                             };
                         };
                     };
@@ -876,7 +1182,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -888,7 +1212,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -931,7 +1273,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -943,7 +1303,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -971,6 +1349,8 @@ export interface paths {
                         description?: string | null;
                         /** @enum {string} */
                         status?: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
+                        /** @description 上级角色ID列表 */
+                        parentRoleIds?: string[];
                     };
                 };
             };
@@ -998,6 +1378,8 @@ export interface paths {
                                  * @enum {string}
                                  */
                                 status: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus;
+                                /** @description 上级角色列表 */
+                                parentRoles?: string[];
                             };
                         };
                     };
@@ -1010,7 +1392,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1022,7 +1422,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1069,7 +1487,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1081,7 +1517,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1137,7 +1591,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1149,7 +1621,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1161,7 +1651,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1242,7 +1750,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1254,7 +1780,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1299,7 +1843,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1311,7 +1873,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1323,7 +1903,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1400,7 +1998,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1412,7 +2028,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1424,7 +2058,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1509,7 +2161,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1521,7 +2191,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1595,7 +2283,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1607,7 +2313,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1674,7 +2398,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1686,7 +2428,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };
@@ -1698,7 +2458,25 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @description 错误信息 */
-                            message: string;
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
                         };
                     };
                 };

@@ -7,7 +7,7 @@ import { DeleteButton } from '@/components/refine-ui/buttons/delete'
 import { EditButton } from '@/components/refine-ui/buttons/edit'
 import { ShowButton } from '@/components/refine-ui/buttons/show'
 import { DataTable } from '@/components/refine-ui/data-table/data-table'
-import { DataTableFilterDropdownText, DataTableFilterCombobox } from '@/components/refine-ui/data-table/data-table-filter'
+import { DataTableFilterCombobox, DataTableFilterDropdownText } from '@/components/refine-ui/data-table/data-table-filter'
 import { ListView, ListViewHeader } from '@/components/refine-ui/views/list-view'
 import { Badge } from '@/components/ui/badge'
 import { AssignRolesButton } from './components/assign-roles-button'
@@ -147,7 +147,7 @@ export function UserList() {
           </div>
         ),
         enableSorting: false,
-        size: 340,
+        size: 400,
       }),
     ]
   }, [])

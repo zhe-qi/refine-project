@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { ParentRoleSelect } from './components/parent-role-select'
 
 export function RoleCreate() {
   const navigate = useNavigate()
@@ -96,6 +97,26 @@ export function RoleCreate() {
                     rows={4}
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="parentRoleIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>上级角色</FormLabel>
+                <FormControl>
+                  <ParentRoleSelect
+                    value={field.value || []}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormDescription>
+                  选择此角色的上级角色，子角色将继承上级角色的所有权限
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

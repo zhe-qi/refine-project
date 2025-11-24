@@ -1,5 +1,6 @@
 import { useForm } from '@refinedev/react-hook-form'
-import { useNavigate } from 'react-router'
+import { useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router'
 
 import { PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus } from '@/api/admin.d'
 import { EditView } from '@/components/refine-ui/views/edit-view'
@@ -22,16 +23,43 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { ParentRoleSelect } from './components/parent-role-select'
 
 export function RoleEdit() {
   const navigate = useNavigate()
+  const { id } = useParams()
 
   const {
-    refineCore: { onFinish },
+    refineCore: { onFinish, query },
     ...form
   } = useForm({
-    refineCoreProps: {},
+    refineCoreProps: {
+      resource: 'system/roles',
+      action: 'edit',
+      id,
+    },
   })
+
+  const roleData = query?.data?.data
+
+  // 当数据加载完成后，设置 parentRoleIds 字段
+  useEffect(() => {
+    if (roleData?.parentRoles && !form.formState.isDirty) {
+      form.setValue('parentRoleIds', roleData.parentRoles, {
+        shouldDirty: false,
+        shouldTouch: false,
+        shouldValidate: false,
+      })
+    }
+    if (roleData?.status) {
+      form.setValue('status', roleData.status, {
+        shouldDirty: false,
+        shouldTouch: false,
+        shouldValidate: false,
+      })
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roleData?.parentRoles, form])
 
   function onSubmit(values: Record<string, string>) {
     onFinish(values)
@@ -102,6 +130,27 @@ export function RoleEdit() {
 
           <FormField
             control={form.control}
+            name="parentRoleIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>上级角色</FormLabel>
+                <FormControl>
+                  <ParentRoleSelect
+                    value={field.value || []}
+                    onChange={field.onChange}
+                    excludeRoleId={roleData?.id as string}
+                  />
+                </FormControl>
+                <FormDescription>
+                  选择此角色的上级角色，子角色将继承上级角色的所有权限
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="status"
             rules={{ required: '状态必填' }}
             render={({ field }) => (
@@ -147,4 +196,3 @@ export function RoleEdit() {
     </EditView>
   )
 }
-

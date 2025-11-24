@@ -28,12 +28,37 @@ import { fetchClinet } from '@/api'
 const adminPrefix = '/api/admin'
 const bulkAfterPrefix = '/bulk'
 
+// 辅助函数：提取错误消息
+function extractErrorMessage(error: any, response: any): string {
+  // 优先使用 response.error.message
+  if (response?.error?.message) {
+    return response.error.message
+  }
+  // 其次使用 response.error（如果是字符串）
+  if (typeof response?.error === 'string') {
+    return response.error
+  }
+  // 再使用 error.message
+  if (error?.message) {
+    return error.message
+  }
+  // 最后使用 error（如果是字符串）
+  if (typeof error === 'string') {
+    return error
+  }
+  // 如果都不是，尝试 JSON 序列化
+  return JSON.stringify(response?.error || error || 'Unknown error')
+}
+
 export function dataProvider(): DataProvider {
   return {
     getOne: async <TData = any>(params: GetOneParams): Promise<GetOneResponse<TData>> => {
       const { resource, id, meta } = params
 
+      console.log('[DataProvider getOne] params:', { resource, id, meta })
+
       const resourcePath = `${adminPrefix}/${resource}/${id}`
+      console.log('[DataProvider getOne] resourcePath:', resourcePath)
 
       const { headers } = meta ?? {}
 
@@ -41,10 +66,15 @@ export function dataProvider(): DataProvider {
         headers,
       })
 
+      console.log('[DataProvider getOne] error:', error)
+      console.log('[DataProvider getOne] response:', response)
+
       if (error || response?.error) {
+        console.error('[DataProvider getOne] Error occurred:', error || response?.error)
         throw error || new Error(response?.error as any)
       }
 
+      console.log('[DataProvider getOne] returning data:', response?.data?.data)
       return { data: response?.data?.data as TData }
     },
 
@@ -69,7 +99,7 @@ export function dataProvider(): DataProvider {
           })
 
       if (error || response?.error) {
-        throw error || new Error(response?.error)
+        throw new Error(extractErrorMessage(error, response))
       }
 
       return { data: response?.data?.data as TData }
@@ -86,7 +116,7 @@ export function dataProvider(): DataProvider {
       })
 
       if (error || response?.error) {
-        throw error || new Error(response?.error)
+        throw new Error(extractErrorMessage(error, response))
       }
 
       return { data: response?.data?.data as TData }
@@ -102,7 +132,7 @@ export function dataProvider(): DataProvider {
       })
 
       if (error || response?.error) {
-        throw error || new Error(response?.error)
+        throw new Error(extractErrorMessage(error, response))
       }
 
       return { data: response?.data?.data as TData }
@@ -151,7 +181,7 @@ export function dataProvider(): DataProvider {
       })
 
       if (error || response?.error) {
-        throw error || new Error(response?.error)
+        throw new Error(extractErrorMessage(error, response))
       }
 
       const responseData = response?.data
@@ -178,7 +208,7 @@ export function dataProvider(): DataProvider {
       })
 
       if (error || response?.error) {
-        throw error || new Error(response?.error)
+        throw new Error(extractErrorMessage(error, response))
       }
 
       const responseData = response?.data
@@ -198,7 +228,7 @@ export function dataProvider(): DataProvider {
       })
 
       if (error || response?.error) {
-        throw error || new Error(response?.error)
+        throw new Error(extractErrorMessage(error, response))
       }
 
       const responseData = response?.data
@@ -225,7 +255,7 @@ export function dataProvider(): DataProvider {
       })
 
       if (error || response?.error) {
-        throw error || new Error(response?.error)
+        throw new Error(extractErrorMessage(error, response))
       }
 
       const responseData = response?.data
@@ -245,7 +275,7 @@ export function dataProvider(): DataProvider {
       })
 
       if (error || response?.error) {
-        throw error || new Error(response?.error)
+        throw new Error(extractErrorMessage(error, response))
       }
 
       const responseData = response?.data
@@ -312,7 +342,7 @@ export function dataProvider(): DataProvider {
       }
 
       if (error || response?.error) {
-        throw error || new Error(response?.error)
+        throw new Error(extractErrorMessage(error, response))
       }
 
       return { data: response?.data?.data as TData }

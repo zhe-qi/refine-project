@@ -42,12 +42,14 @@ interface PermissionNode {
 
 interface PermissionTreeTableProps {
   currentPermissions: [string, string][]
+  inheritedPermissions?: Set<string>
   onSelectionChange?: (selectedPermissions: [string, string][]) => void
   isLoading?: boolean
 }
 
 export function PermissionTreeTable({
   currentPermissions,
+  inheritedPermissions = new Set(),
   onSelectionChange,
   isLoading = false,
 }: PermissionTreeTableProps) {
@@ -277,8 +279,13 @@ export function PermissionTreeTable({
     setSelectedPermissions((prev) => {
       const next = new Set(prev)
       if (checkState === true) {
-        // 取消选中所有子权限
-        childPerms.forEach(([r, a]) => next.delete(permissionToKey(r, a)))
+        // 取消选中所有子权限（但不取消继承的权限）
+        childPerms.forEach(([r, a]) => {
+          const key = permissionToKey(r, a)
+          if (!inheritedPermissions.has(key)) {
+            next.delete(key)
+          }
+        })
       }
       else {
         // 选中所有子权限
@@ -286,7 +293,7 @@ export function PermissionTreeTable({
       }
       return next
     })
-  }, [getNodePermissions, getNodeCheckState])
+  }, [getNodePermissions, getNodeCheckState, inheritedPermissions])
 
   // 批量操作
   const selectAll = React.useCallback(() => {
@@ -368,15 +375,28 @@ export function PermissionTreeTable({
         },
         cell: ({ row }) => {
           const checkState = getNodeCheckState(row.original)
+
+          // 如果是权限节点，检查是否是继承的
+          const isInherited = row.original.type === 'permission'
+            && row.original.resourcePath
+            && row.original.action
+            && inheritedPermissions.has(permissionToKey(row.original.resourcePath, row.original.action))
+
           return (
-            <Checkbox
-              checked={checkState}
-              onCheckedChange={() => toggleNode(row.original)}
-              aria-label="Select row"
-            />
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={checkState}
+                onCheckedChange={() => toggleNode(row.original)}
+                disabled={isInherited}
+                aria-label="Select row"
+              />
+              {isInherited && (
+                <span className="text-xs text-muted-foreground">(继承)</span>
+              )}
+            </div>
           )
         },
-        size: 40,
+        size: 100,
       },
       {
         id: 'label',
@@ -434,7 +454,7 @@ export function PermissionTreeTable({
         size: 80,
       },
     ],
-    [allPermissions, selectedPermissions, getNodeCheckState, toggleNode, selectAll],
+    [allPermissions, selectedPermissions, getNodeCheckState, toggleNode, selectAll, inheritedPermissions],
   )
 
   // eslint-disable-next-line react-hooks/incompatible-library

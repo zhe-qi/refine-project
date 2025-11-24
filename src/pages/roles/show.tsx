@@ -62,6 +62,25 @@ export function RoleShow() {
             <Separator />
 
             <div>
+              <h4 className="text-sm font-medium mb-2">上级角色</h4>
+              <div className="flex flex-wrap gap-2">
+                {record?.parentRoles?.length
+                  ? (
+                      record.parentRoles.map((roleId: string) => (
+                        <Badge key={roleId} variant="secondary">
+                          {roleId}
+                        </Badge>
+                      ))
+                    )
+                  : (
+                      <span className="text-sm text-muted-foreground">无</span>
+                    )}
+              </div>
+            </div>
+
+            <Separator />
+
+            <div>
               <h4 className="text-sm font-medium mb-2">创建时间</h4>
               <p className="text-sm text-muted-foreground">
                 {record?.createdAt
@@ -87,4 +106,3 @@ export function RoleShow() {
     </ShowView>
   )
 }
-
