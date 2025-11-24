@@ -412,7 +412,9 @@ Sidebar.displayName = 'Sidebar'
 // 如果所有子菜单都没权限，则隐藏父菜单
 function ProtectedParentMenuItem({ item, selectedKey }: MenuItemProps) {
   const { children } = item
-  const [hasVisibleChildren, setHasVisibleChildren] = React.useState<boolean | null>(null)
+  // 初始状态设为 true，避免在权限检查期间菜单消失
+  // 只有在明确确认无权限时才隐藏菜单
+  const [hasVisibleChildren, setHasVisibleChildren] = React.useState<boolean | null>(true)
 
   React.useEffect(() => {
     if (!children || children.length === 0) {
@@ -432,21 +434,24 @@ function ProtectedParentMenuItem({ item, selectedKey }: MenuItemProps) {
       // 如果至少有一个子菜单有权限，显示父菜单
       const hasAny = results.some(result => result?.can === true)
       setHasVisibleChildren(hasAny)
-    }).catch(() => {
-      setHasVisibleChildren(false)
+    }).catch((error) => {
+      // 权限检查失败时，保持显示状态
+      // 这避免了因为权限服务暂时不可用导致的菜单消失
+      console.warn('权限检查失败，保持菜单显示状态:', error)
+      // 不调用 setHasVisibleChildren(false)，保持当前状态
     })
   }, [children])
 
-  // 还在检查权限时，不渲染（避免闪烁）
-  if (hasVisibleChildren === null) {
-    return null
+  // 初始加载或权限检查中时，显示菜单（避免闪烁）
+  if (hasVisibleChildren === null || hasVisibleChildren === true) {
+    return <SidebarItem item={item} selectedKey={selectedKey} />
   }
 
-  // 如果所有子菜单都没权限，不显示父菜单
+  // 明确确认所有子菜单都没权限时，不显示父菜单
   if (!hasVisibleChildren) {
     return null
   }
 
-  // 至少有一个子菜单有权限，显示父菜单
+  // 不应该到达这里，但以防万一
   return <SidebarItem item={item} selectedKey={selectedKey} />
 }

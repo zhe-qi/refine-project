@@ -136,13 +136,16 @@ async function getCachedPermissions(): Promise<string[] | null> {
  * 清除所有认证相关的缓存
  */
 export function clearAuthCache() {
-  // 清除 sessionStorage 中的缓存
+  // 只清除用户身份缓存，保留权限缓存
+  // 权限缓存应该在logout或真正的权限变更时才清除
   sessionStorage.removeItem(IDENTITY_CACHE_KEY)
-  sessionStorage.removeItem(PERMISSIONS_CACHE_KEY)
 
-  // 清除内存中的加载状态
+  // 注意：不清除权限缓存 PERMISSIONS_CACHE_KEY
+  // 这样可以避免token刷新时权限数据丢失导致的菜单消失问题
+
+  // 清除身份加载状态，但保留权限加载状态
   loadingStates.identity = null
-  loadingStates.permissions = null
+  // 保留 loadingStates.permissions
 }
 
 // 监听 token 变化事件，自动清除缓存
@@ -201,6 +204,9 @@ export const authProvider: AuthProvider = {
     // 清除 token 和所有缓存
     clearToken()
     clearAuthCache()
+    // 登出时需要清除权限缓存
+    sessionStorage.removeItem(PERMISSIONS_CACHE_KEY)
+    loadingStates.permissions = null
     clearEnforcer() // 清除权限 enforcer
 
     return {
@@ -256,6 +262,9 @@ export const authProvider: AuthProvider = {
       // 清除所有认证相关数据和缓存
       clearToken()
       clearAuthCache()
+      // 401错误时也需要清除权限缓存
+      sessionStorage.removeItem(PERMISSIONS_CACHE_KEY)
+      loadingStates.permissions = null
       clearEnforcer() // 清除权限 enforcer
 
       return {
