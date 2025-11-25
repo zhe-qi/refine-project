@@ -137,11 +137,17 @@ export function RoleAssignPermissions() {
       return
     }
 
+    // 过滤掉继承的权限，只传入直接权限
+    const directPermissions = selectedPermissions.filter(([resource, action]) => {
+      const key = `${resource}:${action}`
+      return !inheritedPermsSet.has(key)
+    })
+
     mutate(
       {
         url: `/api/admin/system/roles/${roleId}/permissions`,
         method: 'put',
-        values: { permissions: selectedPermissions },
+        values: { permissions: directPermissions },
         successNotification: () => ({ message: '权限分配成功', type: 'success' }),
         errorNotification: () => ({ message: '权限分配失败', type: 'error' }),
       },
