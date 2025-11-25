@@ -37,19 +37,19 @@ export function isTokenNearExpiry(token: string): boolean {
 
 // 获取令牌
 export function getToken(): string | null {
-  return sessionStorage.getItem(TOKEN_KEY)
+  return localStorage.getItem(TOKEN_KEY)
 }
 
 // 设置令牌
 export function setToken(token: string): void {
-  sessionStorage.setItem(TOKEN_KEY, token)
+  localStorage.setItem(TOKEN_KEY, token)
   // 当设置新令牌时，触发认证状态更新事件
   window.dispatchEvent(new CustomEvent('auth:token-updated', { detail: { token } }))
 }
 
 // 清除令牌
 export function clearToken(): void {
-  sessionStorage.removeItem(TOKEN_KEY)
+  localStorage.removeItem(TOKEN_KEY)
   // 当清除令牌时，触发认证状态清除事件
   window.dispatchEvent(new CustomEvent('auth:token-cleared'))
 }
@@ -109,8 +109,10 @@ export function clearAuthAndRedirect() {
     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`
   })
 
-  // 清除 sessionStorage
-  sessionStorage.clear()
+  // 清除认证相关的 localStorage
+  localStorage.removeItem(TOKEN_KEY)
+  localStorage.removeItem('auth:identity')
+  localStorage.removeItem('auth:permissions')
 
   // 跳转到登录页
   window.location.href = '/login'

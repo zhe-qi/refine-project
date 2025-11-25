@@ -12,6 +12,9 @@ type UserIdentity = paths['/api/admin/auth/userinfo']['get']['responses']['200']
 const IDENTITY_CACHE_KEY = 'auth:identity'
 const PERMISSIONS_CACHE_KEY = 'auth:permissions'
 
+// 权限缓存有效期（毫秒）- 24小时
+const PERMISSIONS_CACHE_TTL = 24 * 60 * 60 * 1000
+
 // 内存中的加载状态（防并发）
 const loadingStates: {
   identity: Promise<UserIdentity | null> | null
@@ -62,8 +65,8 @@ async function fetchPermissions(): Promise<Permissions['permissions'] | null> {
 
 // 带缓存和防并发的获取用户信息
 async function getCachedUserIdentity(): Promise<UserIdentity | null> {
-  // 检查 sessionStorage 缓存
-  const cached = sessionStorage.getItem(IDENTITY_CACHE_KEY)
+  // 检查 localStorage 缓存
+  const cached = localStorage.getItem(IDENTITY_CACHE_KEY)
   if (cached) {
     return JSON.parse(cached).data as UserIdentity
   }
@@ -78,7 +81,7 @@ async function getCachedUserIdentity(): Promise<UserIdentity | null> {
     try {
       const data = await fetchUserIdentity()
       if (data) {
-        sessionStorage.setItem(IDENTITY_CACHE_KEY, JSON.stringify({
+        localStorage.setItem(IDENTITY_CACHE_KEY, JSON.stringify({
           data,
           timestamp: Date.now(),
         }))
@@ -96,14 +99,31 @@ async function getCachedUserIdentity(): Promise<UserIdentity | null> {
 }
 
 // 带缓存和防并发的获取权限
+// 使用 stale-while-revalidate 策略：先返回缓存，后台更新
 async function getCachedPermissions(): Promise<string[] | null> {
-  // 检查 sessionStorage 缓存
-  const cached = sessionStorage.getItem(PERMISSIONS_CACHE_KEY)
+  // 检查 localStorage 缓存
+  const cached = localStorage.getItem(PERMISSIONS_CACHE_KEY)
+  let cachedData: { data: string[], timestamp: number } | null = null
+
   if (cached) {
-    return JSON.parse(cached).data as Permissions['permissions']
+    try {
+      cachedData = JSON.parse(cached)
+      if (cachedData) {
+        const age = Date.now() - cachedData.timestamp
+
+        // 如果缓存未过期，立即返回缓存数据
+        if (age < PERMISSIONS_CACHE_TTL) {
+          // 同时在后台更新权限（不等待结果）
+          refreshPermissionsInBackground()
+          return cachedData.data
+        }
+      }
+    } catch (error) {
+      console.error('解析权限缓存失败:', error)
+    }
   }
 
-  // 如果正在加载，等待并返回
+  // 如果没有缓存或缓存已过期，等待新的权限加载
   if (loadingStates.permissions) {
     return loadingStates.permissions
   }
@@ -113,21 +133,55 @@ async function getCachedPermissions(): Promise<string[] | null> {
     try {
       const data = await fetchPermissions()
       if (data) {
-        sessionStorage.setItem(PERMISSIONS_CACHE_KEY, JSON.stringify({
+        localStorage.setItem(PERMISSIONS_CACHE_KEY, JSON.stringify({
           data,
           timestamp: Date.now(),
         }))
       }
-      loadingStates.permissions = null
       return data
     }
-    catch {
+    catch (error) {
+      console.error('获取权限失败:', error)
+      // 如果有旧缓存，即使过期也返回
+      return cachedData?.data || null
+    }
+    finally {
       loadingStates.permissions = null
-      return null
     }
   })()
 
   return loadingStates.permissions
+}
+
+// 后台刷新权限（不阻塞）
+function refreshPermissionsInBackground() {
+  // 避免重复刷新
+  if (loadingStates.permissions) {
+    return
+  }
+
+  loadingStates.permissions = (async () => {
+    try {
+      const data = await fetchPermissions()
+      if (data) {
+        localStorage.setItem(PERMISSIONS_CACHE_KEY, JSON.stringify({
+          data,
+          timestamp: Date.now(),
+        }))
+        // 权限更新后，清除 enforcer 实例，强制重新初始化
+        clearEnforcer()
+      }
+      return data
+    }
+    catch (error) {
+      // 后台更新失败，静默处理
+      console.warn('后台刷新权限失败:', error)
+      return null
+    }
+    finally {
+      loadingStates.permissions = null
+    }
+  })()
 }
 
 // ==================== 缓存清除 ====================
@@ -137,16 +191,14 @@ async function getCachedPermissions(): Promise<string[] | null> {
  */
 export function clearAuthCache() {
   // 清除用户身份缓存
-  sessionStorage.removeItem(IDENTITY_CACHE_KEY)
+  localStorage.removeItem(IDENTITY_CACHE_KEY)
 
-  // Token refresh时也需要清除权限缓存和enforcer
-  // 因为新token可能对应不同的权限数据
-  sessionStorage.removeItem(PERMISSIONS_CACHE_KEY)
+  // Token refresh时不清除权限缓存
+  // 权限缓存使用 localStorage，只在登出时清除
   loadingStates.identity = null
-  loadingStates.permissions = null
 
-  // 清除权限enforcer实例，确保使用新权限重新初始化
-  clearEnforcer()
+  // 不清除 loadingStates.permissions 和权限缓存
+  // 这样可以保持权限数据的持久性
 }
 
 // 监听 token 变化事件，自动清除缓存
@@ -206,7 +258,7 @@ export const authProvider: AuthProvider = {
     clearToken()
     clearAuthCache()
     // 登出时需要清除权限缓存
-    sessionStorage.removeItem(PERMISSIONS_CACHE_KEY)
+    localStorage.removeItem(PERMISSIONS_CACHE_KEY)
     loadingStates.permissions = null
     clearEnforcer() // 清除权限 enforcer
 
@@ -264,7 +316,7 @@ export const authProvider: AuthProvider = {
       clearToken()
       clearAuthCache()
       // 401错误时也需要清除权限缓存
-      sessionStorage.removeItem(PERMISSIONS_CACHE_KEY)
+      localStorage.removeItem(PERMISSIONS_CACHE_KEY)
       loadingStates.permissions = null
       clearEnforcer() // 清除权限 enforcer
 

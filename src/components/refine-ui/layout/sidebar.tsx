@@ -3,6 +3,7 @@
 import type { TreeMenuItem } from '@refinedev/core'
 import {
   CanAccess,
+  useCan,
   useLink,
   useMenu,
   useRefineOptions,
@@ -71,17 +72,11 @@ export function Sidebar() {
 
           // 有路由的菜单项需要权限检查
           return (
-            <CanAccess
+            <ProtectedMenuItem
               key={item.key || item.name}
-              resource={item.name}
-              action="list"
-              fallback={null}
-            >
-              <SidebarItem
-                item={item}
-                selectedKey={selectedKey}
-              />
-            </CanAccess>
+              item={item}
+              selectedKey={selectedKey}
+            />
           )
         })}
       </ShadcnSidebarContent>
@@ -142,17 +137,11 @@ function SidebarItemGroup({ item, selectedKey }: MenuItemProps) {
       {children && children.length > 0 && (
         <div className={cn('flex', 'flex-col')}>
           {children.map((child: TreeMenuItem) => (
-            <CanAccess
+            <ProtectedMenuItem
               key={child.key || child.name}
-              resource={child.name}
-              action="list"
-              fallback={null}
-            >
-              <SidebarItem
-                item={child}
-                selectedKey={selectedKey}
-              />
-            </CanAccess>
+              item={child}
+              selectedKey={selectedKey}
+            />
           ))}
         </div>
       )}
@@ -184,17 +173,11 @@ function SidebarItemCollapsible({ item, selectedKey }: MenuItemProps) {
       </CollapsibleTrigger>
       <CollapsibleContent className={cn('ml-6', 'flex', 'flex-col', 'gap-2')}>
         {children?.map((child: TreeMenuItem) => (
-          <CanAccess
+          <ProtectedMenuItem
             key={child.key || child.name}
-            resource={child.name}
-            action="list"
-            fallback={null}
-          >
-            <SidebarItem
-              item={child}
-              selectedKey={selectedKey}
-            />
-          </CanAccess>
+            item={child}
+            selectedKey={selectedKey}
+          />
         ))}
       </CollapsibleContent>
     </Collapsible>
@@ -211,36 +194,73 @@ function SidebarItemDropdown({ item, selectedKey }: MenuItemProps) {
         <SidebarButton item={item} />
       </DropdownMenuTrigger>
       <DropdownMenuContent side="right" align="start">
-        {children?.map((child: TreeMenuItem) => {
-          const { key: childKey } = child
-          const isSelected = childKey === selectedKey
-
-          return (
-            <CanAccess
-              key={childKey || child.name}
-              resource={child.name}
-              action="list"
-              fallback={null}
-            >
-              <DropdownMenuItem asChild>
-                <Link
-                  to={child.route || ''}
-                  className={cn('flex w-full items-center gap-2', {
-                    'bg-accent text-accent-foreground': isSelected,
-                  })}
-                >
-                  <ItemIcon
-                    icon={child.meta?.icon ?? child.icon}
-                    isSelected={isSelected}
-                  />
-                  <span>{getDisplayName(child)}</span>
-                </Link>
-              </DropdownMenuItem>
-            </CanAccess>
-          )
-        })}
+        {children?.map((child: TreeMenuItem) => (
+          <ProtectedDropdownMenuItem
+            key={child.key || child.name}
+            child={child}
+            selectedKey={selectedKey}
+            Link={Link}
+          />
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}
+
+// 用于 Dropdown 中的菜单项权限保护
+function ProtectedDropdownMenuItem({ child, selectedKey, Link }: {
+  child: TreeMenuItem
+  selectedKey?: string
+  Link: ReturnType<typeof useLink>
+}) {
+  const { data, isLoading } = useCan({
+    resource: child.name,
+    action: 'list',
+  })
+
+  const { key: childKey } = child
+  const isSelected = childKey === selectedKey
+
+  // 权限加载期间，显示菜单项
+  if (isLoading) {
+    return (
+      <DropdownMenuItem asChild>
+        <Link
+          to={child.route || ''}
+          className={cn('flex w-full items-center gap-2', {
+            'bg-accent text-accent-foreground': isSelected,
+          })}
+        >
+          <ItemIcon
+            icon={child.meta?.icon ?? child.icon}
+            isSelected={isSelected}
+          />
+          <span>{getDisplayName(child)}</span>
+        </Link>
+      </DropdownMenuItem>
+    )
+  }
+
+  // 权限加载完成后，根据结果决定是否显示
+  if (!data?.can) {
+    return null
+  }
+
+  return (
+    <DropdownMenuItem asChild>
+      <Link
+        to={child.route || ''}
+        className={cn('flex w-full items-center gap-2', {
+          'bg-accent text-accent-foreground': isSelected,
+        })}
+      >
+        <ItemIcon
+          icon={child.meta?.icon ?? child.icon}
+          isSelected={isSelected}
+        />
+        <span>{getDisplayName(child)}</span>
+      </Link>
+    </DropdownMenuItem>
   )
 }
 
@@ -407,6 +427,27 @@ function SidebarButton({
 }
 
 Sidebar.displayName = 'Sidebar'
+
+// 用于单个菜单项的权限保护组件
+// 在权限加载期间显示菜单项，加载完成后根据权限结果决定是否显示
+function ProtectedMenuItem({ item, selectedKey }: MenuItemProps) {
+  const { data, isLoading } = useCan({
+    resource: item.name,
+    action: 'list',
+  })
+
+  // 权限加载期间，显示菜单项（避免菜单闪烁或消失）
+  if (isLoading) {
+    return <SidebarItem item={item} selectedKey={selectedKey} />
+  }
+
+  // 权限加载完成后，根据结果决定是否显示
+  if (!data?.can) {
+    return null
+  }
+
+  return <SidebarItem item={item} selectedKey={selectedKey} />
+}
 
 // 用于父级菜单项的权限保护组件
 // 如果所有子菜单都没权限，则隐藏父菜单
