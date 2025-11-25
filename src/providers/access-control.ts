@@ -23,33 +23,51 @@ m = g(r.sub, p.sub) && keyMatch3(r.obj, p.obj) && regexMatch(r.act, p.act)
 `)
 
 let enforcerInstance: Enforcer | null = null
+let enforcerLoading: Promise<Enforcer> | null = null
 
 async function getEnforcer(): Promise<Enforcer> {
+  // 如果已有实例，直接返回
   if (enforcerInstance) {
     return enforcerInstance
   }
 
-  // 从 authProvider 缓存获取权限
-  const permissions = await authProvider.getPermissions?.() as string[] | null
-  if (!permissions || permissions.length === 0) {
-    throw new Error('获取权限失败')
+  // 如果正在加载，等待加载完成
+  if (enforcerLoading) {
+    return enforcerLoading
   }
 
-  // 将权限字符串转换为 Casbin 策略格式
-  const policies = permissions.join('\n')
+  // 开始加载权限并创建enforcer
+  enforcerLoading = (async () => {
+    try {
+      // 从 authProvider 缓存获取权限（会等待权限加载完成）
+      const permissions = await authProvider.getPermissions?.() as string[] | null
+      if (!permissions || permissions.length === 0) {
+        throw new Error('获取权限失败')
+      }
 
-  // 创建 Enforcer
-  const adapter = new StringAdapter(policies)
-  const enforcer = new Enforcer()
-  await enforcer.initWithModelAndAdapter(casbinModel, adapter)
-  enforcerInstance = enforcer
+      // 将权限字符串转换为 Casbin 策略格式
+      const policies = permissions.join('\n')
 
-  return enforcerInstance
+      // 创建 Enforcer
+      const adapter = new StringAdapter(policies)
+      const enforcer = new Enforcer()
+      await enforcer.initWithModelAndAdapter(casbinModel, adapter)
+      enforcerInstance = enforcer
+
+      return enforcerInstance
+    }
+    finally {
+      enforcerLoading = null
+    }
+  })()
+
+  return enforcerLoading
 }
 
-// 清除 enforcer 实例（用于登出时）
+// 清除 enforcer 实例（用于登出或token refresh时）
 export function clearEnforcer() {
   enforcerInstance = null
+  enforcerLoading = null
 }
 
 export const accessControlProvider: AccessControlProvider = {
