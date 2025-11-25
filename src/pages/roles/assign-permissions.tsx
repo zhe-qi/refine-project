@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { getEnforcer } from '@/providers/access-control'
 import { PermissionTreeTable } from './components/permission-tree-table'
 
 interface Role {
@@ -15,7 +16,16 @@ interface Role {
 interface PermissionItem {
   resource: string
   action: string
-  inherited: boolean
+}
+
+interface Grouping {
+  child: string
+  parent: string
+}
+
+interface PermissionsResponse {
+  permissions: PermissionItem[]
+  groupings: Grouping[]
 }
 
 export function RoleAssignPermissions() {
@@ -29,7 +39,8 @@ export function RoleAssignPermissions() {
     const seen = new Set<string>()
     return perms.filter(([resource, action]) => {
       const key = `${resource}:${action}`
-      if (seen.has(key)) return false
+      if (seen.has(key))
+        return false
       seen.add(key)
       return true
     })
@@ -43,7 +54,7 @@ export function RoleAssignPermissions() {
   })
 
   // 获取角色当前权限
-  const { query: { data: permissionsData, isLoading: isLoadingPermissions } } = useCustom<PermissionItem[]>({
+  const { query: { data: permissionsData, isLoading: isLoadingPermissions } } = useCustom<PermissionsResponse>({
     url: `/api/admin/system/roles/${roleId}/permissions`,
     method: 'get',
     queryOptions: {
@@ -53,24 +64,62 @@ export function RoleAssignPermissions() {
 
   const role = roleData?.data
 
-  // 处理权限数据
-  const { currentPermissions, inheritedPermissions } = React.useMemo(() => {
-    const permissions = permissionsData?.data || []
+  // 使用 casbin 计算继承权限
+  const { currentPermissions } = React.useMemo(() => {
+    const permissions = permissionsData?.data?.permissions || []
 
-    // 分离直接权限和继承权限
-    const current: [string, string][] = []
-    const inherited = new Set<string>()
+    // 转换权限格式
+    const current: [string, string][] = permissions.map(perm => [perm.resource, perm.action])
 
-    permissions.forEach((perm) => {
-      const key = `${perm.resource}:${perm.action}`
-      current.push([perm.resource, perm.action])
-      if (perm.inherited) {
-        inherited.add(key)
-      }
-    })
-
-    return { currentPermissions: current, inheritedPermissions: inherited }
+    return { currentPermissions: current }
   }, [permissionsData?.data])
+
+  // 使用 casbin enforcer 计算继承权限
+  // eslint-disable-next-line react/prefer-use-state-lazy-initialization
+  const [inheritedPermsSet, setInheritedPermsSet] = React.useState<Set<string>>(new Set())
+
+  React.useEffect(() => {
+    if (!roleId) {
+      // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+      setInheritedPermsSet(new Set())
+      return
+    }
+
+    const calculateInheritedPermissions = async () => {
+      try {
+        // 使用共享的 enforcer 实例
+        const enforcer = await getEnforcer()
+
+        // 获取直接权限（只属于该角色的）
+        const directPermissions = await enforcer.getPermissionsForUser(roleId)
+
+        // 获取所有隐式权限（包括继承的）
+        const allImplicitPermissions = await enforcer.getImplicitPermissionsForUser(roleId)
+
+        // 构建直接权限集合
+        const directPermSet = new Set(
+          directPermissions.map(p => `${p[1]}:${p[2]}`),
+        )
+
+        // 继承的权限 = 所有权限 - 直接权限
+        const inherited = new Set<string>()
+        allImplicitPermissions.forEach((p) => {
+          const key = `${p[1]}:${p[2]}`
+          if (!directPermSet.has(key)) {
+            inherited.add(key)
+          }
+        })
+
+        setInheritedPermsSet(inherited)
+      }
+      catch (error) {
+        console.error('计算继承权限失败:', error)
+        setInheritedPermsSet(new Set())
+      }
+    }
+
+    calculateInheritedPermissions()
+  }, [roleId, permissionsData?.data])
 
   // 初始化选中的权限
   React.useEffect(() => {
@@ -164,8 +213,8 @@ export function RoleAssignPermissions() {
         <CardContent className="space-y-4">
           <PermissionTreeTable
             currentPermissions={currentPermissions}
-            inheritedPermissions={inheritedPermissions}
-            onSelectionChange={(perms) => setSelectedPermissions(dedupePermissions(perms))}
+            inheritedPermissions={inheritedPermsSet}
+            onSelectionChange={perms => setSelectedPermissions(dedupePermissions(perms))}
             isLoading={isLoading}
           />
 

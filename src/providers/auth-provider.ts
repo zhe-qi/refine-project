@@ -18,7 +18,7 @@ const PERMISSIONS_CACHE_TTL = 24 * 60 * 60 * 1000
 // 内存中的加载状态（防并发）
 const loadingStates: {
   identity: Promise<UserIdentity | null> | null
-  permissions: Promise<string[] | null> | null
+  permissions: Promise<Permissions | null> | null
 } = {
   identity: null,
   permissions: null,
@@ -48,7 +48,7 @@ async function fetchUserIdentity(): Promise<UserIdentity | null> {
 type Permissions = paths['/api/admin/auth/permissions']['get']['responses']['200']['content']['application/json']['data']
 
 // 获取权限的核心函数
-async function fetchPermissions(): Promise<Permissions['permissions'] | null> {
+async function fetchPermissions(): Promise<Permissions | null> {
   const token = getToken()
   if (!token) {
     return null
@@ -60,7 +60,7 @@ async function fetchPermissions(): Promise<Permissions['permissions'] | null> {
     return null
   }
 
-  return response?.data?.data?.permissions || null
+  return response?.data?.data || null
 }
 
 // 带缓存和防并发的获取用户信息
@@ -100,10 +100,10 @@ async function getCachedUserIdentity(): Promise<UserIdentity | null> {
 
 // 带缓存和防并发的获取权限
 // 使用 stale-while-revalidate 策略：先返回缓存，后台更新
-async function getCachedPermissions(): Promise<string[] | null> {
+async function getCachedPermissions(): Promise<Permissions | null> {
   // 检查 localStorage 缓存
   const cached = localStorage.getItem(PERMISSIONS_CACHE_KEY)
-  let cachedData: { data: string[], timestamp: number } | null = null
+  let cachedData: { data: Permissions, timestamp: number } | null = null
 
   if (cached) {
     try {

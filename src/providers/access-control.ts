@@ -4,6 +4,7 @@ import { Enforcer, newModel, StringAdapter } from 'casbin'
 import { authProvider } from './auth-provider'
 
 type UserIdentity = paths['/api/admin/auth/userinfo']['get']['responses']['200']['content']['application/json']['data']
+type Permissions = paths['/api/admin/auth/permissions']['get']['responses']['200']['content']['application/json']['data']
 
 export const casbinModel = newModel(`
 [request_definition]
@@ -25,7 +26,7 @@ m = g(r.sub, p.sub) && keyMatch3(r.obj, p.obj) && regexMatch(r.act, p.act)
 let enforcerInstance: Enforcer | null = null
 let enforcerLoading: Promise<Enforcer> | null = null
 
-async function getEnforcer(): Promise<Enforcer> {
+export async function getEnforcer(): Promise<Enforcer> {
   // 如果已有实例，直接返回
   if (enforcerInstance) {
     return enforcerInstance
@@ -40,13 +41,16 @@ async function getEnforcer(): Promise<Enforcer> {
   enforcerLoading = (async () => {
     try {
       // 从 authProvider 缓存获取权限（会等待权限加载完成）
-      const permissions = await authProvider.getPermissions?.() as string[] | null
-      if (!permissions || permissions.length === 0) {
+      const permissionsData = await authProvider.getPermissions?.() as Permissions | null
+      if (!permissionsData || !permissionsData.permissions || permissionsData.permissions.length === 0) {
         throw new Error('获取权限失败')
       }
 
-      // 将权限字符串转换为 Casbin 策略格式
-      const policies = permissions.join('\n')
+      // 合并 permissions 和 groupings 为 Casbin 策略格式
+      const policies = [
+        ...permissionsData.permissions,
+        ...permissionsData.groupings,
+      ].join('\n')
 
       // 创建 Enforcer
       const adapter = new StringAdapter(policies)

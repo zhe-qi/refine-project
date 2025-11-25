@@ -423,8 +423,10 @@ export interface paths {
                     content: {
                         "application/json": {
                             data: {
-                                /** @description 权限列表 */
+                                /** @description 权限策略列表（p策略） */
                                 permissions: string[];
+                                /** @description 角色继承关系列表（g策略） */
+                                groupings: string[];
                             };
                         };
                     };
@@ -1475,7 +1477,22 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            data: string[][];
+                            data: {
+                                /** @description 权限列表 */
+                                permissions: {
+                                    /** @description 资源路径 */
+                                    resource: string;
+                                    /** @description 操作 */
+                                    action: string;
+                                }[];
+                                /** @description 角色继承关系列表 */
+                                groupings: {
+                                    /** @description 子角色ID */
+                                    child: string;
+                                    /** @description 父角色ID */
+                                    parent: string;
+                                }[];
+                            };
                         };
                     };
                 };
@@ -1561,6 +1578,8 @@ export interface paths {
                             string,
                             string
                         ][];
+                        /** @description 上级角色ID列表（可选） */
+                        parentRoleIds?: string[];
                     };
                 };
             };
