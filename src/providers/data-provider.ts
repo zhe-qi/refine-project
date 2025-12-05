@@ -55,10 +55,7 @@ export function dataProvider(): DataProvider {
     getOne: async <TData = any>(params: GetOneParams): Promise<GetOneResponse<TData>> => {
       const { resource, id, meta } = params
 
-      console.log('[DataProvider getOne] params:', { resource, id, meta })
-
       const resourcePath = `${adminPrefix}/${resource}/${id}`
-      console.log('[DataProvider getOne] resourcePath:', resourcePath)
 
       const { headers } = meta ?? {}
 
@@ -66,15 +63,10 @@ export function dataProvider(): DataProvider {
         headers,
       })
 
-      console.log('[DataProvider getOne] error:', error)
-      console.log('[DataProvider getOne] response:', response)
-
       if (error || response?.error) {
-        console.error('[DataProvider getOne] Error occurred:', error || response?.error)
-        throw error || new Error(response?.error as any)
+        throw error || new Error(response?.error)
       }
 
-      console.log('[DataProvider getOne] returning data:', response?.data?.data)
       return { data: response?.data?.data as TData }
     },
 

@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { useGo, useResourceParams, useTranslate } from '@refinedev/core'
+import { ChevronLeft, InfoIcon } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
-import { useGo, useResourceParams, useTranslate } from "@refinedev/core";
-import { ChevronLeft, InfoIcon } from "lucide-react";
-import React, { useEffect, useState } from "react";
+} from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
 
 /**
  * When the app is navigated to a non-existent route, refine shows a default error page.
@@ -17,47 +17,48 @@ import React, { useEffect, useState } from "react";
  * @see {@link https://refine.dev/docs/packages/documentation/routers/} for more details.
  */
 export function ErrorComponent() {
-  const [errorMessage, setErrorMessage] = useState<string>();
+  const [errorMessage, setErrorMessage] = useState<string>()
 
-  const translate = useTranslate();
-  const go = useGo();
+  const translate = useTranslate()
+  const go = useGo()
 
-  const { resource, action } = useResourceParams();
+  const { resource, action } = useResourceParams()
 
   useEffect(() => {
     if (resource && action) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks-extra/no-direct-set-state-in-use-effect
       setErrorMessage(
         translate(
-          "pages.error.info",
+          'pages.error.info',
           {
-            action: action,
+            action,
             resource: resource?.name,
           },
-          `You may have forgotten to add the "${action}" component to "${resource?.name}" resource.`
-        )
-      );
+          `You may have forgotten to add the "${action}" component to "${resource?.name}" resource.`,
+        ),
+      )
     }
-  }, [resource, action, translate]);
+  }, [resource, action, translate])
 
   return (
     <div
       className={cn(
-        "flex",
-        "items-center",
-        "justify-center",
-        "bg-background",
-        "my-auto"
+        'flex',
+        'items-center',
+        'justify-center',
+        'bg-background',
+        'my-auto',
       )}
     >
-      <div className={cn("text-center", "space-y-8")}>
-        <div className={cn("flex", "justify-center")}>
+      <div className={cn('text-center', 'space-y-8')}>
+        <div className={cn('flex', 'justify-center')}>
           <svg
             width="199"
             height="73"
             viewBox="0 0 199 73"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className={cn("w-48", "h-auto")}
+            className={cn('w-48', 'h-auto')}
           >
             <title>404 text</title>
             <path
@@ -80,18 +81,18 @@ export function ErrorComponent() {
           </svg>
         </div>
 
-        <div className={cn("space-y-4")}>
-          <h1 className={cn("text-2xl", "font-semibold", "text-foreground")}>
-            {translate("pages.error.title", "Page not found.")}
+        <div className={cn('space-y-4')}>
+          <h1 className={cn('text-2xl', 'font-semibold', 'text-foreground')}>
+            {translate('pages.error.title', 'Page not found.')}
           </h1>
 
           <div
-            className={cn("flex", "items-center", "justify-center", "gap-2")}
+            className={cn('flex', 'items-center', 'justify-center', 'gap-2')}
           >
-            <p className={cn("text-muted-foreground")}>
+            <p className={cn('text-muted-foreground')}>
               {translate(
-                "pages.error.description",
-                "The page you're looking for does not exist."
+                'pages.error.description',
+                'The page you\'re looking for does not exist.',
               )}
             </p>
             {errorMessage && (
@@ -100,10 +101,10 @@ export function ErrorComponent() {
                   <TooltipTrigger asChild>
                     <InfoIcon
                       className={cn(
-                        "h-4",
-                        "w-4",
-                        "text-muted-foreground",
-                        "cursor-help"
+                        'h-4',
+                        'w-4',
+                        'text-muted-foreground',
+                        'cursor-help',
                       )}
                       data-testid="error-component-tooltip"
                     />
@@ -119,16 +120,16 @@ export function ErrorComponent() {
 
         <Button
           onClick={() => {
-            go({ to: "/" });
+            go({ to: '/' })
           }}
-          className={cn("flex", "items-center", "gap-2", "mx-auto")}
+          className={cn('flex', 'items-center', 'gap-2', 'mx-auto')}
         >
-          <ChevronLeft className={cn("h-4", "w-4")} />
-          {translate("pages.error.backHome", "Back to homepage")}
+          <ChevronLeft className={cn('h-4', 'w-4')} />
+          {translate('pages.error.backHome', 'Back to homepage')}
         </Button>
       </div>
     </div>
-  );
+  )
 }
 
-ErrorComponent.displayName = "ErrorComponent";
+ErrorComponent.displayName = 'ErrorComponent'

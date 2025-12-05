@@ -191,11 +191,11 @@ export function PermissionTreeTable({
     }
     traverse(treeData)
     const result = Array.from(permsMap.values())
-    // eslint-disable-next-line no-console
+
     console.warn('=== allPermissions 去重后 ===')
-    // eslint-disable-next-line no-console
+
     console.warn('总数:', result.length)
-    // eslint-disable-next-line no-console
+
     console.warn('权限列表:', result)
     return result
   }, [treeData])
@@ -203,19 +203,19 @@ export function PermissionTreeTable({
   // 初始化选中状态
   React.useEffect(() => {
     const permSet = new Set(currentPermissions.map(([r, a]) => permissionToKey(r, a)))
-    // eslint-disable-next-line no-console
+
     console.warn('=== 初始化选中状态 ===')
-    // eslint-disable-next-line no-console
+
     console.warn('currentPermissions:', currentPermissions)
-    // eslint-disable-next-line no-console
+
     console.warn('permSet size:', permSet.size)
-    // eslint-disable-next-line no-console
+
     console.warn('permSet:', Array.from(permSet))
 
     // 找出哪些权限在 currentPermissions 中但不在 allPermissions 中
     const allPermSet = new Set(allPermissions.map(([r, a]) => permissionToKey(r, a)))
     const missing = Array.from(permSet).filter(key => !allPermSet.has(key))
-    // eslint-disable-next-line no-console
+
     console.warn('在 API 中但不在树中的权限:', missing)
 
     setInitialPermissions(currentPermissions)
@@ -377,15 +377,15 @@ export function PermissionTreeTable({
           const checkState = getNodeCheckState(row.original)
 
           // 如果是权限节点，检查是否是继承的
-          const isInherited = row.original.type === 'permission'
+          const isInherited = !!(row.original.type === 'permission'
             && row.original.resourcePath
             && row.original.action
-            && inheritedPermissions.has(permissionToKey(row.original.resourcePath, row.original.action))
+            && inheritedPermissions.has(permissionToKey(row.original.resourcePath, row.original.action)))
 
           return (
             <div className="flex items-center gap-2">
               <Checkbox
-                checked={checkState}
+                checked={checkState === 'indeterminate' ? 'indeterminate' : checkState}
                 onCheckedChange={() => toggleNode(row.original)}
                 disabled={isInherited}
                 aria-label="Select row"
@@ -457,7 +457,6 @@ export function PermissionTreeTable({
     [allPermissions, selectedPermissions, getNodeCheckState, toggleNode, selectAll, inheritedPermissions],
   )
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: treeData,
     columns,

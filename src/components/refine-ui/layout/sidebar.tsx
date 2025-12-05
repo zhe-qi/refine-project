@@ -2,7 +2,6 @@
 
 import type { TreeMenuItem } from '@refinedev/core'
 import {
-  CanAccess,
   useCan,
   useLink,
   useMenu,

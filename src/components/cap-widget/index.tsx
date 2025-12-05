@@ -417,13 +417,14 @@ export function CapWidget({ ref, apiEndpoint, onSolve }: CapWidgetProps & { ref?
           })
 
           // 监听验证进度 - 基于 Cap.js 文档的进度事件处理
-          const handleProgress = (event: any) => {
+          const handleProgress = (_event: any) => {
             // Cap.js 的进度事件提供 event.detail.progress 百分比
             // 我们不再需要显示进度条，但可以用来判断验证进展
-            const _progressValue = Math.round(event.detail.progress || 0)
+            // const _progressValue = Math.round(event.detail.progress || 0)
             // 可以在这里添加其他基于进度的逻辑
           }
 
+          // eslint-disable-next-line react-web-api/no-leaked-event-listener
           cap.addEventListener('progress', handleProgress)
           capInstanceRef.current = cap
 
