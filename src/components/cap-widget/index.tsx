@@ -1,3 +1,4 @@
+import Cap from '@cap.js/widget'
 import { AnimatePresence, motion } from 'motion/react'
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import './styles.css'
@@ -401,39 +402,31 @@ export function CapWidget({ ref, apiEndpoint, onSolve }: CapWidgetProps & { ref?
   useEffect(() => {
     let cleanupFunction: (() => void) | null = null
 
-    // 动态加载 Cap.js（如果需要的话）
+    // 初始化 Cap.js
     const initializeCap = async () => {
       try {
-        // 这里假设 Cap 类已经全局可用，或者从模块导入
-        // 如果需要动态导入，可以使用：
-        // const { Cap } = await import('cap-js-sdk');
+        const endpoint = apiEndpoint || `${import.meta.env.VITE_APP_API_URL || ''}/api/admin/auth/`
 
-        if (typeof window !== 'undefined' && (window as any).Cap) {
-          const endpoint = apiEndpoint || `${import.meta.env.VITE_APP_API_URL || ''}/api/admin/auth/`
+        const cap = new Cap({
+          'apiEndpoint': endpoint,
+          'data-cap-worker-count': String(navigator.hardwareConcurrency || 8),
+        })
 
-          const cap = new (window as any).Cap({
-            apiEndpoint: endpoint,
-            workers: navigator.hardwareConcurrency || 8,
-          })
+        // 监听验证进度 - 基于 Cap.js 文档的进度事件处理
+        const handleProgress = (_event: any) => {
+          // Cap.js 的进度事件提供 event.detail.progress 百分比
+          // 我们不再需要显示进度条，但可以用来判断验证进展
+          // const _progressValue = Math.round(event.detail.progress || 0)
+          // 可以在这里添加其他基于进度的逻辑
+        }
 
-          // 监听验证进度 - 基于 Cap.js 文档的进度事件处理
-          const handleProgress = (_event: any) => {
-            // Cap.js 的进度事件提供 event.detail.progress 百分比
-            // 我们不再需要显示进度条，但可以用来判断验证进展
-            // const _progressValue = Math.round(event.detail.progress || 0)
-            // 可以在这里添加其他基于进度的逻辑
-          }
+        // eslint-disable-next-line react-web-api/no-leaked-event-listener
+        cap.addEventListener('progress', handleProgress)
+        capInstanceRef.current = cap
 
-          // eslint-disable-next-line react-web-api/no-leaked-event-listener
-          cap.addEventListener('progress', handleProgress)
-          capInstanceRef.current = cap
-
-          // 返回清理函数
-          cleanupFunction = () => {
-            if (cap && typeof cap.removeEventListener === 'function') {
-              cap.removeEventListener('progress', handleProgress)
-            }
-          }
+        // 清理函数：Cap 实例会在组件卸载时自动清理
+        cleanupFunction = () => {
+          capInstanceRef.current = null
         }
       }
       catch (error) {

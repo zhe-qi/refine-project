@@ -74,7 +74,7 @@ function App() {
                     parent: 'system',
                     icon: <Users size={16} />,
                     customActions: {
-                      '分配角色': {
+                      分配角色: {
                         path: '/system/users/{id}/roles',
                         method: 'PUT',
                       },
@@ -93,11 +93,11 @@ function App() {
                     parent: 'system',
                     icon: <ShieldCheck size={16} />,
                     customActions: {
-                      '查看权限': {
+                      查看权限: {
                         path: '/system/roles/{id}/permissions',
                         method: 'GET',
                       },
-                      '分配权限': {
+                      分配权限: {
                         path: '/system/roles/{id}/permissions',
                         method: 'PUT',
                       },
@@ -117,11 +117,11 @@ function App() {
                     label: '公共接口',
                     parent: 'common',
                     customActions: {
-                      '对象存储上传': {
+                      对象存储上传: {
                         path: '/resources/object-storage/upload',
                         method: 'POST',
                       },
-                      '对象存储下载': {
+                      对象存储下载: {
                         path: '/resources/object-storage/{id}',
                         method: 'GET',
                       },
