@@ -2,7 +2,7 @@ import { useTable } from '@refinedev/react-table'
 import { createColumnHelper } from '@tanstack/react-table'
 import React from 'react'
 
-import { PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus } from '@/api/admin.d'
+import { PathsApiAdminSystemDictGetParametersQueryStatus } from '@/api/admin.d'
 import { DeleteButton } from '@/components/refine-ui/buttons/delete'
 import { EditButton } from '@/components/refine-ui/buttons/edit'
 import { ShowButton } from '@/components/refine-ui/buttons/show'
@@ -10,20 +10,28 @@ import { DataTable } from '@/components/refine-ui/data-table/data-table'
 import { DataTableFilterCombobox, DataTableFilterDropdownText } from '@/components/refine-ui/data-table/data-table-filter'
 import { ListView, ListViewHeader } from '@/components/refine-ui/views/list-view'
 import { Badge } from '@/components/ui/badge'
-import { AssignPermissionsButton } from './components/assign-permissions-button'
 
-interface Role {
+interface DictItem {
+  label: string
+  value: string
+  sort: number
+  disabled?: boolean
+  color?: string
+}
+
+interface Dict {
   id: string
+  code: string
   name: string
   description: string | null
-  parentRoles?: string[]
+  items: DictItem[]
   status: string
   createdAt: string | null
 }
 
-export function RoleList() {
+export function DictList() {
   const columns = React.useMemo(() => {
-    const columnHelper = createColumnHelper<Role>()
+    const columnHelper = createColumnHelper<Dict>()
 
     return [
       columnHelper.accessor('id', {
@@ -37,16 +45,37 @@ export function RoleList() {
         ),
       }),
       {
+        id: 'code',
+        accessorKey: 'code',
+        header: ({ table }: { table: any }) => (
+          <div className="flex items-center gap-1">
+            字典编码
+            <DataTableFilterDropdownText
+              column={table.getColumn('code')!}
+              table={table}
+              defaultOperator="contains"
+              placeholder="搜索编码..."
+            />
+          </div>
+        ),
+        enableSorting: true,
+        cell: ({ getValue }: { getValue: () => string }) => (
+          <div className="font-mono text-xs">
+            {getValue()}
+          </div>
+        ),
+      },
+      {
         id: 'name',
         accessorKey: 'name',
         header: ({ table }: { table: any }) => (
           <div className="flex items-center gap-1">
-            角色名称
+            字典名称
             <DataTableFilterDropdownText
               column={table.getColumn('name')!}
               table={table}
               defaultOperator="contains"
-              placeholder="搜索角色名称..."
+              placeholder="搜索名称..."
             />
           </div>
         ),
@@ -57,27 +86,25 @@ export function RoleList() {
         header: '描述',
         enableSorting: false,
         cell: ({ getValue }) => {
-          const desc = getValue()
-          if (!desc)
-            return '-'
-          return <div className="max-w-xs truncate">{desc}</div>
+          const description = getValue()
+          return description ? (
+            <div className="max-w-xs truncate">
+              {description}
+            </div>
+          ) : (
+            '-'
+          )
         },
       }),
-      columnHelper.accessor('parentRoles', {
-        id: 'parentRoles',
-        header: '上级角色',
+      columnHelper.accessor('items', {
+        id: 'items',
+        header: '字典项数量',
         enableSorting: false,
         cell: ({ getValue }) => {
-          const parentRoles = getValue() || []
-          if (parentRoles.length === 0)
-            return <span className="text-muted-foreground">-</span>
+          const items = getValue()
           return (
-            <div className="flex flex-wrap gap-1">
-              {parentRoles.map(roleId => (
-                <Badge key={roleId} variant="outline">
-                  {roleId}
-                </Badge>
-              ))}
+            <div className="text-center">
+              {items?.length || 0}
             </div>
           )
         },
@@ -93,8 +120,8 @@ export function RoleList() {
               table={table}
               defaultOperator="eq"
               options={[
-                { label: '启用', value: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.ENABLED },
-                { label: '禁用', value: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.DISABLED },
+                { label: '启用', value: PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED },
+                { label: '禁用', value: PathsApiAdminSystemDictGetParametersQueryStatus.DISABLED },
               ]}
               placeholder="选择状态..."
             />
@@ -104,8 +131,8 @@ export function RoleList() {
         cell: ({ getValue }: { getValue: () => string }) => {
           const status = getValue()
           const statusMap = {
-            [PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.ENABLED]: { label: '启用', variant: 'default' as const },
-            [PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
+            [PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED]: { label: '启用', variant: 'default' as const },
+            [PathsApiAdminSystemDictGetParametersQueryStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
           }
           const statusInfo = statusMap[status as keyof typeof statusMap] || {
             label: '未知',
@@ -128,17 +155,13 @@ export function RoleList() {
         header: '操作',
         cell: ({ row }) => (
           <div className="flex gap-2">
-            <AssignPermissionsButton
-              roleId={row.original.id}
-              roleName={row.original.name}
-            />
-            <EditButton recordItemId={row.original.id} size="sm" />
             <ShowButton recordItemId={row.original.id} size="sm" />
+            <EditButton recordItemId={row.original.id} size="sm" />
             <DeleteButton recordItemId={row.original.id} size="sm" />
           </div>
         ),
         enableSorting: false,
-        size: 400,
+        size: 300,
       }),
     ]
   }, [])
@@ -147,7 +170,7 @@ export function RoleList() {
     columns,
     refineCoreProps: {
       syncWithLocation: true,
-      resource: 'system/roles',
+      resource: 'system/dict',
     },
   })
 

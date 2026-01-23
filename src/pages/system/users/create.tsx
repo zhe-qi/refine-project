@@ -1,14 +1,12 @@
 import { useForm } from '@refinedev/react-hook-form'
-import { useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { useNavigate } from 'react-router'
 
-import { PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus } from '@/api/admin.d'
-import { EditView } from '@/components/refine-ui/views/edit-view'
+import { PathsApiAdminSystemDictGetParametersQueryStatus } from '@/api/admin.d'
+import { CreateView } from '@/components/refine-ui/views/create-view'
 import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,69 +20,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { ParentRoleSelect } from './components/parent-role-select'
+import { ImageUpload } from '@/components/upload/image-upload'
 
-export function RoleEdit() {
+export function UserCreate() {
   const navigate = useNavigate()
-  const { id } = useParams()
 
   const {
-    refineCore: { onFinish, query },
+    refineCore: { onFinish },
     ...form
   } = useForm({
-    refineCoreProps: {
-      resource: 'system/roles',
-      action: 'edit',
-      id,
-    },
+    refineCoreProps: {},
   })
-
-  const roleData = query?.data?.data
-
-  // 当数据加载完成后，设置 parentRoleIds 字段
-  useEffect(() => {
-    if (roleData?.parentRoles && !form.formState.isDirty) {
-      form.setValue('parentRoleIds', roleData.parentRoles, {
-        shouldDirty: false,
-        shouldTouch: false,
-        shouldValidate: false,
-      })
-    }
-    if (roleData?.status) {
-      form.setValue('status', roleData.status, {
-        shouldDirty: false,
-        shouldTouch: false,
-        shouldValidate: false,
-      })
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roleData?.parentRoles, form])
 
   function onSubmit(values: Record<string, string>) {
     onFinish(values)
   }
 
   return (
-    <EditView>
+    <CreateView>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="id"
-            rules={{ required: '角色 ID 必填' }}
+            name="username"
+            rules={{ required: '用户名必填' }}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>角色 ID</FormLabel>
+                <FormLabel>用户名</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     value={field.value || ''}
-                    placeholder="输入角色 ID"
-                    disabled
+                    placeholder="输入用户名"
                   />
                 </FormControl>
-                <FormDescription>角色 ID 不可修改</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -92,16 +61,36 @@ export function RoleEdit() {
 
           <FormField
             control={form.control}
-            name="name"
-            rules={{ required: '角色名称必填' }}
+            name="password"
+            rules={{ required: '密码必填' }}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>角色名称</FormLabel>
+                <FormLabel>密码</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="password"
+                    value={field.value || ''}
+                    placeholder="输入密码"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="nickName"
+            rules={{ required: '昵称必填' }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>昵称</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     value={field.value || ''}
-                    placeholder="输入角色名称"
+                    placeholder="输入昵称"
                   />
                 </FormControl>
                 <FormMessage />
@@ -111,39 +100,17 @@ export function RoleEdit() {
 
           <FormField
             control={form.control}
-            name="description"
+            name="avatar"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>描述</FormLabel>
+                <FormLabel>头像</FormLabel>
                 <FormControl>
-                  <Textarea
-                    {...field}
-                    value={field.value || ''}
-                    placeholder="输入角色描述（可选）"
-                    rows={4}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="parentRoleIds"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>上级角色</FormLabel>
-                <FormControl>
-                  <ParentRoleSelect
-                    value={field.value || []}
+                  <ImageUpload
+                    value={field.value}
                     onChange={field.onChange}
-                    excludeRoleId={roleData?.id as string}
+                    limit={1}
                   />
                 </FormControl>
-                <FormDescription>
-                  选择此角色的上级角色，子角色将继承上级角色的所有权限
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -156,18 +123,15 @@ export function RoleEdit() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>状态</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={String(field.value) || ''}
-                >
+                <Select onValueChange={field.onChange} defaultValue={PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="选择状态" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value={PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.ENABLED}>启用</SelectItem>
-                    <SelectItem value={PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.DISABLED}>禁用</SelectItem>
+                    <SelectItem value={PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED}>启用</SelectItem>
+                    <SelectItem value={PathsApiAdminSystemDictGetParametersQueryStatus.DISABLED}>禁用</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -181,7 +145,7 @@ export function RoleEdit() {
               {...form.saveButtonProps}
               disabled={form.formState.isSubmitting}
             >
-              {form.formState.isSubmitting ? '更新中...' : '更新'}
+              {form.formState.isSubmitting ? '创建中...' : '创建'}
             </Button>
             <Button
               type="button"
@@ -193,6 +157,6 @@ export function RoleEdit() {
           </div>
         </form>
       </Form>
-    </EditView>
+    </CreateView>
   )
 }

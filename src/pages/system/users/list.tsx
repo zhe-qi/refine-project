@@ -2,7 +2,7 @@ import { useTable } from '@refinedev/react-table'
 import { createColumnHelper } from '@tanstack/react-table'
 import React from 'react'
 
-import { PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus } from '@/api/admin.d'
+import { PathsApiAdminSystemDictGetParametersQueryStatus } from '@/api/admin.d'
 import { DeleteButton } from '@/components/refine-ui/buttons/delete'
 import { EditButton } from '@/components/refine-ui/buttons/edit'
 import { ShowButton } from '@/components/refine-ui/buttons/show'
@@ -81,8 +81,8 @@ export function UserList() {
               table={table}
               defaultOperator="eq"
               options={[
-                { label: '启用', value: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.ENABLED },
-                { label: '禁用', value: PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.DISABLED },
+                { label: '启用', value: PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED },
+                { label: '禁用', value: PathsApiAdminSystemDictGetParametersQueryStatus.DISABLED },
               ]}
               placeholder="选择状态..."
             />
@@ -92,8 +92,8 @@ export function UserList() {
         cell: ({ getValue }: { getValue: () => string }) => {
           const status = getValue()
           const statusMap = {
-            [PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.ENABLED]: { label: '启用', variant: 'default' as const },
-            [PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
+            [PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED]: { label: '启用', variant: 'default' as const },
+            [PathsApiAdminSystemDictGetParametersQueryStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
           }
           const statusInfo = statusMap[status as keyof typeof statusMap] || {
             label: '未知',

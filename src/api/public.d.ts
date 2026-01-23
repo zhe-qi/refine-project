@@ -4,6 +4,125 @@
  */
 
 export interface paths {
+    "/api/dict/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 根据编码查询字典项 */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description 字典编码 */
+                    code: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 查询成功 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: {
+                                /** @description 字典编码 */
+                                code: string;
+                                /** @description 字典名称 */
+                                name: string;
+                                /** @description 字典项列表 */
+                                items: {
+                                    /** @description 显示文本 */
+                                    label: string;
+                                    /** @description 字典值 */
+                                    value: string;
+                                    /** @description 排序序号 */
+                                    sort: number;
+                                    /** @description 是否禁用 */
+                                    disabled?: boolean;
+                                    /** @description 标签颜色 */
+                                    color?: string;
+                                }[];
+                            };
+                        };
+                    };
+                };
+                /** @description Code参数错误 */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description 字典不存在或已禁用 */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/health": {
         parameters: {
             query?: never;

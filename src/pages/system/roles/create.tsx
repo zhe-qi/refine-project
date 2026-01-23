@@ -1,7 +1,7 @@
 import { useForm } from '@refinedev/react-hook-form'
 import { useNavigate } from 'react-router'
 
-import { PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus } from '@/api/admin.d'
+import { PathsApiAdminSystemDictGetParametersQueryStatus } from '@/api/admin.d'
 import { CreateView } from '@/components/refine-ui/views/create-view'
 import { Button } from '@/components/ui/button'
 import {
@@ -129,15 +129,15 @@ export function RoleCreate() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>状态</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.ENABLED}>
+                <Select onValueChange={field.onChange} defaultValue={PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="选择状态" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value={PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.ENABLED}>启用</SelectItem>
-                    <SelectItem value={PathsApiAdminSystemRolesGetResponses200ContentApplicationJsonDataStatus.DISABLED}>禁用</SelectItem>
+                    <SelectItem value={PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED}>启用</SelectItem>
+                    <SelectItem value={PathsApiAdminSystemDictGetParametersQueryStatus.DISABLED}>禁用</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

@@ -10,7 +10,7 @@ import routerProvider, {
   NavigateToResource,
   UnsavedChangesNotifier,
 } from '@refinedev/react-router'
-import { Globe, Settings, ShieldCheck, Users } from 'lucide-react'
+import { BookOpen, Globe, Settings, ShieldCheck, Users } from 'lucide-react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router'
 import { accessControlProvider } from '@/providers/access-control'
 import { authProvider } from '@/providers/auth-provider'
@@ -28,14 +28,20 @@ import {
   RoleEdit,
   RoleList,
   RoleShow,
-} from './pages/roles'
+} from './pages/system/roles'
+import {
+  DictCreate,
+  DictEdit,
+  DictList,
+  DictShow,
+} from './pages/system/dict'
 import {
   UserAssignRoles,
   UserCreate,
   UserEdit,
   UserList,
   UserShow,
-} from './pages/users'
+} from './pages/system/users'
 
 import './App.css'
 
@@ -105,6 +111,19 @@ function App() {
                   },
                 },
                 {
+                  name: 'system/dict',
+                  list: '/system/dict',
+                  create: '/system/dict/create',
+                  edit: '/system/dict/edit/:id',
+                  show: '/system/dict/show/:id',
+                  meta: {
+                    label: '字典管理',
+                    canDelete: true,
+                    parent: 'system',
+                    icon: <BookOpen size={16} />,
+                  },
+                },
+                {
                   name: 'common',
                   meta: {
                     label: '通用资源',
@@ -160,6 +179,12 @@ function App() {
                     <Route path="create" element={<RoleCreate />} />
                     <Route path="edit/:id" element={<RoleEdit />} />
                     <Route path="show/:id" element={<RoleShow />} />
+                  </Route>
+                  <Route path="/system/dict">
+                    <Route index element={<DictList />} />
+                    <Route path="create" element={<DictCreate />} />
+                    <Route path="edit/:id" element={<DictEdit />} />
+                    <Route path="show/:id" element={<DictShow />} />
                   </Route>
                   <Route path="*" element={<ErrorComponent />} />
                 </Route>
