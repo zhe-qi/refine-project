@@ -87,13 +87,15 @@ export function DictList() {
         enableSorting: false,
         cell: ({ getValue }) => {
           const description = getValue()
-          return description ? (
-            <div className="max-w-xs truncate">
-              {description}
-            </div>
-          ) : (
-            '-'
-          )
+          return description
+            ? (
+                <div className="max-w-xs truncate">
+                  {description}
+                </div>
+              )
+            : (
+                '-'
+              )
         },
       }),
       columnHelper.accessor('items', {

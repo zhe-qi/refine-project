@@ -1,7 +1,7 @@
 import { useForm } from '@refinedev/react-hook-form'
+import { Plus, Trash2 } from 'lucide-react'
 import { useFieldArray } from 'react-hook-form'
 import { useNavigate } from 'react-router'
-import { Plus, Trash2 } from 'lucide-react'
 
 import { PathsApiAdminSystemDictGetParametersQueryStatus } from '@/api/admin.d'
 import { CreateView } from '@/components/refine-ui/views/create-view'
@@ -200,157 +200,159 @@ export function DictCreate() {
               </div>
             </CardHeader>
             <CardContent>
-              {fields.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">
-                  暂无字典项，点击上方按钮添加
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {fields.map((field, index) => (
-                    <div
-                      key={field.id}
-                      className="grid grid-cols-12 gap-4 items-start border p-4 rounded-lg"
-                    >
-                      <div className="col-span-3">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.label`}
-                          rules={{
-                            required: '显示文本不能为空',
-                            maxLength: {
-                              value: 64,
-                              message: '最多64个字符',
-                            },
-                          }}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>显示文本 *</FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  value={field.value || ''}
-                                  placeholder="如：启用"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="col-span-3">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.value`}
-                          rules={{
-                            required: '字典值不能为空',
-                            maxLength: {
-                              value: 64,
-                              message: '最多64个字符',
-                            },
-                          }}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>字典值 *</FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  value={field.value || ''}
-                                  placeholder="如：ENABLED"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="col-span-2">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.sort`}
-                          rules={{
-                            min: {
-                              value: 0,
-                              message: '不能为负数',
-                            },
-                          }}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>排序</FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  type="number"
-                                  value={field.value}
-                                  onChange={e => field.onChange(Number(e.target.value))}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="col-span-2">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.color`}
-                          rules={{
-                            maxLength: {
-                              value: 32,
-                              message: '最多32个字符',
-                            },
-                          }}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>颜色</FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  value={field.value || ''}
-                                  placeholder="#1890ff"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="col-span-1 flex flex-col">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.disabled`}
-                          render={({ field }) => (
-                            <FormItem className="flex flex-col">
-                              <FormLabel>禁用</FormLabel>
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="col-span-1 flex flex-col">
-                        <FormLabel>&nbsp;</FormLabel>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => remove(index)}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </div>
+              {fields.length === 0
+                ? (
+                    <div className="text-center text-muted-foreground py-8">
+                      暂无字典项，点击上方按钮添加
                     </div>
-                  ))}
-                </div>
-              )}
+                  )
+                : (
+                    <div className="space-y-4">
+                      {fields.map((field, index) => (
+                        <div
+                          key={field.id}
+                          className="grid grid-cols-12 gap-4 items-start border p-4 rounded-lg"
+                        >
+                          <div className="col-span-3">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.label`}
+                              rules={{
+                                required: '显示文本不能为空',
+                                maxLength: {
+                                  value: 64,
+                                  message: '最多64个字符',
+                                },
+                              }}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>显示文本 *</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      value={field.value || ''}
+                                      placeholder="如：启用"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <div className="col-span-3">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.value`}
+                              rules={{
+                                required: '字典值不能为空',
+                                maxLength: {
+                                  value: 64,
+                                  message: '最多64个字符',
+                                },
+                              }}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>字典值 *</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      value={field.value || ''}
+                                      placeholder="如：ENABLED"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <div className="col-span-2">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.sort`}
+                              rules={{
+                                min: {
+                                  value: 0,
+                                  message: '不能为负数',
+                                },
+                              }}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>排序</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      type="number"
+                                      value={field.value}
+                                      onChange={e => field.onChange(Number(e.target.value))}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <div className="col-span-2">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.color`}
+                              rules={{
+                                maxLength: {
+                                  value: 32,
+                                  message: '最多32个字符',
+                                },
+                              }}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>颜色</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      value={field.value || ''}
+                                      placeholder="#1890ff"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <div className="col-span-1 flex flex-col">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.disabled`}
+                              render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                  <FormLabel>禁用</FormLabel>
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value}
+                                      onCheckedChange={field.onChange}
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <div className="col-span-1 flex flex-col">
+                            <FormLabel>&nbsp;</FormLabel>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => remove(index)}
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
             </CardContent>
           </Card>
 

@@ -43,6 +43,7 @@ export function DictShow() {
     id,
   })
 
+  // eslint-disable-next-line react/no-nested-component-definitions
   const StatusBadge = ({ status }: { status: string }) => {
     const statusMap = {
       [PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED]: { label: '启用', variant: 'default' as const },
@@ -109,52 +110,56 @@ export function DictShow() {
             <CardTitle>字典项列表</CardTitle>
           </CardHeader>
           <CardContent>
-            {dict.items.length === 0 ? (
-              <div className="text-center text-muted-foreground py-8">
-                暂无字典项
-              </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>排序</TableHead>
-                    <TableHead>显示文本</TableHead>
-                    <TableHead>字典值</TableHead>
-                    <TableHead>颜色</TableHead>
-                    <TableHead>状态</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {dict.items
-                    .sort((a, b) => a.sort - b.sort)
-                    .map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{item.sort}</TableCell>
-                        <TableCell>{item.label}</TableCell>
-                        <TableCell className="font-mono">{item.value}</TableCell>
-                        <TableCell>
-                          {item.color ? (
-                            <div className="flex items-center gap-2">
-                              <div
-                                className="w-6 h-6 rounded border"
-                                style={{ backgroundColor: item.color }}
-                              />
-                              <span className="text-sm">{item.color}</span>
-                            </div>
-                          ) : (
-                            '-'
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={item.disabled ? 'secondary' : 'default'}>
-                            {item.disabled ? '禁用' : '启用'}
-                          </Badge>
-                        </TableCell>
+            {dict.items.length === 0
+              ? (
+                  <div className="text-center text-muted-foreground py-8">
+                    暂无字典项
+                  </div>
+                )
+              : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>排序</TableHead>
+                        <TableHead>显示文本</TableHead>
+                        <TableHead>字典值</TableHead>
+                        <TableHead>颜色</TableHead>
+                        <TableHead>状态</TableHead>
                       </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            )}
+                    </TableHeader>
+                    <TableBody>
+                      {dict.items
+                        .sort((a, b) => a.sort - b.sort)
+                        .map((item, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{item.sort}</TableCell>
+                            <TableCell>{item.label}</TableCell>
+                            <TableCell className="font-mono">{item.value}</TableCell>
+                            <TableCell>
+                              {item.color
+                                ? (
+                                    <div className="flex items-center gap-2">
+                                      <div
+                                        className="w-6 h-6 rounded border"
+                                        style={{ backgroundColor: item.color }}
+                                      />
+                                      <span className="text-sm">{item.color}</span>
+                                    </div>
+                                  )
+                                : (
+                                    '-'
+                                  )}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={item.disabled ? 'secondary' : 'default'}>
+                                {item.disabled ? '禁用' : '启用'}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                )}
           </CardContent>
         </Card>
       </div>
