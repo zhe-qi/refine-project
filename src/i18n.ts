@@ -49,6 +49,19 @@ const resources = {
             createdAt: '创建时间',
           },
         },
+        'system/param': {
+          name: '参数',
+          fields: {
+            id: 'ID',
+            key: '参数键',
+            name: '参数名称',
+            value: '参数值',
+            valueType: '值类型',
+            description: '描述',
+            status: '状态',
+            createdAt: '创建时间',
+          },
+        },
         'system/users': {
           name: '用户',
           fields: {

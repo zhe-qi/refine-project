@@ -10,7 +10,7 @@ import routerProvider, {
   NavigateToResource,
   UnsavedChangesNotifier,
 } from '@refinedev/react-router'
-import { BookOpen, Globe, Settings, ShieldCheck, Users } from 'lucide-react'
+import { BookOpen, Cog, Globe, Settings, ShieldCheck, Users } from 'lucide-react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router'
 import { accessControlProvider } from '@/providers/access-control'
 import { authProvider } from '@/providers/auth-provider'
@@ -35,6 +35,12 @@ import {
   DictList,
   DictShow,
 } from './pages/system/dict'
+import {
+  ParamCreate,
+  ParamEdit,
+  ParamList,
+  ParamShow,
+} from './pages/system/param'
 import {
   UserAssignRoles,
   UserCreate,
@@ -124,6 +130,19 @@ function App() {
                   },
                 },
                 {
+                  name: 'system/param',
+                  list: '/system/param',
+                  create: '/system/param/create',
+                  edit: '/system/param/edit/:id',
+                  show: '/system/param/show/:id',
+                  meta: {
+                    label: '参数配置',
+                    canDelete: true,
+                    parent: 'system',
+                    icon: <Cog size={16} />,
+                  },
+                },
+                {
                   name: 'common',
                   meta: {
                     label: '通用资源',
@@ -185,6 +204,12 @@ function App() {
                     <Route path="create" element={<DictCreate />} />
                     <Route path="edit/:id" element={<DictEdit />} />
                     <Route path="show/:id" element={<DictShow />} />
+                  </Route>
+                  <Route path="/system/param">
+                    <Route index element={<ParamList />} />
+                    <Route path="create" element={<ParamCreate />} />
+                    <Route path="edit/:id" element={<ParamEdit />} />
+                    <Route path="show/:id" element={<ParamShow />} />
                   </Route>
                   <Route path="*" element={<ErrorComponent />} />
                 </Route>
