@@ -2,7 +2,7 @@ import { useForm } from '@refinedev/react-hook-form'
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router'
 
-import { PathsApiAdminSystemDictGetParametersQueryStatus } from '@/api/admin.d'
+import { PathsApiAdminSystemDictsGetParametersQueryStatus } from '@/api/admin.d'
 import { EditView } from '@/components/refine-ui/views/edit-view'
 import { Button } from '@/components/ui/button'
 import {
@@ -166,8 +166,8 @@ export function RoleEdit() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value={PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED}>启用</SelectItem>
-                    <SelectItem value={PathsApiAdminSystemDictGetParametersQueryStatus.DISABLED}>禁用</SelectItem>
+                    <SelectItem value={PathsApiAdminSystemDictsGetParametersQueryStatus.ENABLED}>启用</SelectItem>
+                    <SelectItem value={PathsApiAdminSystemDictsGetParametersQueryStatus.DISABLED}>禁用</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

@@ -3,7 +3,7 @@ import { Plus, Trash2 } from 'lucide-react'
 import { useFieldArray } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 
-import { PathsApiAdminSystemDictGetParametersQueryStatus } from '@/api/admin.d'
+import { PathsApiAdminSystemDictsGetParametersQueryStatus } from '@/api/admin.d'
 import { CreateView } from '@/components/refine-ui/views/create-view'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -52,7 +52,7 @@ export function DictCreate() {
     refineCoreProps: {},
     defaultValues: {
       items: [],
-      status: PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED,
+      status: PathsApiAdminSystemDictsGetParametersQueryStatus.ENABLED,
     },
   })
 
@@ -166,7 +166,7 @@ export function DictCreate() {
                     <FormLabel>状态</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED}
+                      defaultValue={PathsApiAdminSystemDictsGetParametersQueryStatus.ENABLED}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -174,10 +174,10 @@ export function DictCreate() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED}>
+                        <SelectItem value={PathsApiAdminSystemDictsGetParametersQueryStatus.ENABLED}>
                           启用
                         </SelectItem>
-                        <SelectItem value={PathsApiAdminSystemDictGetParametersQueryStatus.DISABLED}>
+                        <SelectItem value={PathsApiAdminSystemDictsGetParametersQueryStatus.DISABLED}>
                           禁用
                         </SelectItem>
                       </SelectContent>

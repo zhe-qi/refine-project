@@ -37,7 +37,7 @@ const resources = {
         progress: '处理中',
       },
       resources: {
-        'system/dict': {
+        'system/dicts': {
           name: '字典',
           fields: {
             id: 'ID',
@@ -49,7 +49,7 @@ const resources = {
             createdAt: '创建时间',
           },
         },
-        'system/param': {
+        'system/params': {
           name: '参数',
           fields: {
             id: 'ID',

@@ -857,7 +857,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/admin/system/dict": {
+    "/api/admin/system/dicts": {
         parameters: {
             query?: never;
             header?: never;
@@ -873,7 +873,7 @@ export interface paths {
                     /** @description 每页大小 */
                     pageSize?: number;
                     /** @description 分页模式：server=服务端分页，client=客户端分页，off=不分页 */
-                    mode?: PathsApiAdminSystemDictGetParametersQueryMode;
+                    mode?: PathsApiAdminSystemDictsGetParametersQueryMode;
                     /** @description 过滤条件，JSON 字符串格式 */
                     filters?: string;
                     /** @description 排序条件，JSON 字符串格式 */
@@ -883,7 +883,7 @@ export interface paths {
                     /** @description 字典名称（模糊搜索） */
                     name?: string;
                     /** @description 状态 */
-                    status?: PathsApiAdminSystemDictGetParametersQueryStatus;
+                    status?: PathsApiAdminSystemDictsGetParametersQueryStatus;
                 };
                 header?: never;
                 path?: never;
@@ -926,7 +926,7 @@ export interface paths {
                                  * @description 状态 (ENABLED=启用, DISABLED=禁用)
                                  * @enum {string}
                                  */
-                                status: PathsApiAdminSystemDictGetParametersQueryStatus;
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
                             }[];
                         };
                     };
@@ -1032,7 +1032,7 @@ export interface paths {
                          * @description 状态
                          * @enum {string}
                          */
-                        status?: PathsApiAdminSystemDictGetParametersQueryStatus;
+                        status?: PathsApiAdminSystemDictsGetParametersQueryStatus;
                     };
                 };
             };
@@ -1072,7 +1072,7 @@ export interface paths {
                                  * @description 状态 (ENABLED=启用, DISABLED=禁用)
                                  * @enum {string}
                                  */
-                                status: PathsApiAdminSystemDictGetParametersQueryStatus;
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
                             };
                         };
                     };
@@ -1175,7 +1175,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/admin/system/dict/{id}": {
+    "/api/admin/system/dicts/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1230,7 +1230,7 @@ export interface paths {
                                  * @description 状态 (ENABLED=启用, DISABLED=禁用)
                                  * @enum {string}
                                  */
-                                status: PathsApiAdminSystemDictGetParametersQueryStatus;
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
                             };
                         };
                     };
@@ -1434,7 +1434,7 @@ export interface paths {
                          * @description 状态
                          * @enum {string}
                          */
-                        status?: PathsApiAdminSystemDictGetParametersQueryStatus;
+                        status?: PathsApiAdminSystemDictsGetParametersQueryStatus;
                     };
                 };
             };
@@ -1474,7 +1474,7 @@ export interface paths {
                                  * @description 状态 (ENABLED=启用, DISABLED=禁用)
                                  * @enum {string}
                                  */
-                                status: PathsApiAdminSystemDictGetParametersQueryStatus;
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
                             };
                         };
                     };
@@ -1573,6 +1573,716 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/admin/system/params": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 获取参数列表 */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description 当前页码 */
+                    current?: number;
+                    /** @description 每页大小 */
+                    pageSize?: number;
+                    /** @description 分页模式：server=服务端分页，client=客户端分页，off=不分页 */
+                    mode?: PathsApiAdminSystemDictsGetParametersQueryMode;
+                    /** @description 过滤条件，JSON 字符串格式 */
+                    filters?: string;
+                    /** @description 排序条件，JSON 字符串格式 */
+                    sorters?: string;
+                    /** @description 参数键（模糊搜索） */
+                    key?: string;
+                    /** @description 参数名称（模糊搜索） */
+                    name?: string;
+                    /** @description 状态 */
+                    status?: PathsApiAdminSystemDictsGetParametersQueryStatus;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 列表响应成功 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: {
+                                /**
+                                 * Format: uuid
+                                 * @description 参数ID
+                                 */
+                                id: string;
+                                /** @description 创建时间 */
+                                createdAt: string | null;
+                                /** @description 创建人 */
+                                createdBy: string | null;
+                                /** @description 更新时间 */
+                                updatedAt: string | null;
+                                /** @description 更新人 */
+                                updatedBy: string | null;
+                                /** @description 参数键 */
+                                key: string;
+                                /** @description 参数值 */
+                                value: string;
+                                /**
+                                 * @description 参数值类型 (STRING=字符串, NUMBER=数字, BOOLEAN=布尔值, JSON=JSON对象)
+                                 * @enum {string}
+                                 */
+                                valueType: PathsApiAdminSystemParamsGetResponses200ContentApplicationJsonDataValueType;
+                                /** @description 参数名称 */
+                                name: string;
+                                /** @description 参数描述 */
+                                description: string | null;
+                                /**
+                                 * @description 状态 (ENABLED=启用, DISABLED=禁用)
+                                 * @enum {string}
+                                 */
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
+                            }[];
+                        };
+                    };
+                };
+                /** @description 查询参数验证错误 */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description 服务器内部错误 */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** 创建参数 */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            /** @description 创建参数 */
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @description 参数键 */
+                        key: string;
+                        /** @description 参数值 */
+                        value: string;
+                        /**
+                         * @description 参数值类型
+                         * @enum {string}
+                         */
+                        valueType?: PathsApiAdminSystemParamsGetResponses200ContentApplicationJsonDataValueType;
+                        /** @description 参数名称 */
+                        name: string;
+                        /** @description 参数描述 */
+                        description?: string;
+                        /**
+                         * @description 状态
+                         * @enum {string}
+                         */
+                        status?: PathsApiAdminSystemDictsGetParametersQueryStatus;
+                    };
+                };
+            };
+            responses: {
+                /** @description 创建成功 */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: {
+                                /**
+                                 * Format: uuid
+                                 * @description 参数ID
+                                 */
+                                id: string;
+                                /** @description 创建时间 */
+                                createdAt: string | null;
+                                /** @description 创建人 */
+                                createdBy: string | null;
+                                /** @description 更新时间 */
+                                updatedAt: string | null;
+                                /** @description 更新人 */
+                                updatedBy: string | null;
+                                /** @description 参数键 */
+                                key: string;
+                                /** @description 参数值 */
+                                value: string;
+                                /**
+                                 * @description 参数值类型 (STRING=字符串, NUMBER=数字, BOOLEAN=布尔值, JSON=JSON对象)
+                                 * @enum {string}
+                                 */
+                                valueType: PathsApiAdminSystemParamsGetResponses200ContentApplicationJsonDataValueType;
+                                /** @description 参数名称 */
+                                name: string;
+                                /** @description 参数描述 */
+                                description: string | null;
+                                /**
+                                 * @description 状态 (ENABLED=启用, DISABLED=禁用)
+                                 * @enum {string}
+                                 */
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
+                            };
+                        };
+                    };
+                };
+                /** @description 请求参数错误 */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description 参数键已存在 */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description 参数验证失败 */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/system/params/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 获取参数详情 */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description 参数ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 获取成功 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: {
+                                /**
+                                 * Format: uuid
+                                 * @description 参数ID
+                                 */
+                                id: string;
+                                /** @description 创建时间 */
+                                createdAt: string | null;
+                                /** @description 创建人 */
+                                createdBy: string | null;
+                                /** @description 更新时间 */
+                                updatedAt: string | null;
+                                /** @description 更新人 */
+                                updatedBy: string | null;
+                                /** @description 参数键 */
+                                key: string;
+                                /** @description 参数值 */
+                                value: string;
+                                /**
+                                 * @description 参数值类型 (STRING=字符串, NUMBER=数字, BOOLEAN=布尔值, JSON=JSON对象)
+                                 * @enum {string}
+                                 */
+                                valueType: PathsApiAdminSystemParamsGetResponses200ContentApplicationJsonDataValueType;
+                                /** @description 参数名称 */
+                                name: string;
+                                /** @description 参数描述 */
+                                description: string | null;
+                                /**
+                                 * @description 状态 (ENABLED=启用, DISABLED=禁用)
+                                 * @enum {string}
+                                 */
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
+                            };
+                        };
+                    };
+                };
+                /** @description ID参数错误 */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description 参数不存在 */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /** 删除参数 */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description 参数ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 删除成功 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: {
+                                /**
+                                 * Format: uuid
+                                 * @description 参数ID
+                                 */
+                                id: string;
+                            };
+                        };
+                    };
+                };
+                /** @description ID参数错误 */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description 参数不存在 */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        /** 更新参数 */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description 参数ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            /** @description 更新参数 */
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @description 参数键 */
+                        key?: string;
+                        /** @description 参数值 */
+                        value?: string;
+                        /**
+                         * @description 参数值类型
+                         * @enum {string}
+                         */
+                        valueType?: PathsApiAdminSystemParamsGetResponses200ContentApplicationJsonDataValueType;
+                        /** @description 参数名称 */
+                        name?: string;
+                        /** @description 参数描述 */
+                        description?: string;
+                        /**
+                         * @description 状态
+                         * @enum {string}
+                         */
+                        status?: PathsApiAdminSystemDictsGetParametersQueryStatus;
+                    };
+                };
+            };
+            responses: {
+                /** @description 更新成功 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: {
+                                /**
+                                 * Format: uuid
+                                 * @description 参数ID
+                                 */
+                                id: string;
+                                /** @description 创建时间 */
+                                createdAt: string | null;
+                                /** @description 创建人 */
+                                createdBy: string | null;
+                                /** @description 更新时间 */
+                                updatedAt: string | null;
+                                /** @description 更新人 */
+                                updatedBy: string | null;
+                                /** @description 参数键 */
+                                key: string;
+                                /** @description 参数值 */
+                                value: string;
+                                /**
+                                 * @description 参数值类型 (STRING=字符串, NUMBER=数字, BOOLEAN=布尔值, JSON=JSON对象)
+                                 * @enum {string}
+                                 */
+                                valueType: PathsApiAdminSystemParamsGetResponses200ContentApplicationJsonDataValueType;
+                                /** @description 参数名称 */
+                                name: string;
+                                /** @description 参数描述 */
+                                description: string | null;
+                                /**
+                                 * @description 状态 (ENABLED=启用, DISABLED=禁用)
+                                 * @enum {string}
+                                 */
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
+                            };
+                        };
+                    };
+                };
+                /** @description 请求参数错误 */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description 参数不存在 */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description 参数键已存在 */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
     "/api/admin/system/roles": {
         parameters: {
             query?: never;
@@ -1589,7 +2299,7 @@ export interface paths {
                     /** @description 每页大小 */
                     pageSize?: number;
                     /** @description 分页模式：server=服务端分页，client=客户端分页，off=不分页 */
-                    mode?: PathsApiAdminSystemDictGetParametersQueryMode;
+                    mode?: PathsApiAdminSystemDictsGetParametersQueryMode;
                     /** @description 过滤条件，JSON 字符串格式 */
                     filters?: string;
                     /** @description 排序条件，JSON 字符串格式 */
@@ -1623,7 +2333,7 @@ export interface paths {
                                  * @description 状态 (ENABLED=启用, DISABLED=禁用)
                                  * @enum {string}
                                  */
-                                status: PathsApiAdminSystemDictGetParametersQueryStatus;
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
                                 /** @description 上级角色列表 */
                                 parentRoles?: string[];
                             }[];
@@ -1709,7 +2419,7 @@ export interface paths {
                         name: string;
                         description?: string | null;
                         /** @enum {string} */
-                        status?: PathsApiAdminSystemDictGetParametersQueryStatus;
+                        status?: PathsApiAdminSystemDictsGetParametersQueryStatus;
                         /** @description 上级角色ID列表 */
                         parentRoleIds?: string[];
                     };
@@ -1738,7 +2448,7 @@ export interface paths {
                                  * @description 状态 (ENABLED=启用, DISABLED=禁用)
                                  * @enum {string}
                                  */
-                                status: PathsApiAdminSystemDictGetParametersQueryStatus;
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
                                 /** @description 上级角色列表 */
                                 parentRoles?: string[];
                             };
@@ -1885,7 +2595,7 @@ export interface paths {
                                  * @description 状态 (ENABLED=启用, DISABLED=禁用)
                                  * @enum {string}
                                  */
-                                status: PathsApiAdminSystemDictGetParametersQueryStatus;
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
                                 /** @description 上级角色列表 */
                                 parentRoles?: string[];
                             };
@@ -2066,7 +2776,7 @@ export interface paths {
                         name?: string;
                         description?: string | null;
                         /** @enum {string} */
-                        status?: PathsApiAdminSystemDictGetParametersQueryStatus;
+                        status?: PathsApiAdminSystemDictsGetParametersQueryStatus;
                         /** @description 上级角色ID列表 */
                         parentRoleIds?: string[];
                     };
@@ -2095,7 +2805,7 @@ export interface paths {
                                  * @description 状态 (ENABLED=启用, DISABLED=禁用)
                                  * @enum {string}
                                  */
-                                status: PathsApiAdminSystemDictGetParametersQueryStatus;
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
                                 /** @description 上级角色列表 */
                                 parentRoles?: string[];
                             };
@@ -2465,7 +3175,7 @@ export interface paths {
                                  * @description 状态 (ENABLED=启用, DISABLED=禁用)
                                  * @enum {string}
                                  */
-                                status: PathsApiAdminSystemDictGetParametersQueryStatus;
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
                                 /** @description 用户角色 */
                                 roles: {
                                     /** @description 角色ID */
@@ -2686,7 +3396,7 @@ export interface paths {
                         /** @description 用户昵称 */
                         nickName?: string;
                         /** @enum {string} */
-                        status?: PathsApiAdminSystemDictGetParametersQueryStatus;
+                        status?: PathsApiAdminSystemDictsGetParametersQueryStatus;
                     };
                 };
             };
@@ -2720,7 +3430,7 @@ export interface paths {
                                  * @description 状态 (ENABLED=启用, DISABLED=禁用)
                                  * @enum {string}
                                  */
-                                status: PathsApiAdminSystemDictGetParametersQueryStatus;
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
                             };
                         };
                     };
@@ -2835,7 +3545,7 @@ export interface paths {
                     /** @description 每页大小 */
                     pageSize?: number;
                     /** @description 分页模式：server=服务端分页，client=客户端分页，off=不分页 */
-                    mode?: PathsApiAdminSystemDictGetParametersQueryMode;
+                    mode?: PathsApiAdminSystemDictsGetParametersQueryMode;
                     /** @description 过滤条件，JSON 字符串格式 */
                     filters?: string;
                     /** @description 排序条件，JSON 字符串格式 */
@@ -2876,7 +3586,7 @@ export interface paths {
                                  * @description 状态 (ENABLED=启用, DISABLED=禁用)
                                  * @enum {string}
                                  */
-                                status: PathsApiAdminSystemDictGetParametersQueryStatus;
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
                                 /** @description 用户角色 */
                                 roles: {
                                     /** @description 角色ID */
@@ -2971,7 +3681,7 @@ export interface paths {
                         /** @description 用户昵称 */
                         nickName: string;
                         /** @enum {string} */
-                        status?: PathsApiAdminSystemDictGetParametersQueryStatus;
+                        status?: PathsApiAdminSystemDictsGetParametersQueryStatus;
                     };
                 };
             };
@@ -3005,7 +3715,7 @@ export interface paths {
                                  * @description 状态 (ENABLED=启用, DISABLED=禁用)
                                  * @enum {string}
                                  */
-                                status: PathsApiAdminSystemDictGetParametersQueryStatus;
+                                status: PathsApiAdminSystemDictsGetParametersQueryStatus;
                             };
                         };
                     };
@@ -3235,13 +3945,19 @@ export interface components {
     pathItems: never;
 }
 export type $defs = Record<string, never>;
-export enum PathsApiAdminSystemDictGetParametersQueryMode {
+export enum PathsApiAdminSystemDictsGetParametersQueryMode {
     server = "server",
     client = "client",
     off = "off"
 }
-export enum PathsApiAdminSystemDictGetParametersQueryStatus {
+export enum PathsApiAdminSystemDictsGetParametersQueryStatus {
     ENABLED = "ENABLED",
     DISABLED = "DISABLED"
+}
+export enum PathsApiAdminSystemParamsGetResponses200ContentApplicationJsonDataValueType {
+    STRING = "STRING",
+    NUMBER = "NUMBER",
+    BOOLEAN = "BOOLEAN",
+    JSON = "JSON"
 }
 export type operations = Record<string, never>;

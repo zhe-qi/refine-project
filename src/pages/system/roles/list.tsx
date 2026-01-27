@@ -2,7 +2,7 @@ import { useTable } from '@refinedev/react-table'
 import { createColumnHelper } from '@tanstack/react-table'
 import React from 'react'
 
-import { PathsApiAdminSystemDictGetParametersQueryStatus } from '@/api/admin.d'
+import { PathsApiAdminSystemDictsGetParametersQueryStatus } from '@/api/admin.d'
 import { DeleteButton } from '@/components/refine-ui/buttons/delete'
 import { EditButton } from '@/components/refine-ui/buttons/edit'
 import { ShowButton } from '@/components/refine-ui/buttons/show'
@@ -93,8 +93,8 @@ export function RoleList() {
               table={table}
               defaultOperator="eq"
               options={[
-                { label: '启用', value: PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED },
-                { label: '禁用', value: PathsApiAdminSystemDictGetParametersQueryStatus.DISABLED },
+                { label: '启用', value: PathsApiAdminSystemDictsGetParametersQueryStatus.ENABLED },
+                { label: '禁用', value: PathsApiAdminSystemDictsGetParametersQueryStatus.DISABLED },
               ]}
               placeholder="选择状态..."
             />
@@ -104,8 +104,8 @@ export function RoleList() {
         cell: ({ getValue }: { getValue: () => string }) => {
           const status = getValue()
           const statusMap = {
-            [PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED]: { label: '启用', variant: 'default' as const },
-            [PathsApiAdminSystemDictGetParametersQueryStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
+            [PathsApiAdminSystemDictsGetParametersQueryStatus.ENABLED]: { label: '启用', variant: 'default' as const },
+            [PathsApiAdminSystemDictsGetParametersQueryStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
           }
           const statusInfo = statusMap[status as keyof typeof statusMap] || {
             label: '未知',

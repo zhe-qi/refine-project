@@ -3,7 +3,7 @@ import { Plus, Trash2 } from 'lucide-react'
 import { useFieldArray } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router'
 
-import { PathsApiAdminSystemDictGetParametersQueryStatus } from '@/api/admin.d'
+import { PathsApiAdminSystemDictsGetParametersQueryStatus } from '@/api/admin.d'
 import { EditView } from '@/components/refine-ui/views/edit-view'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -184,10 +184,10 @@ export function DictEdit() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED}>
+                        <SelectItem value={PathsApiAdminSystemDictsGetParametersQueryStatus.ENABLED}>
                           启用
                         </SelectItem>
-                        <SelectItem value={PathsApiAdminSystemDictGetParametersQueryStatus.DISABLED}>
+                        <SelectItem value={PathsApiAdminSystemDictsGetParametersQueryStatus.DISABLED}>
                           禁用
                         </SelectItem>
                       </SelectContent>

@@ -37,7 +37,7 @@ export function ParamShow() {
   const { id } = useParams<{ id: string }>()
 
   const { result: param } = useShow<Param>({
-    resource: 'system/param',
+    resource: 'system/params',
     id,
   })
 

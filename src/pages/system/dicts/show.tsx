@@ -1,7 +1,7 @@
 import { useShow } from '@refinedev/core'
 import { useParams } from 'react-router'
 
-import { PathsApiAdminSystemDictGetParametersQueryStatus } from '@/api/admin.d'
+import { PathsApiAdminSystemDictsGetParametersQueryStatus } from '@/api/admin.d'
 import { ShowView } from '@/components/refine-ui/views/show-view'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -39,15 +39,15 @@ export function DictShow() {
   const { id } = useParams<{ id: string }>()
 
   const { result: dict } = useShow<Dict>({
-    resource: 'system/dict',
+    resource: 'system/dicts',
     id,
   })
 
   // eslint-disable-next-line react/no-nested-component-definitions
   const StatusBadge = ({ status }: { status: string }) => {
     const statusMap = {
-      [PathsApiAdminSystemDictGetParametersQueryStatus.ENABLED]: { label: '启用', variant: 'default' as const },
-      [PathsApiAdminSystemDictGetParametersQueryStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
+      [PathsApiAdminSystemDictsGetParametersQueryStatus.ENABLED]: { label: '启用', variant: 'default' as const },
+      [PathsApiAdminSystemDictsGetParametersQueryStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
     }
     const statusInfo = statusMap[status as keyof typeof statusMap] || {
       label: '未知',

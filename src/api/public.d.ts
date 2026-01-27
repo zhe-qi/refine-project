@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/api/dict/{code}": {
+    "/api/dicts/{code}": {
         parameters: {
             query?: never;
             header?: never;
@@ -169,6 +169,119 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/params/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 根据键查询参数 */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description 参数键 */
+                    key: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 查询成功 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: {
+                                /** @description 参数键 */
+                                key: string;
+                                /** @description 参数值 */
+                                value: string;
+                                /**
+                                 * @description 参数值类型
+                                 * @enum {string}
+                                 */
+                                valueType: PathsApiParamsKeyGetResponses200ContentApplicationJsonDataValueType;
+                                /** @description 参数名称 */
+                                name: string;
+                            };
+                        };
+                    };
+                };
+                /** @description Key参数错误 */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description 参数不存在或已禁用 */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description 错误信息 */
+                            message?: string;
+                            /** @description 错误堆栈 */
+                            stack?: string;
+                            /** @description 错误对象 */
+                            error?: {
+                                /** @description 错误名称 */
+                                name: string;
+                                /** @description 错误详情 */
+                                issues?: {
+                                    /** @description 错误码 */
+                                    code: string;
+                                    /** @description 错误路径 */
+                                    path: (string | number)[];
+                                    /** @description 错误信息 */
+                                    message: string;
+                                }[];
+                            };
+                        } & {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -180,4 +293,10 @@ export interface components {
     pathItems: never;
 }
 export type $defs = Record<string, never>;
+export enum PathsApiParamsKeyGetResponses200ContentApplicationJsonDataValueType {
+    STRING = "STRING",
+    NUMBER = "NUMBER",
+    BOOLEAN = "BOOLEAN",
+    JSON = "JSON"
+}
 export type operations = Record<string, never>;

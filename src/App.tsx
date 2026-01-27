@@ -34,13 +34,13 @@ import {
   DictEdit,
   DictList,
   DictShow,
-} from './pages/system/dict'
+} from './pages/system/dicts'
 import {
   ParamCreate,
   ParamEdit,
   ParamList,
   ParamShow,
-} from './pages/system/param'
+} from './pages/system/params'
 import {
   UserAssignRoles,
   UserCreate,
@@ -117,11 +117,11 @@ function App() {
                   },
                 },
                 {
-                  name: 'system/dict',
-                  list: '/system/dict',
-                  create: '/system/dict/create',
-                  edit: '/system/dict/edit/:id',
-                  show: '/system/dict/show/:id',
+                  name: 'system/dicts',
+                  list: '/system/dicts',
+                  create: '/system/dicts/create',
+                  edit: '/system/dicts/edit/:id',
+                  show: '/system/dicts/show/:id',
                   meta: {
                     label: '字典管理',
                     canDelete: true,
@@ -130,11 +130,11 @@ function App() {
                   },
                 },
                 {
-                  name: 'system/param',
-                  list: '/system/param',
-                  create: '/system/param/create',
-                  edit: '/system/param/edit/:id',
-                  show: '/system/param/show/:id',
+                  name: 'system/params',
+                  list: '/system/params',
+                  create: '/system/params/create',
+                  edit: '/system/params/edit/:id',
+                  show: '/system/params/show/:id',
                   meta: {
                     label: '参数配置',
                     canDelete: true,
@@ -199,13 +199,13 @@ function App() {
                     <Route path="edit/:id" element={<RoleEdit />} />
                     <Route path="show/:id" element={<RoleShow />} />
                   </Route>
-                  <Route path="/system/dict">
+                  <Route path="/system/dicts">
                     <Route index element={<DictList />} />
                     <Route path="create" element={<DictCreate />} />
                     <Route path="edit/:id" element={<DictEdit />} />
                     <Route path="show/:id" element={<DictShow />} />
                   </Route>
-                  <Route path="/system/param">
+                  <Route path="/system/params">
                     <Route index element={<ParamList />} />
                     <Route path="create" element={<ParamCreate />} />
                     <Route path="edit/:id" element={<ParamEdit />} />

@@ -2,6 +2,7 @@ import { useTable } from '@refinedev/react-table'
 import { createColumnHelper } from '@tanstack/react-table'
 import React from 'react'
 
+import { PathsApiAdminSystemDictsGetParametersQueryStatus } from '@/api/admin.d'
 import { DeleteButton } from '@/components/refine-ui/buttons/delete'
 import { EditButton } from '@/components/refine-ui/buttons/edit'
 import { ShowButton } from '@/components/refine-ui/buttons/show'
@@ -10,34 +11,27 @@ import { DataTableFilterCombobox, DataTableFilterDropdownText } from '@/componen
 import { ListView, ListViewHeader } from '@/components/refine-ui/views/list-view'
 import { Badge } from '@/components/ui/badge'
 
-// 状态枚举
-const Status = {
-  ENABLED: 'ENABLED',
-  DISABLED: 'DISABLED',
-} as const
-
-// 值类型枚举
-const ValueType = {
-  STRING: 'STRING',
-  NUMBER: 'NUMBER',
-  BOOLEAN: 'BOOLEAN',
-  JSON: 'JSON',
-} as const
-
-interface Param {
-  id: string
-  key: string
+interface DictItem {
+  label: string
   value: string
-  valueType: string
+  sort: number
+  disabled?: boolean
+  color?: string
+}
+
+interface Dict {
+  id: string
+  code: string
   name: string
   description: string | null
+  items: DictItem[]
   status: string
   createdAt: string | null
 }
 
-export function ParamList() {
+export function DictList() {
   const columns = React.useMemo(() => {
-    const columnHelper = createColumnHelper<Param>()
+    const columnHelper = createColumnHelper<Dict>()
 
     return [
       columnHelper.accessor('id', {
@@ -51,16 +45,16 @@ export function ParamList() {
         ),
       }),
       {
-        id: 'key',
-        accessorKey: 'key',
+        id: 'code',
+        accessorKey: 'code',
         header: ({ table }: { table: any }) => (
           <div className="flex items-center gap-1">
-            参数键
+            字典编码
             <DataTableFilterDropdownText
-              column={table.getColumn('key')!}
+              column={table.getColumn('code')!}
               table={table}
               defaultOperator="contains"
-              placeholder="搜索参数键..."
+              placeholder="搜索编码..."
             />
           </div>
         ),
@@ -76,7 +70,7 @@ export function ParamList() {
         accessorKey: 'name',
         header: ({ table }: { table: any }) => (
           <div className="flex items-center gap-1">
-            参数名称
+            字典名称
             <DataTableFilterDropdownText
               column={table.getColumn('name')!}
               table={table}
@@ -87,35 +81,6 @@ export function ParamList() {
         ),
         enableSorting: true,
       },
-      columnHelper.accessor('value', {
-        id: 'value',
-        header: '参数值',
-        enableSorting: false,
-        cell: ({ getValue }) => {
-          const value = getValue()
-          return (
-            <div className="max-w-xs truncate font-mono text-xs">
-              {value}
-            </div>
-          )
-        },
-      }),
-      columnHelper.accessor('valueType', {
-        id: 'valueType',
-        header: '值类型',
-        enableSorting: false,
-        cell: ({ getValue }) => {
-          const valueType = getValue()
-          const typeMap: Record<string, { label: string, variant: 'default' | 'secondary' | 'outline' }> = {
-            [ValueType.STRING]: { label: '字符串', variant: 'default' },
-            [ValueType.NUMBER]: { label: '数字', variant: 'secondary' },
-            [ValueType.BOOLEAN]: { label: '布尔', variant: 'outline' },
-            [ValueType.JSON]: { label: 'JSON', variant: 'secondary' },
-          }
-          const typeInfo = typeMap[valueType] || { label: valueType, variant: 'secondary' as const }
-          return <Badge variant={typeInfo.variant}>{typeInfo.label}</Badge>
-        },
-      }),
       columnHelper.accessor('description', {
         id: 'description',
         header: '描述',
@@ -133,6 +98,19 @@ export function ParamList() {
               )
         },
       }),
+      columnHelper.accessor('items', {
+        id: 'items',
+        header: '字典项数量',
+        enableSorting: false,
+        cell: ({ getValue }) => {
+          const items = getValue()
+          return (
+            <div className="text-center">
+              {items?.length || 0}
+            </div>
+          )
+        },
+      }),
       {
         id: 'status',
         accessorKey: 'status',
@@ -144,8 +122,8 @@ export function ParamList() {
               table={table}
               defaultOperator="eq"
               options={[
-                { label: '启用', value: Status.ENABLED },
-                { label: '禁用', value: Status.DISABLED },
+                { label: '启用', value: PathsApiAdminSystemDictsGetParametersQueryStatus.ENABLED },
+                { label: '禁用', value: PathsApiAdminSystemDictsGetParametersQueryStatus.DISABLED },
               ]}
               placeholder="选择状态..."
             />
@@ -155,8 +133,8 @@ export function ParamList() {
         cell: ({ getValue }: { getValue: () => string }) => {
           const status = getValue()
           const statusMap = {
-            [Status.ENABLED]: { label: '启用', variant: 'default' as const },
-            [Status.DISABLED]: { label: '禁用', variant: 'secondary' as const },
+            [PathsApiAdminSystemDictsGetParametersQueryStatus.ENABLED]: { label: '启用', variant: 'default' as const },
+            [PathsApiAdminSystemDictsGetParametersQueryStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
           }
           const statusInfo = statusMap[status as keyof typeof statusMap] || {
             label: '未知',
@@ -194,7 +172,7 @@ export function ParamList() {
     columns,
     refineCoreProps: {
       syncWithLocation: true,
-      resource: 'system/param',
+      resource: 'system/dicts',
     },
   })
 
