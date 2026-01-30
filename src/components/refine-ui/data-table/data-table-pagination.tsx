@@ -66,11 +66,11 @@ export function DataTablePagination({
           "whitespace-nowrap"
         )}
       >
-        {typeof total === "number" ? `${total} row(s)` : null}
+        {typeof total === "number" ? `共 ${total} 条` : null}
       </div>
       <div className={cn("flex", "items-center", "flex-wrap", "gap-2")}>
         <div className={cn("flex", "items-center", "gap-2")}>
-          <span className={cn("text-sm", "font-medium")}>Rows per page</span>
+          <span className={cn("text-sm", "font-medium")}>每页条数</span>
           <Select
             value={`${pageSize}`}
             onValueChange={(v) => setPageSize(Number(v))}
@@ -97,7 +97,7 @@ export function DataTablePagination({
               "font-medium"
             )}
           >
-            Page {currentPage} of {pageCount}
+            第 {currentPage} / {pageCount} 页
           </div>
           <div className={cn("flex", "items-center", "gap-2")}>
             <Button
