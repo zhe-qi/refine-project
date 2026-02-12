@@ -247,10 +247,10 @@ function DataTableNoData({
           }}
         >
           <div className={cn("text-lg", "font-semibold", "text-foreground")}>
-            No data to display
+            暂无数据
           </div>
           <div className={cn("text-sm", "text-muted-foreground")}>
-            This table is empty for the time being.
+            当前表格为空
           </div>
         </div>
       </TableCell>
