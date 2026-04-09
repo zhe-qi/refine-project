@@ -1,6 +1,6 @@
 import { useTable } from '@refinedev/react-table'
 import { createColumnHelper } from '@tanstack/react-table'
-import React from 'react'
+import * as React from 'react'
 
 import { PathsApiAdminSystemDictsGetParametersQueryStatus } from '@/api/admin.d'
 import { DeleteButton } from '@/components/refine-ui/buttons/delete'

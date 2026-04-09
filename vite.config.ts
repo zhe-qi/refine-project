@@ -1,6 +1,6 @@
 import path from 'node:path'
-import inject from '@rollup/plugin-inject'
 import babel from '@rolldown/plugin-babel'
+import inject from '@rollup/plugin-inject'
 import tailwindcss from '@tailwindcss/vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'

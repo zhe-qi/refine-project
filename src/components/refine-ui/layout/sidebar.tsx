@@ -8,7 +8,7 @@ import {
   useRefineOptions,
 } from '@refinedev/core'
 import { ChevronRight, ListIcon } from 'lucide-react'
-import React from 'react'
+import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Collapsible,

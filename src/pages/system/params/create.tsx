@@ -23,6 +23,8 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 
+const KEY_PATTERN = /^[a-z0-9_]+$/
+
 // 状态枚举
 const Status = {
   ENABLED: 'ENABLED',
@@ -81,7 +83,7 @@ export function ParamCreate() {
                 rules={{
                   required: '参数键不能为空',
                   pattern: {
-                    value: /^[a-z0-9_]+$/,
+                    value: KEY_PATTERN,
                     message: '只能包含小写字母、数字和下划线',
                   },
                   maxLength: {

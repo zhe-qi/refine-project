@@ -1,39 +1,40 @@
-"use client";
+'use client'
 
-import React from "react";
-import { type BaseKey, useDeleteButton } from "@refinedev/core";
-import { Loader2, Trash } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import type { BaseKey } from '@refinedev/core'
+import { useDeleteButton } from '@refinedev/core'
+import { Loader2, Trash } from 'lucide-react'
+import * as React from 'react'
+import { Button } from '@/components/ui/button'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover'
 
 type DeleteButtonProps = {
   /**
    * Resource name for API data interactions. `identifier` of the resource can be used instead of the `name` of the resource.
    * @default Inferred resource name from the route
    */
-  resource?: string;
+  resource?: string
   /**
    * Data item identifier for the actions with the API
    * @default Reads `:id` from the URL
    */
-  recordItemId?: BaseKey;
+  recordItemId?: BaseKey
   /**
    * Access Control configuration for the button
    * @default `{ enabled: true, hideIfUnauthorized: false }`
    */
   accessControl?: {
-    enabled?: boolean;
-    hideIfUnauthorized?: boolean;
-  };
+    enabled?: boolean
+    hideIfUnauthorized?: boolean
+  }
   /**
    * `meta` property is used when creating the URL for the related action and path.
    */
-  meta?: Record<string, unknown>;
-} & React.ComponentProps<typeof Button>;
+  meta?: Record<string, unknown>
+} & React.ComponentProps<typeof Button>
 
 export const DeleteButton = React.forwardRef<
   React.ComponentRef<typeof Button>,
@@ -53,17 +54,18 @@ export const DeleteButton = React.forwardRef<
     id: recordItemId,
     accessControl,
     meta,
-  });
-  const [open, setOpen] = React.useState(false);
+  })
+  const [open, setOpen] = React.useState(false)
 
-  const isDisabled = disabled || rest.disabled || loading;
-  const isHidden = hidden || rest.hidden;
+  const isDisabled = disabled || rest.disabled || loading
+  const isHidden = hidden || rest.hidden
 
-  if (isHidden) return null;
+  if (isHidden)
+    return null
 
-  const confirmCancelText = defaultCancelLabel;
-  const confirmOkText = defaultConfirmOkLabel;
-  const confirmTitle = defaultConfirmTitle;
+  const confirmCancelText = defaultCancelLabel
+  const confirmOkText = defaultConfirmOkLabel
+  const confirmTitle = defaultConfirmTitle
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -97,10 +99,10 @@ export const DeleteButton = React.forwardRef<
               size="sm"
               disabled={loading}
               onClick={() => {
-                if (typeof onConfirm === "function") {
-                  onConfirm();
+                if (typeof onConfirm === 'function') {
+                  onConfirm()
                 }
-                setOpen(false);
+                setOpen(false)
               }}
             >
               {confirmOkText}
@@ -109,7 +111,7 @@ export const DeleteButton = React.forwardRef<
         </div>
       </PopoverContent>
     </Popover>
-  );
-});
+  )
+})
 
-DeleteButton.displayName = "DeleteButton";
+DeleteButton.displayName = 'DeleteButton'

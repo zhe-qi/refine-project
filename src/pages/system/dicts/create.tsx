@@ -26,6 +26,8 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 
+const CODE_PATTERN = /^[a-z0-9_]+$/
+
 interface DictItem {
   label: string
   value: string
@@ -91,7 +93,7 @@ export function DictCreate() {
                 rules={{
                   required: '字典编码不能为空',
                   pattern: {
-                    value: /^[a-z0-9_]+$/,
+                    value: CODE_PATTERN,
                     message: '只能包含小写字母、数字和下划线',
                   },
                   maxLength: {

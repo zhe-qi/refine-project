@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
 import type { IResourceItem } from '@refinedev/core'
 import type {
   ColumnDef,
@@ -13,7 +12,7 @@ import {
 } from '@tanstack/react-table'
 import { ChevronDown, ChevronRight, Loader2 } from 'lucide-react'
 
-import React from 'react'
+import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {

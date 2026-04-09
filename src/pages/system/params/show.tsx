@@ -33,6 +33,29 @@ interface Param {
   updatedBy: string
 }
 
+function StatusBadge({ status }: { status: string }) {
+  const statusMap = {
+    [Status.ENABLED]: { label: '启用', variant: 'default' as const },
+    [Status.DISABLED]: { label: '禁用', variant: 'secondary' as const },
+  }
+  const statusInfo = statusMap[status as keyof typeof statusMap] || {
+    label: '未知',
+    variant: 'secondary' as const,
+  }
+  return <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
+}
+
+function ValueTypeBadge({ valueType }: { valueType: string }) {
+  const typeMap: Record<string, { label: string, variant: 'default' | 'secondary' | 'outline' }> = {
+    [ValueType.STRING]: { label: '字符串', variant: 'default' },
+    [ValueType.NUMBER]: { label: '数字', variant: 'secondary' },
+    [ValueType.BOOLEAN]: { label: '布尔', variant: 'outline' },
+    [ValueType.JSON]: { label: 'JSON', variant: 'secondary' },
+  }
+  const typeInfo = typeMap[valueType] || { label: valueType, variant: 'secondary' as const }
+  return <Badge variant={typeInfo.variant}>{typeInfo.label}</Badge>
+}
+
 export function ParamShow() {
   const { id } = useParams<{ id: string }>()
 
@@ -40,31 +63,6 @@ export function ParamShow() {
     resource: 'system/params',
     id,
   })
-
-  // eslint-disable-next-line react/no-nested-component-definitions
-  const StatusBadge = ({ status }: { status: string }) => {
-    const statusMap = {
-      [Status.ENABLED]: { label: '启用', variant: 'default' as const },
-      [Status.DISABLED]: { label: '禁用', variant: 'secondary' as const },
-    }
-    const statusInfo = statusMap[status as keyof typeof statusMap] || {
-      label: '未知',
-      variant: 'secondary' as const,
-    }
-    return <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
-  }
-
-  // eslint-disable-next-line react/no-nested-component-definitions
-  const ValueTypeBadge = ({ valueType }: { valueType: string }) => {
-    const typeMap: Record<string, { label: string, variant: 'default' | 'secondary' | 'outline' }> = {
-      [ValueType.STRING]: { label: '字符串', variant: 'default' },
-      [ValueType.NUMBER]: { label: '数字', variant: 'secondary' },
-      [ValueType.BOOLEAN]: { label: '布尔', variant: 'outline' },
-      [ValueType.JSON]: { label: 'JSON', variant: 'secondary' },
-    }
-    const typeInfo = typeMap[valueType] || { label: valueType, variant: 'secondary' as const }
-    return <Badge variant={typeInfo.variant}>{typeInfo.label}</Badge>
-  }
 
   if (!param) {
     return (

@@ -118,7 +118,8 @@ async function getCachedPermissions(): Promise<Permissions | null> {
           return cachedData.data
         }
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('解析权限缓存失败:', error)
     }
   }

@@ -1,5 +1,5 @@
 import { useCustom, useCustomMutation, useInvalidate, useOne } from '@refinedev/core'
-import React from 'react'
+import * as React from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -75,12 +75,10 @@ export function RoleAssignPermissions() {
   }, [permissionsData?.data])
 
   // 使用 casbin enforcer 计算继承权限
-  // eslint-disable-next-line react/prefer-use-state-lazy-initialization
   const [inheritedPermsSet, setInheritedPermsSet] = React.useState<Set<string>>(new Set())
 
   React.useEffect(() => {
     if (!roleId) {
-      // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
       setInheritedPermsSet(new Set())
       return
     }
@@ -124,7 +122,6 @@ export function RoleAssignPermissions() {
   // 初始化选中的权限
   React.useEffect(() => {
     if (currentPermissions.length > 0) {
-      // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
       setSelectedPermissions(dedupePermissions(currentPermissions))
     }
   }, [currentPermissions, dedupePermissions])

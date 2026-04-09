@@ -1,19 +1,15 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useMemo } from "react";
-import { useTranslate, type CrudOperators } from "@refinedev/core";
-import type { Column, Table as ReactTable } from "@tanstack/react-table";
-import type { DateRange } from "react-day-picker";
-import { Check, ChevronsUpDown, ListFilter, X } from "lucide-react";
+import type { CrudOperators } from '@refinedev/core'
+import type { Column, Table as ReactTable } from '@tanstack/react-table'
+import type { DateRange } from 'react-day-picker'
+import { useTranslate } from '@refinedev/core'
+import { Check, ChevronsUpDown, ListFilter, X } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Command,
   CommandEmpty,
@@ -21,20 +17,25 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { Separator } from "@/components/ui/separator";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/command'
+import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Separator } from '@/components/ui/separator'
+import { cn } from '@/lib/utils'
 
-export type DataTableFilterDropdownProps<TData> = {
-  column: Column<TData>;
-  contentClassName?: string;
-  triggerClassName?: string;
+export interface DataTableFilterDropdownProps<TData> {
+  column: Column<TData>
+  contentClassName?: string
+  triggerClassName?: string
   children: (args: {
-    isOpen: boolean;
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  }) => React.ReactNode;
-};
+    isOpen: boolean
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  }) => React.ReactNode
+}
 
 export function DataTableFilterDropdown<TData>({
   column,
@@ -42,9 +43,9 @@ export function DataTableFilterDropdown<TData>({
   contentClassName,
   children,
 }: DataTableFilterDropdownProps<TData>) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
-  const isFiltered = column.getIsFiltered();
+  const isFiltered = column.getIsFiltered()
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -54,35 +55,35 @@ export function DataTableFilterDropdown<TData>({
           variant="ghost"
           size="icon"
           className={cn(
-            "data-[state=open]:bg-accent",
-            "w-5 h-5",
+            'data-[state=open]:bg-accent',
+            'w-5 h-5',
             {
-              "text-primary": isFiltered,
-              "text-muted-foreground": !isFiltered,
+              'text-primary': isFiltered,
+              'text-muted-foreground': !isFiltered,
             },
-            triggerClassName
+            triggerClassName,
           )}
         >
-          <ListFilter className={cn("!h-3", "!w-3")} />
+          <ListFilter className={cn('!h-3', '!w-3')} />
         </Button>
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        className={cn("w-full", "shadow-sm", contentClassName)}
+        className={cn('w-full', 'shadow-sm', contentClassName)}
       >
         {children({ isOpen, setIsOpen })}
       </PopoverContent>
     </Popover>
-  );
+  )
 }
 
-type DataTableFilterDropdownActionsProps = {
-  className?: string;
-  isClearDisabled?: boolean;
-  isApplyDisabled?: boolean;
-  onClear: () => void;
-  onApply: () => void;
-};
+interface DataTableFilterDropdownActionsProps {
+  className?: string
+  isClearDisabled?: boolean
+  isApplyDisabled?: boolean
+  onClear: () => void
+  onApply: () => void
+}
 
 export function DataTableFilterDropdownActions({
   className,
@@ -91,17 +92,17 @@ export function DataTableFilterDropdownActions({
   onClear,
   onApply,
 }: DataTableFilterDropdownActionsProps) {
-  const t = useTranslate();
+  const t = useTranslate()
 
   return (
     <div
       className={cn(
-        "flex",
-        "items-center",
-        "justify-between",
-        "w-full",
-        "gap-2",
-        className
+        'flex',
+        'items-center',
+        'justify-between',
+        'w-full',
+        'gap-2',
+        className,
       )}
     >
       <Button
@@ -109,68 +110,68 @@ export function DataTableFilterDropdownActions({
         variant="ghost"
         disabled={isClearDisabled}
         className={cn(
-          "rounded-sm",
-          "text-xs",
-          "font-semibold",
-          "text-muted-foreground"
+          'rounded-sm',
+          'text-xs',
+          'font-semibold',
+          'text-muted-foreground',
         )}
         onClick={() => {
-          onClear();
+          onClear()
         }}
       >
-        <X className={cn("w-3.5", "h-3.5", "text-muted-foreground")} />
-        {t("buttons.clear", "Clear")}
+        <X className={cn('w-3.5', 'h-3.5', 'text-muted-foreground')} />
+        {t('buttons.clear', 'Clear')}
       </Button>
 
       <Button
         size="sm"
         disabled={isApplyDisabled}
-        className={cn("rounded-sm", "text-xs", "font-semibold")}
+        className={cn('rounded-sm', 'text-xs', 'font-semibold')}
         onClick={() => {
-          onApply();
+          onApply()
         }}
       >
-        {t("buttons.apply", "Apply")}
+        {t('buttons.apply', 'Apply')}
       </Button>
     </div>
-  );
+  )
 }
 
-export type DataTableFilterDropdownTextProps<TData> = {
-  column: Column<TData>;
-  table: ReactTable<TData>;
-  defaultOperator?: CrudOperators;
-  operators?: CrudOperators[];
-  placeholder?: string;
-};
+export interface DataTableFilterDropdownTextProps<TData> {
+  column: Column<TData>
+  table: ReactTable<TData>
+  defaultOperator?: CrudOperators
+  operators?: CrudOperators[]
+  placeholder?: string
+}
 
 export function DataTableFilterDropdownText<TData>({
   column,
   table,
   operators = [
-    "eq",
-    "ne",
-    "contains",
-    "ncontains",
-    "containss",
-    "ncontainss",
-    "startswith",
-    "nstartswith",
-    "startswiths",
-    "nstartswiths",
-    "endswith",
-    "nendswith",
-    "endswiths",
-    "nendswiths",
-    "in",
-    "nin",
-    "ina",
-    "nina",
+    'eq',
+    'ne',
+    'contains',
+    'ncontains',
+    'containss',
+    'ncontainss',
+    'startswith',
+    'nstartswith',
+    'startswiths',
+    'nstartswiths',
+    'endswith',
+    'nendswith',
+    'endswiths',
+    'nendswiths',
+    'in',
+    'nin',
+    'ina',
+    'nina',
   ],
-  defaultOperator = "eq",
+  defaultOperator = 'eq',
   placeholder,
 }: DataTableFilterDropdownTextProps<TData>) {
-  const t = useTranslate();
+  const t = useTranslate()
 
   return (
     <DataTableFilterInput
@@ -182,34 +183,34 @@ export function DataTableFilterDropdownText<TData>({
         <Input
           type="text"
           placeholder={
-            placeholder ?? t("table.filter.text.placeholder", "Filter by...")
+            placeholder ?? t('table.filter.text.placeholder', 'Filter by...')
           }
           value={value}
           onChange={(event) => {
-            onChange(event.target.value);
+            onChange(event.target.value)
           }}
         />
       )}
     />
-  );
+  )
 }
 
-export type DataTableFilterDropdownNumericProps<TData> = {
-  column: Column<TData>;
-  table: ReactTable<TData>;
-  defaultOperator?: CrudOperators;
-  operators?: CrudOperators[];
-  placeholder?: string;
-};
+export interface DataTableFilterDropdownNumericProps<TData> {
+  column: Column<TData>
+  table: ReactTable<TData>
+  defaultOperator?: CrudOperators
+  operators?: CrudOperators[]
+  placeholder?: string
+}
 
 export function DataTableFilterDropdownNumeric<TData>({
   column,
   table,
-  operators = ["eq", "ne", "gt", "lt", "gte", "lte"],
-  defaultOperator = "eq",
+  operators = ['eq', 'ne', 'gt', 'lt', 'gte', 'lte'],
+  defaultOperator = 'eq',
   placeholder,
 }: DataTableFilterDropdownNumericProps<TData>) {
-  const t = useTranslate();
+  const t = useTranslate()
 
   return (
     <DataTableFilterInput
@@ -221,41 +222,41 @@ export function DataTableFilterDropdownNumeric<TData>({
         <Input
           type="number"
           placeholder={
-            placeholder ?? t("table.filter.numeric.placeholder", "Filter by...")
+            placeholder ?? t('table.filter.numeric.placeholder', 'Filter by...')
           }
           value={value}
           onChange={(event) => {
-            onChange(event.target.value);
+            onChange(event.target.value)
           }}
         />
       )}
     />
-  );
+  )
 }
 
-export type DataTableFilterComboboxProps<TData> = {
-  column: Column<TData>;
-  table?: ReactTable<TData>;
-  options: { label: string; value: string }[];
-  defaultOperator?: CrudOperators;
-  operators?: CrudOperators[];
-  placeholder?: string;
-  noResultsText?: string;
-  multiple?: boolean;
-};
+export interface DataTableFilterComboboxProps<TData> {
+  column: Column<TData>
+  table?: ReactTable<TData>
+  options: { label: string, value: string }[]
+  defaultOperator?: CrudOperators
+  operators?: CrudOperators[]
+  placeholder?: string
+  noResultsText?: string
+  multiple?: boolean
+}
 
 export function DataTableFilterCombobox<TData>({
   column,
   table,
   options,
-  defaultOperator = "eq",
-  operators = ["eq", "ne", "in", "nin"],
+  defaultOperator = 'eq',
+  operators = ['eq', 'ne', 'in', 'nin'],
   placeholder,
   noResultsText,
   multiple = false,
 }: DataTableFilterComboboxProps<TData>) {
-  const t = useTranslate();
-  const [isOpen, setIsOpen] = useState(false);
+  const t = useTranslate()
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <DataTableFilterInput
@@ -267,55 +268,56 @@ export function DataTableFilterCombobox<TData>({
         const currentValues = multiple
           ? Array.isArray(value)
             ? value
-            : value && typeof value === "string"
+            : value && typeof value === 'string'
+              ? [value]
+              : []
+          : value && typeof value === 'string'
             ? [value]
             : []
-          : value && typeof value === "string"
-          ? [value]
-          : [];
 
         const handleSelect = (optionValue: string) => {
           if (multiple) {
             const newValues = currentValues.includes(optionValue)
-              ? currentValues.filter((v) => v !== optionValue)
-              : [...currentValues, optionValue];
-            onChange(newValues);
-          } else {
-            onChange(optionValue);
-            setIsOpen(false);
+              ? currentValues.filter(v => v !== optionValue)
+              : [...currentValues, optionValue]
+            onChange(newValues)
           }
-        };
+          else {
+            onChange(optionValue)
+            setIsOpen(false)
+          }
+        }
 
         const handleRemove = (optionValue: string) => {
           if (multiple) {
-            const newValues = currentValues.filter((v) => v !== optionValue);
-            onChange(newValues);
+            const newValues = currentValues.filter(v => v !== optionValue)
+            onChange(newValues)
           }
-        };
+        }
 
         const getDisplayText = () => {
           if (currentValues.length === 0) {
             return (
-              placeholder ?? t("table.filter.combobox.placeholder", "Select...")
-            );
+              placeholder ?? t('table.filter.combobox.placeholder', 'Select...')
+            )
           }
 
           if (multiple) {
-            return `${currentValues.length} selected`;
+            return `${currentValues.length} selected`
           }
 
           const selectedOption = options.find(
-            (option) => option.value === currentValues[0]
-          );
-          return selectedOption ? selectedOption.label : currentValues[0];
-        };
+            option => option.value === currentValues[0],
+          )
+          return selectedOption ? selectedOption.label : currentValues[0]
+        }
 
         const getSelectedLabels = () => {
           return currentValues.map((val) => {
-            const option = options.find((opt) => opt.value === val);
-            return { label: option ? option.label : val, value: val };
-          });
-        };
+            const option = options.find(opt => opt.value === val)
+            return { label: option ? option.label : val, value: val }
+          })
+        }
 
         return (
           <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -325,121 +327,126 @@ export function DataTableFilterCombobox<TData>({
                 role="combobox"
                 aria-expanded={isOpen}
                 className={cn(
-                  "w-full",
-                  "min-w-48",
-                  "max-w-80",
-                  "justify-start",
-                  "h-auto",
-                  "min-h-9"
+                  'w-full',
+                  'min-w-48',
+                  'max-w-80',
+                  'justify-start',
+                  'h-auto',
+                  'min-h-9',
                 )}
               >
-                <div className={cn("flex", "gap-2", "w-full")}>
-                  {multiple && currentValues.length > 0 ? (
-                    <div className={cn("flex", "flex-wrap", "gap-1", "flex-1")}>
-                      {getSelectedLabels()
-                        .slice(0, 3)
-                        .map(({ label, value: val }) => (
-                          <Badge
-                            key={val}
-                            variant="outline"
-                            className={cn(
-                              "inline-flex",
-                              "items-center",
-                              "gap-0",
-                              "h-4",
-                              "pr-0.5",
-                              "rounded-sm"
-                            )}
-                          >
-                            <span className={cn("text-[10px]", "leading-4")}>
-                              {label}
-                            </span>
+                <div className={cn('flex', 'gap-2', 'w-full')}>
+                  {multiple && currentValues.length > 0
+                    ? (
+                        <div className={cn('flex', 'flex-wrap', 'gap-1', 'flex-1')}>
+                          {getSelectedLabels()
+                            .slice(0, 3)
+                            .map(({ label, value: val }) => (
+                              <Badge
+                                key={val}
+                                variant="outline"
+                                className={cn(
+                                  'inline-flex',
+                                  'items-center',
+                                  'gap-0',
+                                  'h-4',
+                                  'pr-0.5',
+                                  'rounded-sm',
+                                )}
+                              >
+                                <span className={cn('text-[10px]', 'leading-4')}>
+                                  {label}
+                                </span>
+                                <span
+                                  className={cn(
+                                    'inline-flex',
+                                    'items-center',
+                                    'justify-center',
+                                    'p-0',
+                                    'w-4',
+                                    'h-full',
+                                    'text-muted-foreground',
+                                    'hover:text-destructive',
+                                    'rounded-sm',
+                                    'cursor-pointer',
+                                    'transition-colors',
+                                  )}
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    handleRemove(val)
+                                  }}
+                                >
+                                  <X className={cn('!h-2', '!w-2')} />
+                                </span>
+                              </Badge>
+                            ))}
+                          {currentValues.length > 3 && (
                             <span
                               className={cn(
-                                "inline-flex",
-                                "items-center",
-                                "justify-center",
-                                "p-0",
-                                "w-4",
-                                "h-full",
-                                "text-muted-foreground",
-                                "hover:text-destructive",
-                                "rounded-sm",
-                                "cursor-pointer",
-                                "transition-colors"
+                                'text-xs',
+                                'text-muted-foreground',
+                                'px-1',
                               )}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                handleRemove(val);
-                              }}
                             >
-                              <X className={cn("!h-2", "!w-2")} />
+                              +
+                              {currentValues.length - 3}
+                              {' '}
+                              more
                             </span>
-                          </Badge>
-                        ))}
-                      {currentValues.length > 3 && (
+                          )}
+                        </div>
+                      )
+                    : (
                         <span
                           className={cn(
-                            "text-xs",
-                            "text-muted-foreground",
-                            "px-1"
+                            'truncate',
+                            'flex-1',
+                            'text-start',
+                            'text-xs',
+                            currentValues.length === 0 && 'text-muted-foreground',
                           )}
                         >
-                          +{currentValues.length - 3} more
+                          {getDisplayText()}
                         </span>
                       )}
-                    </div>
-                  ) : (
-                    <span
-                      className={cn(
-                        "truncate",
-                        "flex-1",
-                        "text-start",
-                        "text-xs",
-                        currentValues.length === 0 && "text-muted-foreground"
-                      )}
-                    >
-                      {getDisplayText()}
-                    </span>
-                  )}
 
                   <ChevronsUpDown
-                    className={cn("h-4", "w-4", "shrink-0", "opacity-50")}
+                    className={cn('h-4', 'w-4', 'shrink-0', 'opacity-50')}
                   />
                 </div>
               </Button>
             </PopoverTrigger>
-            <PopoverContent className={cn("w-[200px]", "p-0")} align="start">
+            <PopoverContent className={cn('w-[200px]', 'p-0')} align="start">
               <Command>
                 <CommandInput
-                  placeholder={t("table.filter.combobox.search", "Search...")}
+                  placeholder={t('table.filter.combobox.search', 'Search...')}
                 />
                 <CommandList>
                   <CommandEmpty>
-                    {noResultsText ??
-                      t(
-                        "table.filter.combobox.noResults",
-                        "Results not found."
+                    {noResultsText
+                      ?? t(
+                        'table.filter.combobox.noResults',
+                        'Results not found.',
                       )}
                   </CommandEmpty>
                   <CommandGroup>
-                    {options.map((option) => (
+                    {options.map(option => (
                       <CommandItem
                         key={option.value}
                         value={option.value}
                         onSelect={() => handleSelect(option.value)}
-                        keywords={option.label?.split(" ") ?? []}
+                        keywords={option.label?.split(' ') ?? []}
                       >
                         {option.label}
                         <Check
                           className={cn(
-                            "ml-auto",
-                            "h-4",
-                            "w-4",
+                            'ml-auto',
+                            'h-4',
+                            'w-4',
                             currentValues.includes(option.value)
-                              ? "opacity-100"
-                              : "opacity-0"
+                              ? 'opacity-100'
+                              : 'opacity-0',
                           )}
                         />
                       </CommandItem>
@@ -449,72 +456,76 @@ export function DataTableFilterCombobox<TData>({
               </Command>
             </PopoverContent>
           </Popover>
-        );
+        )
       }}
     />
-  );
+  )
 }
 
-export type DataTableFilterDropdownDateSinglePickerProps<TData> = {
-  column: Column<TData>;
-  defaultOperator?: CrudOperators;
-  formatDate?: (date: Date | undefined) => string | undefined;
-};
+export interface DataTableFilterDropdownDateSinglePickerProps<TData> {
+  column: Column<TData>
+  defaultOperator?: CrudOperators
+  formatDate?: (date: Date | undefined) => string | undefined
+}
 
 export function DataTableFilterDropdownDateSinglePicker<TData>({
   column,
-  defaultOperator = "eq",
+  defaultOperator = 'eq',
   formatDate,
 }: DataTableFilterDropdownDateSinglePickerProps<TData>) {
-  const columnFilterValue = column.getFilterValue() as string;
+  const columnFilterValue = column.getFilterValue() as string
 
   const parseDate = (value: string | undefined): Date | undefined => {
-    if (!value) return undefined;
+    if (!value)
+      return undefined
 
-    const date = new Date(value);
+    const date = new Date(value)
 
-    if (Number.isNaN(date.getTime())) return undefined;
-    return date;
-  };
+    if (Number.isNaN(date.getTime()))
+      return undefined
+    return date
+  }
 
   const [filterValue, setFilterValue] = useState<Date | undefined>(() =>
-    parseDate(columnFilterValue)
-  );
+    parseDate(columnFilterValue),
+  )
 
   useEffect(() => {
     column.columnDef.meta = {
       ...column.columnDef.meta,
       filterOperator: defaultOperator,
-    };
-  }, [defaultOperator, column]);
+    }
+  }, [defaultOperator, column])
 
   useEffect(() => {
-    setFilterValue(parseDate(columnFilterValue));
-  }, [columnFilterValue]);
+    setFilterValue(parseDate(columnFilterValue))
+  }, [columnFilterValue])
 
-  const hasDate = !!filterValue;
+  const hasDate = !!filterValue
 
   const handleApply = () => {
-    if (!filterValue) return;
+    if (!filterValue)
+      return
 
-    const value = formatDate?.(filterValue) ?? filterValue.toISOString();
-    column.setFilterValue(value);
-  };
+    const value = formatDate?.(filterValue) ?? filterValue.toISOString()
+    column.setFilterValue(value)
+  }
 
   return (
     <DataTableFilterDropdown
       column={column}
-      contentClassName={cn("w-fit", "p-0")}
+      contentClassName={cn('w-fit', 'p-0')}
     >
       {({ setIsOpen }) => {
         return (
           <div
-            className={cn("flex", "flex-col", "items-center")}
+            className={cn('flex', 'flex-col', 'items-center')}
             onKeyDown={(event) => {
-              if (!hasDate) return;
-              if (event.key === "Enter") {
-                handleApply();
-                setIsOpen(false);
+              if (!hasDate)
+                return
+              if (event.key === 'Enter') {
+                handleApply()
+                setIsOpen(false)
               }
             }}
           >
@@ -522,107 +533,111 @@ export function DataTableFilterDropdownDateSinglePicker<TData>({
               mode="single"
               selected={filterValue}
               onSelect={(date) => {
-                setFilterValue(date);
+                setFilterValue(date)
               }}
             />
 
-            <div className={cn("w-full")}>
+            <div className={cn('w-full')}>
               <Separator />
             </div>
 
             <DataTableFilterDropdownActions
-              className={cn("p-4")}
+              className={cn('p-4')}
               isApplyDisabled={!hasDate}
               onClear={() => {
-                column.setFilterValue(undefined);
-                setFilterValue(undefined);
-                setIsOpen(false);
+                column.setFilterValue(undefined)
+                setFilterValue(undefined)
+                setIsOpen(false)
               }}
               onApply={() => {
-                handleApply();
-                setIsOpen(false);
+                handleApply()
+                setIsOpen(false)
               }}
             />
           </div>
-        );
+        )
       }}
     </DataTableFilterDropdown>
-  );
+  )
 }
 
-export type DataTableFilterDropdownDateRangePickerProps<TData> = {
-  column: Column<TData>;
-  defaultOperator?: CrudOperators;
-  formatDateRange?: (dateRange: DateRange | undefined) => string[] | undefined;
-};
+export interface DataTableFilterDropdownDateRangePickerProps<TData> {
+  column: Column<TData>
+  defaultOperator?: CrudOperators
+  formatDateRange?: (dateRange: DateRange | undefined) => string[] | undefined
+}
 
 export function DataTableFilterDropdownDateRangePicker<TData>({
   column,
-  defaultOperator = "between",
+  defaultOperator = 'between',
   formatDateRange,
 }: DataTableFilterDropdownDateRangePickerProps<TData>) {
-  const columnFilterValue = column.getFilterValue() as string[];
+  const columnFilterValue = column.getFilterValue() as string[]
 
   const parseDateRange = (
-    value: string[] | undefined
+    value: string[] | undefined,
   ): DateRange | undefined => {
-    if (!value || !Array.isArray(value) || value.length !== 2) return undefined;
+    if (!value || !Array.isArray(value) || value.length !== 2)
+      return undefined
 
-    const from = value[0] ? new Date(value[0]) : undefined;
-    const to = value[1] ? new Date(value[1]) : undefined;
+    const from = value[0] ? new Date(value[0]) : undefined
+    const to = value[1] ? new Date(value[1]) : undefined
 
     if (
-      !from ||
-      !to ||
-      Number.isNaN(from.getTime()) ||
-      Number.isNaN(to.getTime())
-    )
-      return undefined;
-    return { from, to };
-  };
+      !from
+      || !to
+      || Number.isNaN(from.getTime())
+      || Number.isNaN(to.getTime())
+    ) {
+      return undefined
+    }
+    return { from, to }
+  }
 
   const [filterValue, setFilterValue] = useState<DateRange | undefined>(() =>
-    parseDateRange(columnFilterValue)
-  );
+    parseDateRange(columnFilterValue),
+  )
 
   useEffect(() => {
     column.columnDef.meta = {
       ...column.columnDef.meta,
       filterOperator: defaultOperator,
-    };
-  }, [defaultOperator, column]);
+    }
+  }, [defaultOperator, column])
 
   useEffect(() => {
-    setFilterValue(parseDateRange(columnFilterValue));
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- objects are always different
-  }, [JSON.stringify(columnFilterValue)]);
+    setFilterValue(parseDateRange(columnFilterValue))
+    // eslint-disable-next-line react/exhaustive-deps -- objects are always different
+  }, [JSON.stringify(columnFilterValue)])
 
-  const hasDateRange = filterValue?.from && filterValue?.to;
+  const hasDateRange = filterValue?.from && filterValue?.to
 
   const handleApply = () => {
-    if (!filterValue?.from || !filterValue?.to) return;
+    if (!filterValue?.from || !filterValue?.to)
+      return
 
     const values = formatDateRange?.(filterValue) ?? [
       filterValue.from.toISOString(),
       filterValue.to.toISOString(),
-    ];
-    column.setFilterValue(values);
-  };
+    ]
+    column.setFilterValue(values)
+  }
 
   return (
     <DataTableFilterDropdown
       column={column}
-      contentClassName={cn("w-fit", "p-0")}
+      contentClassName={cn('w-fit', 'p-0')}
     >
       {({ setIsOpen }) => {
         return (
           <div
-            className={cn("flex", "flex-col", "items-center")}
+            className={cn('flex', 'flex-col', 'items-center')}
             onKeyDown={(event) => {
-              if (!hasDateRange) return;
-              if (event.key === "Enter") {
-                handleApply();
-                setIsOpen(false);
+              if (!hasDateRange)
+                return
+              if (event.key === 'Enter') {
+                handleApply()
+                setIsOpen(false)
               }
             }}
           >
@@ -634,44 +649,44 @@ export function DataTableFilterDropdownDateRangePicker<TData>({
                 setFilterValue({
                   from: date?.from,
                   to: date?.to,
-                });
+                })
               }}
             />
 
-            <div className={cn("w-full")}>
+            <div className={cn('w-full')}>
               <Separator />
             </div>
 
             <DataTableFilterDropdownActions
-              className={cn("p-4")}
+              className={cn('p-4')}
               isApplyDisabled={!hasDateRange}
               onClear={() => {
-                column.setFilterValue(undefined);
-                setFilterValue(undefined);
-                setIsOpen(false);
+                column.setFilterValue(undefined)
+                setFilterValue(undefined)
+                setIsOpen(false)
               }}
               onApply={() => {
-                handleApply();
-                setIsOpen(false);
+                handleApply()
+                setIsOpen(false)
               }}
             />
           </div>
-        );
+        )
       }}
     </DataTableFilterDropdown>
-  );
+  )
 }
 
-export type DataTableFilterInputProps<TData> = {
-  column: Column<TData>;
-  table?: ReactTable<TData>;
-  defaultOperator?: CrudOperators;
-  operators?: CrudOperators[];
+export interface DataTableFilterInputProps<TData> {
+  column: Column<TData>
+  table?: ReactTable<TData>
+  defaultOperator?: CrudOperators
+  operators?: CrudOperators[]
   renderInput: (props: {
-    value: string | string[];
-    onChange: (value: string | string[]) => void;
-  }) => React.ReactNode;
-};
+    value: string | string[]
+    onChange: (value: string | string[]) => void
+  }) => React.ReactNode
+}
 
 export function DataTableFilterInput<TData>({
   column: columnFromProps,
@@ -681,43 +696,44 @@ export function DataTableFilterInput<TData>({
   renderInput,
 }: DataTableFilterInputProps<TData>) {
   const [filterValue, setFilterValue] = useState(
-    (columnFromProps.getFilterValue() as string | string[]) || ""
-  );
+    (columnFromProps.getFilterValue() as string | string[]) || '',
+  )
 
   const [operator, setOperator] = useState<CrudOperators>(() => {
     if (!tableFromProps) {
-      return defaultOperatorFromProps || "eq";
+      return defaultOperatorFromProps || 'eq'
     }
 
     const columnFilter = tableFromProps
       .getState()
-      .columnFilters.find((filter) => {
-        return filter.id === columnFromProps.id;
-      });
+      .columnFilters
+      .find((filter) => {
+        return filter.id === columnFromProps.id
+      })
 
-    if (columnFilter && "operator" in columnFilter) {
-      return columnFilter.operator as CrudOperators;
+    if (columnFilter && 'operator' in columnFilter) {
+      return columnFilter.operator as CrudOperators
     }
 
-    return defaultOperatorFromProps || "eq";
-  });
+    return defaultOperatorFromProps || 'eq'
+  })
 
   const handleApply = () => {
-    columnFromProps.setFilterValue(filterValue);
-  };
+    columnFromProps.setFilterValue(filterValue)
+  }
 
   const handleClear = () => {
-    columnFromProps.setFilterValue(undefined);
-    setFilterValue("");
-  };
+    columnFromProps.setFilterValue(undefined)
+    setFilterValue('')
+  }
 
   const handleOperatorChange = (value: CrudOperators) => {
-    setOperator(value);
+    setOperator(value)
     columnFromProps.columnDef.meta = {
       ...columnFromProps.columnDef.meta,
       filterOperator: value,
-    };
-  };
+    }
+  }
 
   return (
     <DataTableFilterDropdown column={columnFromProps}>
@@ -725,21 +741,21 @@ export function DataTableFilterInput<TData>({
         return (
           <div
             className={cn(
-              "flex",
-              "flex-col",
-              "items-center",
-              "gap-4",
-              "w-full"
+              'flex',
+              'flex-col',
+              'items-center',
+              'gap-4',
+              'w-full',
             )}
             onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                handleApply();
-                setIsOpen(false);
+              if (event.key === 'Enter') {
+                handleApply()
+                setIsOpen(false)
               }
             }}
           >
             <div
-              className={cn("grid", "grid-cols-1", "md:grid-cols-2", "gap-2")}
+              className={cn('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-2')}
             >
               {operatorsFromProps && operatorsFromProps.length > 1 && (
                 <DataTableFilterOperatorSelect
@@ -753,131 +769,131 @@ export function DataTableFilterInput<TData>({
                 onChange: setFilterValue,
               })}
             </div>
-            <div className={cn("w-full")}>
+            <div className={cn('w-full')}>
               <Separator />
             </div>
             <DataTableFilterDropdownActions
               onClear={() => {
-                handleClear();
-                setIsOpen(false);
+                handleClear()
+                setIsOpen(false)
               }}
               onApply={() => {
-                handleApply();
-                setIsOpen(false);
+                handleApply()
+                setIsOpen(false)
               }}
             />
           </div>
-        );
+        )
       }}
     </DataTableFilterDropdown>
-  );
+  )
 }
 
 const CRUD_OPERATOR_LABELS: Record<
-  Exclude<CrudOperators, "or" | "and">,
-  { i18nKey: string; defaultLabel: string }
+  Exclude<CrudOperators, 'or' | 'and'>,
+  { i18nKey: string, defaultLabel: string }
 > = {
-  eq: { i18nKey: "table.filter.operator.eq", defaultLabel: "Equals" },
-  ne: { i18nKey: "table.filter.operator.ne", defaultLabel: "Not equals" },
-  eqs: { i18nKey: "table.filter.operator.eqs", defaultLabel: "Equals (case sensitive)" },
-  nes: { i18nKey: "table.filter.operator.nes", defaultLabel: "Not equals (case sensitive)" },
-  lt: { i18nKey: "table.filter.operator.lt", defaultLabel: "Less than" },
-  gt: { i18nKey: "table.filter.operator.gt", defaultLabel: "Greater than" },
+  eq: { i18nKey: 'table.filter.operator.eq', defaultLabel: 'Equals' },
+  ne: { i18nKey: 'table.filter.operator.ne', defaultLabel: 'Not equals' },
+  eqs: { i18nKey: 'table.filter.operator.eqs', defaultLabel: 'Equals (case sensitive)' },
+  nes: { i18nKey: 'table.filter.operator.nes', defaultLabel: 'Not equals (case sensitive)' },
+  lt: { i18nKey: 'table.filter.operator.lt', defaultLabel: 'Less than' },
+  gt: { i18nKey: 'table.filter.operator.gt', defaultLabel: 'Greater than' },
   lte: {
-    i18nKey: "table.filter.operator.lte",
-    defaultLabel: "Less than or equal",
+    i18nKey: 'table.filter.operator.lte',
+    defaultLabel: 'Less than or equal',
   },
   gte: {
-    i18nKey: "table.filter.operator.gte",
-    defaultLabel: "Greater than or equal",
+    i18nKey: 'table.filter.operator.gte',
+    defaultLabel: 'Greater than or equal',
   },
   in: {
-    i18nKey: "table.filter.operator.in",
-    defaultLabel: "Includes in an array",
+    i18nKey: 'table.filter.operator.in',
+    defaultLabel: 'Includes in an array',
   },
   nin: {
-    i18nKey: "table.filter.operator.nin",
-    defaultLabel: "Not includes in an array",
+    i18nKey: 'table.filter.operator.nin',
+    defaultLabel: 'Not includes in an array',
   },
   ina: {
-    i18nKey: "table.filter.operator.ina",
-    defaultLabel: "Includes in an array (case sensitive)",
+    i18nKey: 'table.filter.operator.ina',
+    defaultLabel: 'Includes in an array (case sensitive)',
   },
   nina: {
-    i18nKey: "table.filter.operator.nina",
-    defaultLabel: "Not includes in an array (case sensitive)",
+    i18nKey: 'table.filter.operator.nina',
+    defaultLabel: 'Not includes in an array (case sensitive)',
   },
   contains: {
-    i18nKey: "table.filter.operator.contains",
-    defaultLabel: "Contains",
+    i18nKey: 'table.filter.operator.contains',
+    defaultLabel: 'Contains',
   },
   ncontains: {
-    i18nKey: "table.filter.operator.ncontains",
-    defaultLabel: "Not contains",
+    i18nKey: 'table.filter.operator.ncontains',
+    defaultLabel: 'Not contains',
   },
   containss: {
-    i18nKey: "table.filter.operator.containss",
-    defaultLabel: "Contains (case sensitive)",
+    i18nKey: 'table.filter.operator.containss',
+    defaultLabel: 'Contains (case sensitive)',
   },
   ncontainss: {
-    i18nKey: "table.filter.operator.ncontainss",
-    defaultLabel: "Not contains (case sensitive)",
+    i18nKey: 'table.filter.operator.ncontainss',
+    defaultLabel: 'Not contains (case sensitive)',
   },
   between: {
-    i18nKey: "table.filter.operator.between",
-    defaultLabel: "Between",
+    i18nKey: 'table.filter.operator.between',
+    defaultLabel: 'Between',
   },
   nbetween: {
-    i18nKey: "table.filter.operator.nbetween",
-    defaultLabel: "Not between",
+    i18nKey: 'table.filter.operator.nbetween',
+    defaultLabel: 'Not between',
   },
-  null: { i18nKey: "table.filter.operator.null", defaultLabel: "Is null" },
+  null: { i18nKey: 'table.filter.operator.null', defaultLabel: 'Is null' },
   nnull: {
-    i18nKey: "table.filter.operator.nnull",
-    defaultLabel: "Is not null",
+    i18nKey: 'table.filter.operator.nnull',
+    defaultLabel: 'Is not null',
   },
   startswith: {
-    i18nKey: "table.filter.operator.startswith",
-    defaultLabel: "Starts with",
+    i18nKey: 'table.filter.operator.startswith',
+    defaultLabel: 'Starts with',
   },
   nstartswith: {
-    i18nKey: "table.filter.operator.nstartswith",
-    defaultLabel: "Not starts with",
+    i18nKey: 'table.filter.operator.nstartswith',
+    defaultLabel: 'Not starts with',
   },
   startswiths: {
-    i18nKey: "table.filter.operator.startswiths",
-    defaultLabel: "Starts with (case sensitive)",
+    i18nKey: 'table.filter.operator.startswiths',
+    defaultLabel: 'Starts with (case sensitive)',
   },
   nstartswiths: {
-    i18nKey: "table.filter.operator.nstartswiths",
-    defaultLabel: "Not starts with (case sensitive)",
+    i18nKey: 'table.filter.operator.nstartswiths',
+    defaultLabel: 'Not starts with (case sensitive)',
   },
   endswith: {
-    i18nKey: "table.filter.operator.endswith",
-    defaultLabel: "Ends with",
+    i18nKey: 'table.filter.operator.endswith',
+    defaultLabel: 'Ends with',
   },
   nendswith: {
-    i18nKey: "table.filter.operator.nendswith",
-    defaultLabel: "Not ends with",
+    i18nKey: 'table.filter.operator.nendswith',
+    defaultLabel: 'Not ends with',
   },
   endswiths: {
-    i18nKey: "table.filter.operator.endswiths",
-    defaultLabel: "Ends with (case sensitive)",
+    i18nKey: 'table.filter.operator.endswiths',
+    defaultLabel: 'Ends with (case sensitive)',
   },
   nendswiths: {
-    i18nKey: "table.filter.operator.nendswiths",
-    defaultLabel: "Not ends with (case sensitive)",
+    i18nKey: 'table.filter.operator.nendswiths',
+    defaultLabel: 'Not ends with (case sensitive)',
   },
-};
+}
 
-export type DataTableFilterOperatorSelectProps = {
-  value: CrudOperators;
-  onValueChange: (value: CrudOperators) => void;
-  operators?: CrudOperators[];
-  placeholder?: string;
-  triggerClassName?: string;
-  contentClassName?: string;
-};
+export interface DataTableFilterOperatorSelectProps {
+  value: CrudOperators
+  onValueChange: (value: CrudOperators) => void
+  operators?: CrudOperators[]
+  placeholder?: string
+  triggerClassName?: string
+  contentClassName?: string
+}
 
 export function DataTableFilterOperatorSelect({
   value,
@@ -887,27 +903,27 @@ export function DataTableFilterOperatorSelect({
   triggerClassName,
   contentClassName,
 }: DataTableFilterOperatorSelectProps) {
-  const t = useTranslate();
+  const t = useTranslate()
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   const operators = useMemo(() => {
     return Object.entries(CRUD_OPERATOR_LABELS).filter(([operator]) =>
-      operatorsFromProps?.includes(operator as CrudOperators)
-    );
-  }, [operatorsFromProps]);
+      operatorsFromProps?.includes(operator as CrudOperators),
+    )
+  }, [operatorsFromProps])
 
   const selectedLabel = t(
-    CRUD_OPERATOR_LABELS[value as Exclude<CrudOperators, "or" | "and">].i18nKey,
-    CRUD_OPERATOR_LABELS[value as Exclude<CrudOperators, "or" | "and">]
-      .defaultLabel
-  );
-  const placeholderText =
-    placeholder ?? t("table.filter.operator.placeholder", "Search operator...");
+    CRUD_OPERATOR_LABELS[value as Exclude<CrudOperators, 'or' | 'and'>].i18nKey,
+    CRUD_OPERATOR_LABELS[value as Exclude<CrudOperators, 'or' | 'and'>]
+      .defaultLabel,
+  )
+  const placeholderText
+    = placeholder ?? t('table.filter.operator.placeholder', 'Search operator...')
   const noResultsText = t(
-    "table.filter.operator.noResults",
-    "No operator found."
-  );
+    'table.filter.operator.noResults',
+    'No operator found.',
+  )
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -917,21 +933,21 @@ export function DataTableFilterOperatorSelect({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-full",
-            "justify-between",
-            "truncate",
-            triggerClassName
+            'w-full',
+            'justify-between',
+            'truncate',
+            triggerClassName,
           )}
         >
-          <div className={cn("truncate")}>
+          <div className={cn('truncate')}>
             {selectedLabel ?? placeholderText}
           </div>
           <ChevronsUpDown
-            className={cn("ml-2", "h-4", "w-4", "shrink-0", "opacity-50")}
+            className={cn('ml-2', 'h-4', 'w-4', 'shrink-0', 'opacity-50')}
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("p-0", contentClassName)} forceMount>
+      <PopoverContent className={cn('p-0', contentClassName)} forceMount>
         <Command>
           <CommandInput placeholder={placeholderText} />
           <CommandList>
@@ -942,16 +958,16 @@ export function DataTableFilterOperatorSelect({
                   key={op}
                   value={op}
                   onSelect={() => {
-                    onValueChange(op as CrudOperators);
-                    setOpen(false);
+                    onValueChange(op as CrudOperators)
+                    setOpen(false)
                   }}
                 >
                   <Check
                     className={cn(
-                      "mr-2",
-                      "h-4",
-                      "w-4",
-                      value === op ? "opacity-100" : "opacity-0"
+                      'mr-2',
+                      'h-4',
+                      'w-4',
+                      value === op ? 'opacity-100' : 'opacity-0',
                     )}
                   />
                   {t(i18nKey, defaultLabel)}
@@ -962,18 +978,18 @@ export function DataTableFilterOperatorSelect({
         </Command>
       </PopoverContent>
     </Popover>
-  );
+  )
 }
 
-DataTableFilterDropdown.displayName = "DataTableFilterDropdown";
-DataTableFilterDropdownText.displayName = "DataTableFilterDropdownText";
-DataTableFilterCombobox.displayName = "DataTableFilterCombobox";
-DataTableFilterDropdownDateRangePicker.displayName =
-  "DataTableFilterDropdownDateRangePicker";
-DataTableFilterOperatorSelect.displayName = "DataTableFilterOperatorSelect";
-DataTableFilterDropdownActions.displayName = "DataTableFilterDropdownActions";
-DataTableFilterDropdownNumeric.displayName = "DataTableFilterDropdownNumeric";
-DataTableFilterInput.displayName = "DataTableFilterInput";
-DataTableFilterOperatorSelect.displayName = "DataTableFilterOperatorSelect";
-DataTableFilterDropdownDateSinglePicker.displayName =
-  "DataTableFilterDropdownDateSinglePicker";
+DataTableFilterDropdown.displayName = 'DataTableFilterDropdown'
+DataTableFilterDropdownText.displayName = 'DataTableFilterDropdownText'
+DataTableFilterCombobox.displayName = 'DataTableFilterCombobox'
+DataTableFilterDropdownDateRangePicker.displayName
+  = 'DataTableFilterDropdownDateRangePicker'
+DataTableFilterOperatorSelect.displayName = 'DataTableFilterOperatorSelect'
+DataTableFilterDropdownActions.displayName = 'DataTableFilterDropdownActions'
+DataTableFilterDropdownNumeric.displayName = 'DataTableFilterDropdownNumeric'
+DataTableFilterInput.displayName = 'DataTableFilterInput'
+DataTableFilterOperatorSelect.displayName = 'DataTableFilterOperatorSelect'
+DataTableFilterDropdownDateSinglePicker.displayName
+  = 'DataTableFilterDropdownDateSinglePicker'

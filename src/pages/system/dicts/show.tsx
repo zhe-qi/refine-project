@@ -35,6 +35,18 @@ interface Dict {
   updatedBy: string
 }
 
+function StatusBadge({ status }: { status: string }) {
+  const statusMap = {
+    [PathsApiAdminSystemDictsGetParametersQueryStatus.ENABLED]: { label: '启用', variant: 'default' as const },
+    [PathsApiAdminSystemDictsGetParametersQueryStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
+  }
+  const statusInfo = statusMap[status as keyof typeof statusMap] || {
+    label: '未知',
+    variant: 'secondary' as const,
+  }
+  return <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
+}
+
 export function DictShow() {
   const { id } = useParams<{ id: string }>()
 
@@ -42,19 +54,6 @@ export function DictShow() {
     resource: 'system/dicts',
     id,
   })
-
-  // eslint-disable-next-line react/no-nested-component-definitions
-  const StatusBadge = ({ status }: { status: string }) => {
-    const statusMap = {
-      [PathsApiAdminSystemDictsGetParametersQueryStatus.ENABLED]: { label: '启用', variant: 'default' as const },
-      [PathsApiAdminSystemDictsGetParametersQueryStatus.DISABLED]: { label: '禁用', variant: 'secondary' as const },
-    }
-    const statusInfo = statusMap[status as keyof typeof statusMap] || {
-      label: '未知',
-      variant: 'secondary' as const,
-    }
-    return <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
-  }
 
   if (!dict) {
     return (

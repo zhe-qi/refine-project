@@ -1,5 +1,5 @@
 import { useCustomMutation, useInvalidate, useOne } from '@refinedev/core'
-import React from 'react'
+import * as React from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -35,7 +35,6 @@ export function UserAssignRoles() {
   // 初始化选中的角色
   React.useEffect(() => {
     if (currentRoleIds.length > 0) {
-      // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
       setSelectedRoleIds(currentRoleIds)
     }
   }, [currentRoleIds])

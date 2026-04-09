@@ -26,7 +26,6 @@ export function ErrorComponent() {
 
   useEffect(() => {
     if (resource && action) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks-extra/no-direct-set-state-in-use-effect
       setErrorMessage(
         translate(
           'pages.error.info',

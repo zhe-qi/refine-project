@@ -1,6 +1,7 @@
 import Cap from '@cap.js/widget'
 import { AnimatePresence, motion } from 'motion/react'
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
+import * as React from 'react'
+import { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import './styles.css'
 
 interface CapWidgetProps {

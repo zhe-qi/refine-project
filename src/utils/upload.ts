@@ -6,14 +6,16 @@ import { fetchClinet } from '@/api'
  * @returns 完整的图片 URL
  */
 export function getImageUrl(relativePath: string): string {
-  if (!relativePath) return ''
+  if (!relativePath)
+    return ''
   // 如果已经是完整 URL，直接返回
   if (relativePath.startsWith('http://') || relativePath.startsWith('https://')) {
     return relativePath
   }
   // 拼接 OSS URL
   const ossUrl = import.meta.env.VITE_OSS_URL || ''
-  if (!ossUrl) return relativePath
+  if (!ossUrl)
+    return relativePath
 
   // 确保 ossUrl 末尾没有斜杠，relativePath 前面有斜杠
   const baseUrl = ossUrl.endsWith('/') ? ossUrl.slice(0, -1) : ossUrl

@@ -2,7 +2,7 @@ import { useTable } from '@refinedev/react-table'
 import { createColumnHelper } from '@tanstack/react-table'
 import { Loader2 } from 'lucide-react'
 
-import React from 'react'
+import * as React from 'react'
 import { DataTablePagination } from '@/components/refine-ui/data-table/data-table-pagination'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -141,7 +141,7 @@ export function RoleSelectTable({ currentRoleIds, onSelectionChange }: RoleSelec
       },
     },
     enableRowSelection: true,
-    getRowId: (row) => row.id, // 使用角色 ID 作为行的唯一标识
+    getRowId: row => row.id, // 使用角色 ID 作为行的唯一标识
   })
 
   const {
@@ -166,7 +166,7 @@ export function RoleSelectTable({ currentRoleIds, onSelectionChange }: RoleSelec
       const selectedRoleIds = selectedRows.map(row => row.original.id)
       onSelectionChange(selectedRoleIds)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react/exhaustive-deps
   }, [reactTable.getState().rowSelection, onSelectionChange, reactTable])
 
   // 初始化选中状态 - 当数据加载完成且有 currentRoleIds 时设置

@@ -10,7 +10,9 @@
     "refine": "refine",
     "openapi:admin": "npx openapi-typescript http://localhost:9999/api/admin/doc -o ./src/api/admin.d.ts --enum --dedupe-enums",
     "openapi:public": "npx openapi-typescript http://localhost:9999/api/doc -o ./src/api/public.d.ts --enum --dedupe-enums",
-    "openapi": "pnpm run openapi:admin && pnpm run openapi:public"
+    "openapi": "pnpm run openapi:admin && pnpm run openapi:public",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix"
   },
   "dependencies": {
     "@cap.js/widget": "^0.1.43",
@@ -88,7 +90,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^8.1.1",
-    "@eslint-react/eslint-plugin": "^4.2.3",
+    "@eslint-react/eslint-plugin": "^3.0.0",
     "@rolldown/plugin-babel": "^0.2.2",
     "@rollup/plugin-inject": "^5.0.5",
     "@types/node": "^25.5.2",

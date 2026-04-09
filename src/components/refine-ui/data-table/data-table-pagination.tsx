@@ -1,31 +1,31 @@
-"use client";
+'use client'
 
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-} from "lucide-react";
-import { useMemo } from "react";
+} from 'lucide-react'
+import { useMemo } from 'react'
 
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/select'
+import { cn } from '@/lib/utils'
 
-type DataTablePaginationProps = {
-  currentPage: number;
-  pageCount: number;
-  setCurrentPage: (page: number) => void;
-  pageSize: number;
-  setPageSize: (size: number) => void;
-  total?: number;
-};
+interface DataTablePaginationProps {
+  currentPage: number
+  pageCount: number
+  setCurrentPage: (page: number) => void
+  pageSize: number
+  setPageSize: (size: number) => void
+  total?: number
+}
 
 export function DataTablePagination({
   currentPage,
@@ -36,50 +36,50 @@ export function DataTablePagination({
   total,
 }: DataTablePaginationProps) {
   const pageSizeOptions = useMemo(() => {
-    const baseOptions = [10, 20, 30, 40, 50];
-    const optionsSet = new Set(baseOptions);
+    const baseOptions = [10, 20, 30, 40, 50]
+    const optionsSet = new Set(baseOptions)
 
     if (!optionsSet.has(pageSize)) {
-      optionsSet.add(pageSize);
+      optionsSet.add(pageSize)
     }
 
-    return Array.from(optionsSet).sort((a, b) => a - b);
-  }, [pageSize]);
+    return Array.from(optionsSet).sort((a, b) => a - b)
+  }, [pageSize])
 
   return (
     <div
       className={cn(
-        "flex",
-        "items-center",
-        "justify-between",
-        "flex-wrap",
-        "px-2",
-        "w-full",
-        "gap-2"
+        'flex',
+        'items-center',
+        'justify-between',
+        'flex-wrap',
+        'px-2',
+        'w-full',
+        'gap-2',
       )}
     >
       <div
         className={cn(
-          "flex-1",
-          "text-sm",
-          "text-muted-foreground",
-          "whitespace-nowrap"
+          'flex-1',
+          'text-sm',
+          'text-muted-foreground',
+          'whitespace-nowrap',
         )}
       >
-        {typeof total === "number" ? `共 ${total} 条` : null}
+        {typeof total === 'number' ? `共 ${total} 条` : null}
       </div>
-      <div className={cn("flex", "items-center", "flex-wrap", "gap-2")}>
-        <div className={cn("flex", "items-center", "gap-2")}>
-          <span className={cn("text-sm", "font-medium")}>每页条数</span>
+      <div className={cn('flex', 'items-center', 'flex-wrap', 'gap-2')}>
+        <div className={cn('flex', 'items-center', 'gap-2')}>
+          <span className={cn('text-sm', 'font-medium')}>每页条数</span>
           <Select
             value={`${pageSize}`}
-            onValueChange={(v) => setPageSize(Number(v))}
+            onValueChange={v => setPageSize(Number(v))}
           >
-            <SelectTrigger className={cn("h-8", "w-[70px]")}>
+            <SelectTrigger className={cn('h-8', 'w-[70px]')}>
               <SelectValue placeholder={pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {pageSizeOptions.map((size) => (
+              {pageSizeOptions.map(size => (
                 <SelectItem key={size} value={`${size}`}>
                   {size}
                 </SelectItem>
@@ -87,22 +87,30 @@ export function DataTablePagination({
             </SelectContent>
           </Select>
         </div>
-        <div className={cn("flex", "items-center", "flex-wrap", "gap-2")}>
+        <div className={cn('flex', 'items-center', 'flex-wrap', 'gap-2')}>
           <div
             className={cn(
-              "flex",
-              "items-center",
-              "justify-center",
-              "text-sm",
-              "font-medium"
+              'flex',
+              'items-center',
+              'justify-center',
+              'text-sm',
+              'font-medium',
             )}
           >
-            第 {currentPage} / {pageCount} 页
+            第
+            {' '}
+            {currentPage}
+            {' '}
+            /
+            {' '}
+            {pageCount}
+            {' '}
+            页
           </div>
-          <div className={cn("flex", "items-center", "gap-2")}>
+          <div className={cn('flex', 'items-center', 'gap-2')}>
             <Button
               variant="outline"
-              className={cn("hidden", "h-8", "w-8", "p-0", "lg:flex")}
+              className={cn('hidden', 'h-8', 'w-8', 'p-0', 'lg:flex')}
               onClick={() => setCurrentPage(1)}
               disabled={currentPage === 1}
               aria-label="Go to first page"
@@ -111,7 +119,7 @@ export function DataTablePagination({
             </Button>
             <Button
               variant="outline"
-              className={cn("h-8", "w-8", "p-0")}
+              className={cn('h-8', 'w-8', 'p-0')}
               onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}
               aria-label="Go to previous page"
@@ -120,7 +128,7 @@ export function DataTablePagination({
             </Button>
             <Button
               variant="outline"
-              className={cn("h-8", "w-8", "p-0")}
+              className={cn('h-8', 'w-8', 'p-0')}
               onClick={() => setCurrentPage(currentPage + 1)}
               disabled={currentPage === pageCount}
               aria-label="Go to next page"
@@ -129,7 +137,7 @@ export function DataTablePagination({
             </Button>
             <Button
               variant="outline"
-              className={cn("hidden", "h-8", "w-8", "p-0", "lg:flex")}
+              className={cn('hidden', 'h-8', 'w-8', 'p-0', 'lg:flex')}
               onClick={() => setCurrentPage(pageCount)}
               disabled={currentPage === pageCount}
               aria-label="Go to last page"
@@ -140,7 +148,7 @@ export function DataTablePagination({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-DataTablePagination.displayName = "DataTablePagination";
+DataTablePagination.displayName = 'DataTablePagination'

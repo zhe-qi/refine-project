@@ -1,34 +1,35 @@
-"use client";
+'use client'
 
-import React from "react";
-import { type BaseKey, useShowButton } from "@refinedev/core";
-import { Eye } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import type { BaseKey } from '@refinedev/core'
+import { useShowButton } from '@refinedev/core'
+import { Eye } from 'lucide-react'
+import * as React from 'react'
+import { Button } from '@/components/ui/button'
 
 type ShowButtonProps = {
   /**
    * Resource name for API data interactions. `identifier` of the resource can be used instead of the `name` of the resource.
    * @default Inferred resource name from the route
    */
-  resource?: string;
+  resource?: string
   /**
    * Data item identifier for the actions with the API
    * @default Reads `:id` from the URL
    */
-  recordItemId?: BaseKey;
+  recordItemId?: BaseKey
   /**
    * Access Control configuration for the button
    * @default `{ enabled: true, hideIfUnauthorized: false }`
    */
   accessControl?: {
-    enabled?: boolean;
-    hideIfUnauthorized?: boolean;
-  };
+    enabled?: boolean
+    hideIfUnauthorized?: boolean
+  }
   /**
    * `meta` property is used when creating the URL for the related action and path.
    */
-  meta?: Record<string, unknown>;
-} & React.ComponentProps<typeof Button>;
+  meta?: Record<string, unknown>
+} & React.ComponentProps<typeof Button>
 
 export const ShowButton = React.forwardRef<
   React.ComponentRef<typeof Button>,
@@ -36,19 +37,20 @@ export const ShowButton = React.forwardRef<
 >(
   (
     { resource, recordItemId, accessControl, meta, children, onClick, ...rest },
-    ref
+    ref,
   ) => {
     const { hidden, disabled, LinkComponent, to, label } = useShowButton({
       resource,
       id: recordItemId,
       accessControl,
       meta,
-    });
+    })
 
-    const isDisabled = disabled || rest.disabled;
-    const isHidden = hidden || rest.hidden;
+    const isDisabled = disabled || rest.disabled
+    const isHidden = hidden || rest.hidden
 
-    if (isHidden) return null;
+    if (isHidden)
+      return null
 
     return (
       <Button {...rest} ref={ref} disabled={isDisabled} asChild>
@@ -57,12 +59,12 @@ export const ShowButton = React.forwardRef<
           replace={false}
           onClick={(e: React.PointerEvent<HTMLButtonElement>) => {
             if (isDisabled) {
-              e.preventDefault();
-              return;
+              e.preventDefault()
+              return
             }
             if (onClick) {
-              e.preventDefault();
-              onClick(e);
+              e.preventDefault()
+              onClick(e)
             }
           }}
         >
@@ -74,8 +76,8 @@ export const ShowButton = React.forwardRef<
           )}
         </LinkComponent>
       </Button>
-    );
-  }
-);
+    )
+  },
+)
 
-ShowButton.displayName = "ShowButton";
+ShowButton.displayName = 'ShowButton'

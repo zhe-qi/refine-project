@@ -1,45 +1,45 @@
-"use client";
+'use client'
 
-import React from "react";
-import { useTheme } from "./theme-provider";
+import { Check, ChevronDown, Monitor, Moon, Sun } from 'lucide-react'
+import * as React from 'react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Moon, Sun, Monitor, ChevronDown, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dropdown-menu'
+import { cn } from '@/lib/utils'
+import { useTheme } from './use-theme'
 
-type ThemeOption = {
-  value: "light" | "dark" | "system";
-  label: string;
-  icon: React.ReactNode;
-};
+interface ThemeOption {
+  value: 'light' | 'dark' | 'system'
+  label: string
+  icon: React.ReactNode
+}
 
 const themeOptions: ThemeOption[] = [
   {
-    value: "light",
-    label: "Light",
+    value: 'light',
+    label: 'Light',
     icon: <Sun className="h-4 w-4" />,
   },
   {
-    value: "dark",
-    label: "Dark",
+    value: 'dark',
+    label: 'Dark',
     icon: <Moon className="h-4 w-4" />,
   },
   {
-    value: "system",
-    label: "System",
+    value: 'system',
+    label: 'System',
     icon: <Monitor className="h-4 w-4" />,
   },
-];
+]
 
 export function ThemeSelect() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme()
 
-  const currentTheme = themeOptions.find((option) => option.value === theme);
+  const currentTheme = themeOptions.find(option => option.value === theme)
 
   return (
     <DropdownMenu>
@@ -48,18 +48,18 @@ export function ThemeSelect() {
           variant="ghost"
           size="lg"
           className={cn(
-            "w-full",
-            "justify-between",
-            "px-3",
-            "text-left",
-            "text-sm",
-            "font-normal",
-            "text-foreground",
-            "hover:bg-accent",
-            "hover:text-accent-foreground",
-            "focus-visible:outline-none",
-            "focus-visible:ring-2",
-            "focus-visible:ring-ring"
+            'w-full',
+            'justify-between',
+            'px-3',
+            'text-left',
+            'text-sm',
+            'font-normal',
+            'text-foreground',
+            'hover:bg-accent',
+            'hover:text-accent-foreground',
+            'focus-visible:outline-none',
+            'focus-visible:ring-2',
+            'focus-visible:ring-ring',
           )}
         >
           <div className="flex items-center gap-2">
@@ -71,17 +71,17 @@ export function ThemeSelect() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-40 space-y-1">
         {themeOptions.map((option) => {
-          const isSelected = theme === option.value;
+          const isSelected = theme === option.value
 
           return (
             <DropdownMenuItem
               key={option.value}
               onClick={() => setTheme(option.value)}
               className={cn(
-                "flex items-center gap-2 cursor-pointer relative pr-8",
+                'flex items-center gap-2 cursor-pointer relative pr-8',
                 {
-                  "bg-accent text-accent-foreground": isSelected,
-                }
+                  'bg-accent text-accent-foreground': isSelected,
+                },
               )}
             >
               {option.icon}
@@ -90,11 +90,11 @@ export function ThemeSelect() {
                 <Check className="h-4 w-4 absolute right-2 text-primary" />
               )}
             </DropdownMenuItem>
-          );
+          )
         })}
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }
 
-ThemeSelect.displayName = "ThemeSelect";
+ThemeSelect.displayName = 'ThemeSelect'

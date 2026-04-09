@@ -58,7 +58,7 @@ export function RoleEdit() {
         shouldValidate: false,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react/exhaustive-deps
   }, [roleData?.parentRoles, form])
 
   function onSubmit(values: Record<string, string>) {
