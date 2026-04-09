@@ -1,6 +1,8 @@
 shellEmulator: true
 trustPolicy: no-downgrade
 
+trustPolicyIgnoreAfter: 525600
+
 onlyBuiltDependencies:
   - esbuild
   - msw

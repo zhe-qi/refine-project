@@ -1,29 +1,24 @@
 import path from 'node:path'
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
+import inject from '@rollup/plugin-inject'
+import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
-import react from '@vitejs/plugin-react'
-import rollupNodePolyFill from 'rollup-plugin-polyfill-node'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-
-import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    viteTsConfigPaths({
-      projects: ['./tsconfig.json'],
-    }),
-    react({
-      babel: {
-        plugins: ['babel-plugin-react-compiler'],
-      },
+    react(),
+    babel({
+      presets: [reactCompilerPreset()],
     }),
     tailwindcss(),
   ],
   resolve: {
+    tsconfigPaths: true, // Vite 8 原生支持，替代 vite-tsconfig-paths
     alias: {
       '@': path.resolve(__dirname, './src'),
+      'buffer': 'buffer',
     },
   },
   server: {
@@ -36,24 +31,14 @@ export default defineConfig({
       },
     },
   },
-  optimizeDeps: {
-    esbuildOptions: {
-    // Node.js global to browser globalThis
-      define: {
-        global: 'globalThis',
-      },
-      plugins: [
-        NodeGlobalsPolyfillPlugin({
-          buffer: true,
-          process: true,
-        }),
-        NodeModulesPolyfillPlugin(),
-      ],
-    },
-  },
   build: {
-    rollupOptions: {
-      plugins: [rollupNodePolyFill()],
+    rolldownOptions: {
+      plugins: [
+        inject({
+          Buffer: ['buffer', 'Buffer'],
+          process: 'process',
+        }),
+      ],
     },
   },
 })
